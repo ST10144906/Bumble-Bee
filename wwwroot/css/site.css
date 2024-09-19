@@ -21,3 +21,44 @@ body {
   margin-bottom: 60px;
 }
 
+/* Global settings */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.hero {
+    padding: 50px 20px;
+    color: #2b231d;
+    text-align: center;
+    background-color: #faeabb;
+}
+
+.secondary-hero {
+    padding: 60px 20px;
+    color: #2b231d;
+    text-align: center;
+    background-color: #fad8ba;
+}
+
+.tertiary-hero {
+    padding: 30px 20px;
+    color: #2b231d;
+    text-align: center;
+    background-color: #81421d;
+}
+
+.btn {
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    text-decoration: none;
+    color: #2b231d;
+    border-radius: 5px;
+    background-color: #f8e3a3;
+    margin: 10px;
+}
+
+
+
