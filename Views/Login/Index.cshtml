@@ -2,6 +2,36 @@
     ViewData["Title"] = "Login Page";
 }
 
-<div>
-    <h1>Login Page</h1>
+@{
+    Layout = "_Layout";
+}
+
+<div class="hero-background">
+    <div class="login-container">
+        <div class="login-section">
+            <h2>Sign In</h2>
+            <form method="post" action="/login">
+                <div class="form-group">
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="remember"> Remember Me
+                    </label>
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn">Sign In</button>
+                    <a href="/forgot-password">Forgot Password?</a>
+                </div>
+            </form>
+        </div>
+        <div class="welcome-section">
+            <h2>Welcome to Login</h2>
+            <p>Don't have an account?</p>
+            <a href="/register" class="btn">Sign Up</a>
+        </div>
+    </div>
 </div>
