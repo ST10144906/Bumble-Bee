@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Firebase.Auth" Version="1.0.0" />
     <PackageReference Include="FirebaseAdmin" Version="3.0.0" />
     <PackageReference Include="Google.Cloud.Firestore" Version="3.8.0" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="4.10.0" />
@@ -14,6 +15,8 @@
 
   <ItemGroup>
     <Folder Include="Secrets\" />
+    <Folder Include="Views\Login\" />
+    <Folder Include="Views\Register\" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-using BumbleBeeWebApp.Models;
+﻿using BumbleBeeWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -103,11 +103,6 @@ namespace BumbleBeeWebApp.Controllers
                 }
             }
 
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
             return View();
         }
 

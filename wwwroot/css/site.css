@@ -1,3 +1,38 @@
+:root {
+    --text: #080f0a;
+    --background: #f4faf6;
+    --primary: #57b56e;
+    --secondary: #9bd6aa;
+    --accent: #72ca88;
+}
+
+/* Make navbar items rounded */
+.rounded-btn {
+    padding: 10px 15px;
+    margin-right: 10px;
+    border-radius: 20px; /* This makes the buttons rounded */
+    border-color: var(--accent);
+    background-color: var(--primary);
+    border: 1px solid transparent;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Add a hover effect for the navbar buttons */
+.hover-color:hover {
+    background-color: var(--primary); /* Use primary color for hover */
+    color: white !important;
+    border-color: var(--accent); /* Border color matches hover */
+}
+
+/* Optional: Active state for the buttons */
+.nav-link.active {
+    background-color: var(--accent); /* Use accent color for active state */
+    color: white !important;
+    border-color: var(--accent);
+}
+
+
+
 html {
     font-size: 14px;
     position: relative;

@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Register Page";
+}
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="hero-background">
+    <div class="signup-container">
+        <div class="signup-section">
+            <h2>Create Account</h2>
+            <div class="actions">
+                <a class="nav-link text-dark rounded-btn hover-color" asp-area="" asp-controller="Account" asp-action="RegisterDonor">Register as a Donor</a>
+                <a class="nav-link text-dark rounded-btn hover-color" asp-area="" asp-controller="Account" asp-action="RegisterCompany">Register as a Company</a>
+            </div>
+        </div>
+        <div class="info-section">
+            <h2>Welcome to Our Community</h2>
+            <p>Join us and enjoy exclusive benefits.</p>
+        </div>
+    </div>
+</div>

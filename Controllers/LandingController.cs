@@ -13,5 +13,16 @@ namespace BumbleBeeWebApp.Controllers
         {
             return View();
         }
+
+        // Navbar Methods
+        public IActionResult LoginPage()
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        public IActionResult RegisterPage()
+        {
+            return RedirectToAction("Register", "Account");
+        }
     }
 }
