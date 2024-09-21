@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BumbleBeeWebApp.styles.css" asp-append-version="true" />
+    @if (ViewData["CssFile"] != null)
+    {
+        <link rel="stylesheet" href="~/css/@ViewData["CssFile"]" />
+    }
 </head>
 <body>
     <header>

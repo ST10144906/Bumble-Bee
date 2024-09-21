@@ -1,21 +1,70 @@
 ﻿@model BumbleBeeWebApp.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewData["CssFile"] = "dashboard.css";
+}
 
+@{
+    Layout = "_Layout";
+}
 
-<div class="container-fluid mt-4">
-    <div class="row">
-        <!-- Sidebar for navigation -->
-        <div class="col-md-3">
-            <div class="list-group">
-                <a href="/Dashboard" class="list-group-item list-group-item-action active">Dashboard</a>
-                <a href="/Manage" class="list-group-item list-group-item-action">Manage Requests</a>
-                <a href="/Reports" class="list-group-item list-group-item-action">Reports</a>
-                <a href="/Donations" class="list-group-item list-group-item-action">Donations</a>
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <h1>Bumble Bee Community Service</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/services">Services</a></li>
+                <li><a href="/events">Events</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="main-dashboard">
+        <section class="welcome-message">
+            <h2>Welcome to Our Dashboard</h2>
+            <p>Your support helps us make a difference in our community.</p>
+        </section>
+
+        <section class="quick-links">
+            <h3>Quick Links</h3>
+            <div class="link-buttons">
+                <a href="/donate" class="btn">Donate</a>
+                <a href="/volunteer" class="btn">Volunteer</a>
+                <a href="/join" class="btn">Join Us</a>
             </div>
-        </div>
+        </section>
 
-        <!-- Main content area -->
-        <div class="col-md-9">
-            <h1>Welcome, @User.Identity.Name</h1>
+        <section class="upcoming-events">
+            <h3>Upcoming Events</h3>
+            <ul>
+                <li>Event 1 - Date - Brief Description</li>
+                <li>Event 2 - Date - Brief Description</li>
+                <li>Event 3 - Date - Brief Description</li>
+            </ul>
+        </section>
+
+        <section class="recent-activities">
+            <h3>Recent Activities</h3>
+            <p>Activity summary or recent news here.</p>
+        </section>
+
+        <section class="impact-stats">
+            <h3>Our Impact</h3>
+            <p>Volunteers: <strong>100</strong></p>
+            <p>Hours Served: <strong>500</strong></p>
+            <p>Funds Raised: <strong>$2000</strong></p>
+        </section>
+
+        <section class="testimonials">
+            <h3>What People Are Saying</h3>
+            <blockquote>"This organization changed my life!" - Volunteer</blockquote>
+        </section>
+
+        <section class="recent-activities">
+            <h2>Welcome, @User.Identity.Name</h2>
             <p>This is your personalized dashboard where you can manage your activities.</p>
 
             @switch (Model.UserRole)
@@ -36,6 +85,11 @@
                     <p>Invalid role.</p>
                     break;
             }
-        </div>
+        </section>
+
+        <footer class="dashboard-footer">
+            <p>Contact us at: info@bumblebee.org</p>
+            <p>Follow us on social media!</p>
+        </footer>
     </div>
 </div>
