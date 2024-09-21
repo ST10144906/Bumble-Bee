@@ -1,68 +1,84 @@
 ﻿@{
-    ViewBag.Title = "Bumble Bee Foundation";
+    ViewBag.Title = "Bumblebee Foundation - Welcome";
 }
 
-
-<div class="jumbotron text-center bg-light py-5">
-    <h1 class="display-4">Welcome to Bumble Bee Foundation</h1>
-    <p class="lead">We strive to make the world a better place by supporting communities in need.</p>
-    <a class="btn btn-primary btn-lg" href="#donate" role="button">Donate Now</a>
-    <a href="/Dashboard" class="btn btn-primary">Dashboard</a>
+<!-- Hero Section -->
+<div class="jumbotron text-center">
+    <h1 class="display-4">Bumblebee Foundation</h1>
+    <p>Fostering partnerships for a better South Africa, through collaboration and collective action.</p>
+    <a class="btn btn-light btn-lg" href="#mission" role="button">Learn More</a>
 </div>
 
-<section id="about" class="my-5">
+<!-- Mission Section -->
+<section id="mission" class="my-5">
     <div class="row">
         <div class="col-md-6">
-            <h2>About Us</h2>
-            <p>The Bumble Bee Foundation is dedicated to uplifting communities through sustainable projects and empowering individuals to lead better lives. We focus on education, health, and environmental sustainability in Africa.</p>
+            <h2>Mission Statement</h2>
+            <p>
+                The Bumblebee Foundation is dedicated to fostering partnerships and mobilizing resources
+                to support the initiatives of non-profit organizations within South Africa. Our mission
+                is to connect offshore sponsors with local projects, amplifying their impact and empowering
+                communities to address pressing social and environmental challenges. Committed to transparency,
+                accountability, and sustainability, we strive to maximize the effectiveness of every donation
+                and ensure that resources are directed towards meaningful, long-term solutions. Through collaboration
+                and collective action, we aim to create a more equitable and resilient future for present and
+                future generations.
+            </p>
         </div>
         <div class="col-md-6">
-            <img src="https://via.placeholder.com/500x300" class="img-fluid" alt="About Bumble Bee Foundation" />
+            <img src="https://via.placeholder.com/600x400" class="img-fluid" alt="Mission Image" />
         </div>
     </div>
 </section>
 
-<section id="projects" class="my-5">
-    <h2 class="text-center">Our Projects</h2>
-    <div class="row text-center">
-        <div class="col-md-4">
-            <h3>Education Program</h3>
-            <p>We provide learning opportunities to underprivileged children, ensuring they have the tools to succeed in the future.</p>
+<!-- Vision Section -->
+<section id="vision" class="my-5 py-4">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="https://via.placeholder.com/600x400" class="img-fluid" alt="Vision Image" />
         </div>
-        <div class="col-md-4">
-            <h3>Healthcare Support</h3>
-            <p>Our healthcare initiatives focus on providing access to essential medical services for communities in need.</p>
-        </div>
-        <div class="col-md-4">
-            <h3>Environmental Sustainability</h3>
-            <p>We work to promote sustainable farming practices and environmental preservation in Africa.</p>
+        <div class="col-md-6">
+            <h2>Vision Statement</h2>
+            <p>
+                At Bumblebee Foundation, we envision a place where every individual and community
+                has the opportunity to thrive. We strive for a future where social and environmental
+                challenges are met with empathy, innovation, and collaboration. Our vision is one of
+                interconnectedness, where offshore sponsors and local initiatives unite to create sustainable
+                solutions that leave a lasting impact. Through our dedication to transparency, accountability,
+                and inclusivity, we aspire to be a beacon of hope and a catalyst for positive change worldwide.
+            </p>
         </div>
     </div>
 </section>
 
-<section id="donate" class="my-5 bg-light py-4">
-    <h2 class="text-center">Support Our Cause</h2>
-    <p class="text-center">Your donations help us continue our work. Every contribution makes a difference!</p>
-    <div class="text-center">
-        <a class="btn btn-success btn-lg" href="#donate">Donate Now</a>
+<!-- Directors Section -->
+<section id="directors" class="my-5 text-center">
+    <h2>Meet Our Directors</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <img src="https://via.placeholder.com/200" class="rounded-circle" alt="Asha Reuben Murray" />
+            <h5>Asha Reuben Murray</h5>
+            <p>Director</p>
+        </div>
+        <div class="col-md-4">
+            <img src="https://via.placeholder.com/200" class="rounded-circle" alt="Leelawathie Meth" />
+            <h5>Leelawathie Meth</h5>
+            <p>Director</p>
+        </div>
+        <div class="col-md-4">
+            <img src="https://via.placeholder.com/200" class="rounded-circle" alt="Anisha Owthar" />
+            <h5>Anisha Owthar</h5>
+            <p>Director</p>
+        </div>
     </div>
 </section>
 
-<section id="contact" class="my-5">
-    <h2>Contact Us</h2>
-    <form>
-        <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <input type="text" class="form-control" id="name" placeholder="Your Name" />
-        </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="email" placeholder="name@example.com" />
-        </div>
-        <div class="mb-3">
-            <label for="message" class="form-label">Message</label>
-            <textarea class="form-control" id="message" rows="3" placeholder="Your Message"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Send Message</button>
-    </form>
+<!-- Donate Section -->
+<section id="donate" class="my-5 text-center py-4">
+    <h2>Support Our Cause</h2>
+    <p>
+        Join us in making a lasting impact by supporting our initiatives. Your contribution
+        will help foster positive change in South Africa.
+    </p>
+    <a class="btn btn-light btn-lg" href="#donate">Donate Now</a>
 </section>

@@ -25,14 +25,7 @@ public class FirestoreService
         await collection.AddAsync(data);
     }
 
-    public async Task<DocumentSnapshot> GetDocumentByEmailAsync(string collectionName, string email)
-    {
-        var collection = _firestoreDb.Collection(collectionName);
-        var query = collection.WhereEqualTo("Email", email);
-        var querySnapshot = await query.GetSnapshotAsync();
 
-        return querySnapshot.Documents.FirstOrDefault();  // Return the first matching document
-    }
 
     // Additional methods for Firestore operations to be added later
 }

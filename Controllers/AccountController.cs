@@ -5,6 +5,7 @@ namespace BumbleBeeWebApp.Controllers
 {
     public class AccountController : Controller
     {
+        // Navigation
         public IActionResult Login()
         {
             return View();  
