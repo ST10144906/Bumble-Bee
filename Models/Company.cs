@@ -5,6 +5,8 @@
         public int CompanyID { get; set; }
         public string UID { get; set; }
         public string Name { get; set; }
+        public string ReferenceNumber { get; set; }
+        public string TaxNumber { get; set; }
         public string Description { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }

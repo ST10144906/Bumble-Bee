@@ -1,5 +1,44 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Register Company";
+    Layout = "_Layout";
 }
+
+<link rel="stylesheet" type="text/css" href="~/css/accounts.css" />
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 rounded shadow">
+                <div class="card-body p-4">
+                    <h1 class="text-center mb-4">Register as a Company</h1>
+                    <form method="post" action="/Account/RegisterCompany">
+                        <div class="form-group">
+                            <input type="text" id="companyName" name="Name" class="form-control mb-3" placeholder="Company Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="refenceNumber" name="ReferenceNumber" class="form-control mb-3" placeholder="Company Reference Number" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="taxNumber" name="TaxNumber" class="form-control mb-3" placeholder="Tax Number" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="description" name="Description" class="form-control mb-3" placeholder="Description" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" name="Email" class="form-control mb-3" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="phoneNumber" name="PhoneNumber" class="form-control mb-4" placeholder="Phone Number" required>
+                        </div>
+                        <div class="text-center mb-4">
+                            <button type="submit" class="btn btn-light btn-lg">Register</button>
+                        </div>
+                    </form>
+                    <div class="text-center my-4">
+                        <a href="/Account/Login" class="btn btn-link">I already have an account</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
