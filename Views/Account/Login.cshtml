@@ -1,37 +1,47 @@
 ﻿@{
     ViewData["Title"] = "Login Page";
-}
-
-@{
     Layout = "_Layout";
 }
 
-<div class="hero-background">
-    <div class="login-container">
-        <div class="login-section">
-            <h2>Sign In</h2>
-            <form method="post" action="/login">
-                <div class="form-group">
-                    <input type="text" id="email" name="email" class="form-control" placeholder="Email" required>
+<link rel="stylesheet" type="text/css" href="~/css/accounts.css" />
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 rounded shadow">
+                <div class="card-body p-4">
+
+                    <h1 class="text-center mb-4">Welcome Back</h1>
+                    <p class="text-center mb-4">Please sign in to continue</p>
+
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-md-6">
+                            <div class="card-body">
+                                <h2 class="h4 text-center">Sign In</h2>
+                                <form method="post" action="/login">
+                                    <div class="form-group">
+                                        <input type="text" id="email" name="email" class="form-control mb-3" placeholder="Email" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="password" id="password" name="password" class="form-control mb-4" placeholder="Password" required>
+                                    </div>
+                                    <div class="text-center mb-4">
+                                        <button type="submit" class="btn btn-light btn-lg">Sign In</button>
+                                    </div>
+                                </form>
+
+                                <div class="text-center my-4">
+                                    <a href="/Account/Register" class="btn btn-link">Don't have an account?</a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <img src="https://via.placeholder.com/400x400" class="card-img rounded-right" alt="Login Image" style="object-fit: cover;">
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
-                </div>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="remember"> Remember Me
-                    </label>
-                </div>
-                <div class="actions">
-                    <button type="submit" class="btn">Sign In</button>
-                    <a href="/forgot-password">Forgot Password?</a>
-                </div>
-            </form>
-        </div>
-        <div class="welcome-section">
-            <h2>Welcome to Login</h2>
-            <p>Don't have an account?</p>
-            <a href="/Account/Register" class="btn">Sign Up</a>
+            </div>
         </div>
     </div>
 </div>

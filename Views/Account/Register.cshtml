@@ -1,23 +1,38 @@
 ﻿@{
     ViewData["Title"] = "Register Page";
-}
-
-@{
     Layout = "_Layout";
 }
 
-<div class="hero-background">
-    <div class="signup-container">
-        <div class="signup-section">
-            <h2>Create Account</h2>
-            <div class="actions">
-                <a class="nav-link text-dark rounded-btn hover-color" asp-area="" asp-controller="Account" asp-action="RegisterDonor">Register as a Donor</a>
-                <a class="nav-link text-dark rounded-btn hover-color" asp-area="" asp-controller="Account" asp-action="RegisterCompany">Register as a Company</a>
+<link rel="stylesheet" type="text/css" href="~/css/accounts.css" />
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 rounded shadow">
+                <div class="card-body p-4">
+
+                    <h1 class="text-center mb-4">Create Account</h1>
+                    <p class="text-center mb-4">Welcome to Our Community</p>
+                    <p class="text-center mb-4">Join us and help make a difference.</p>
+
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-md-6">
+                            <div class="card-body text-center">
+                                <div class="d-flex flex-column align-items-center">
+                                    <a class="btn btn-light btn-lg mb-3" asp-area="" asp-controller="Account" asp-action="RegisterDonor">Register as a Donor</a>
+                                    <a class="btn btn-light btn-lg" asp-area="" asp-controller="Account" asp-action="RegisterCompany">Register as a Company</a>
+                                </div>
+                                <div class="my-4">
+                                    <a href="/Account/Login" class="btn btn-link">I already have an account</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <img src="https://via.placeholder.com/400" class="card-img rounded-right" alt="Registration Image" style="object-fit: cover;">
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="info-section">
-            <h2>Welcome to Our Community</h2>
-            <p>Join us and enjoy exclusive benefits.</p>
         </div>
     </div>
 </div>
