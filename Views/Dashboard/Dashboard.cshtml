@@ -1,0 +1,41 @@
+﻿@model BumbleBeeWebApp.Models.DashboardViewModel
+
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Sidebar for navigation -->
+        <div class="col-md-3">
+            <div class="list-group">
+                <a href="/Dashboard" class="list-group-item list-group-item-action active">Dashboard</a>
+                <a href="/Manage" class="list-group-item list-group-item-action">Manage Requests</a>
+                <a href="/Reports" class="list-group-item list-group-item-action">Reports</a>
+                <a href="/Donations" class="list-group-item list-group-item-action">Donations</a>
+            </div>
+        </div>
+
+        <!-- Main content area -->
+        <div class="col-md-9">
+            <h1>Welcome, @User.Identity.Name</h1>
+            <p>This is your personalized dashboard where you can manage your activities.</p>
+
+            @switch (Model.UserRole)
+            {
+                case "Admin":
+                    @Html.Partial("AdminDashboard")
+                    break;
+                case "Auditor":
+                    @Html.Partial("AuditorDashboard")
+                    break;
+                case "Company":
+                    @Html.Partial("CompanyDashboard")
+                    break;
+                case "User":
+                    @Html.Partial("UserDashboard")
+                    break;
+                default:
+                    <p>Invalid role.</p>
+                    break;
+            }
+        </div>
+    </div>
+</div>
