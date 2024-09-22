@@ -4,6 +4,7 @@
 }
 
 <link rel="stylesheet" type="text/css" href="~/css/accounts.css" />
+<link rel="stylesheet" type="text/css" href="~/css/site.css" />
 
 <div class="container my-5">
     <div class="row justify-content-center">
@@ -12,11 +13,26 @@
                 <div class="card-body p-4">
                     <h1 class="text-center mb-4">Register as a Company</h1>
                     <form method="post" action="/Account/RegisterCompany">
+
+                        <!-- User Details Section -->
+                        <h3 class="text-center mb-3">User Details</h3>
                         <div class="form-group">
-                            <input type="text" id="companyName" name="Name" class="form-control mb-3" placeholder="Company Name" required>
+                            <input type="email" id="userEmail" name="UserEmail" class="form-control mb-3" placeholder="Email" required>
                         </div>
                         <div class="form-group">
-                            <input type="text" id="refenceNumber" name="ReferenceNumber" class="form-control mb-3" placeholder="Company Reference Number" required>
+                            <input type="password" id="password" name="Password" class="form-control mb-3" placeholder="Password" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="confirmPassword" name="ConfirmPassword" class="form-control mb-3" placeholder="Confirm Password" required>
+                        </div>
+
+                        <!-- Company Details Section -->
+                        <h3 class="text-center mb-3">Company Details</h3>
+                        <div class="form-group">
+                            <input type="text" id="companyName" name="CompanyName" class="form-control mb-3" placeholder="Company Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="referenceNumber" name="ReferenceNumber" class="form-control mb-3" placeholder="Company Reference Number" required>
                         </div>
                         <div class="form-group">
                             <input type="text" id="taxNumber" name="TaxNumber" class="form-control mb-3" placeholder="Tax Number" required>
@@ -25,15 +41,14 @@
                             <textarea id="description" name="Description" class="form-control mb-3" placeholder="Description" required></textarea>
                         </div>
                         <div class="form-group">
-                            <input type="email" id="email" name="Email" class="form-control mb-3" placeholder="Email" required>
-                        </div>
-                        <div class="form-group">
                             <input type="text" id="phoneNumber" name="PhoneNumber" class="form-control mb-4" placeholder="Phone Number" required>
                         </div>
+
                         <div class="text-center mb-4">
                             <button type="submit" class="btn btn-light btn-lg">Register</button>
                         </div>
                     </form>
+
                     <div class="text-center my-4">
                         <a href="/Account/Login" class="btn btn-link">I already have an account</a>
                     </div>

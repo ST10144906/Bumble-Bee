@@ -1,2 +1,25 @@
-﻿body {
+﻿
+/* General spacing for sections */
+section {
+    margin-bottom: 40px; /* Increase space between sections */
+}
+
+    /* Add space between headings and content */
+    section h2 {
+        margin-bottom: 30px; /* Space between heading and content */
+    }
+
+    /* Add space between images and content */
+    section img {
+        margin-top: 20px; /* Space between images and content above */
+        margin-bottom: 30px; /* Space between images and content below */
+    }
+
+/* Directors section specific styling */
+#directors h5 {
+    margin-top: 15px; /* Space between director's image and name */
+}
+
+#directors p {
+    margin-top: 5px; /* Space between director's name and title */
 }
