@@ -1,79 +1,69 @@
-
-.dashboard-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-    justify-content: center; 
-    padding: 20px;
-    background-color: #f9f9f9;
-    text-align: center; 
-    min-height: 100vh;
+body {
+    background-color: #F5F5DC;
 }
 
-
 .dashboard-header {
-    background-color: #111810;
-    color: white;
+    background-color: #f0f8ff; 
+    color: #333;
     padding: 20px;
-    width: 100%;
     text-align: center;
 }
 
-
-.dashboard-header nav ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.dashboard-header nav ul li {
-    display: inline;
-    margin: 0 15px;
-}
-
-.dashboard-header nav ul li a {
-    color: white;
-    text-decoration: none;
-}
-
-
-.main-dashboard {
-    width: 100%; 
-    max-width: 1200px; 
+.dashboard-main {
     padding: 20px;
-    text-align: center; 
 }
 
-
-.section {
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: white;
-}
-
-
-.quick-links .link-buttons a {
-    margin: 10px 0; 
-    display: inline-block;
-}
-
-
-.btn {
-    background-color: #ffce1b;
-    padding: 15px 20px; 
+.dashboard-overview, .recent-activities, .user-profile {
+    background-color: #f0f8ff;
+    padding: 20px;
     border-radius: 5px;
-    text-decoration: none;
-    color: #2b231d;
-    margin-top: 10px; 
-    margin-bottom: 10px; 
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
 }
 
+    .dashboard-overview h2, .recent-activities h2, .user-profile h2 {
+        color: #f0a500; 
+    }
+
+    .dashboard-overview ul, .recent-activities ul, .user-profile ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .dashboard-overview li, .recent-activities li, .user-profile li {
+        margin-bottom: 10px;
+    }
+
+        .dashboard-overview li strong, .recent-activities li strong, .user-profile li strong {
+            font-weight: bold;
+        }
+
+    .user-profile .profile-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
 
 .dashboard-footer {
     text-align: center;
     padding: 20px;
-    background-color: #111810;
-    color: white;
-    width: 100%;
+    background-color: #f0f8ff;
+    color: #333;
 }
+
+.btn {
+    background-color: #f5f5f5;
+    border-color: #ddd;
+    color: #333;
+    padding: 15px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+    .btn:hover {
+        background-color: #ffe0b3;
+        border-color: #ccc;
+    }

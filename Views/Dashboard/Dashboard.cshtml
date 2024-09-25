@@ -1,4 +1,5 @@
 ﻿@model BumbleBeeWebApp.Models.DashboardViewModel
+
 @{
     ViewData["Title"] = "Dashboard";
 }
@@ -7,91 +8,82 @@
     Layout = "_Layout";
 }
 
+<link rel="stylesheet" type="text/css" href="~/css/dashboard.css" />
 
-<link rel="stylesheet" href="~/css/dashboard.css?v=2" />
+<div class="dashboard-header">
+    <h1>Welcome to the Bumblebee Foundation Dashboard</h1>
+    <p>Your one-stop overview for managing projects and resources.</p>
+</div>
 
-<div class="dashboard-container">
-    <header class="dashboard-header">
-        <h1>Bumble Bee Community Service</h1>
-        <nav>
+<div class="container dashboard-main">
+    <div class="row">
+        <!-- Dashboard Overview -->
+        <div class="col-md-4 dashboard-overview">
+            <h2>Overview</h2>
             <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/services">Services</a></li>
-                <li><a href="/events">Events</a></li>
-                <li><a href="/contact">Contact</a></li>
+                <li><strong>Total Projects:</strong> 25</li>
+                <li><strong>Active Sponsors:</strong> 10</li>
+                <li><strong>Funds Raised:</strong> $50,000</li>
+                <li><strong>Pending Tasks:</strong> 5</li>
             </ul>
-        </nav>
-    </header>
+        </div>
 
-    <div class="main-dashboard">
-        <section class="welcome-message">
-            <h2>Welcome to Our Dashboard</h2>
-            <p>Your support helps us make a difference in our community.</p>
-        </section>
-
-        <section class="quick-links">
-            <h3>Quick Links</h3>
-            <div class="link-buttons">
-                <a href="/donate" class="btn">Donate</a>
-                <a href="/volunteer" class="btn">Volunteer</a>
-                <a href="/join" class="btn">Join Us</a>
-            </div>
-        </section>
-
-        <section class="upcoming-events">
-            <h3>Upcoming Events</h3>
+        <!-- Recent Activities -->
+        <div class="col-md-4 recent-activities">
+            <h2>Recent Activities</h2>
             <ul>
-                <li>Event 1 - Date - Brief Description</li>
-                <li>Event 2 - Date - Brief Description</li>
-                <li>Event 3 - Date - Brief Description</li>
+                <li><strong>New Sponsor:</strong> ABC Corporation</li>
+                <li><strong>Task Completed:</strong> Community Water Project</li>
+                <li><strong>Donation Received:</strong> $5,000 from XYZ Foundation</li>
+                <li><strong>Meeting Scheduled:</strong> With Local NGO Partners</li>
             </ul>
-        </section>
+        </div>
 
-        <section class="recent-activities">
-            <h3>Recent Activities</h3>
-            <p>Activity summary or recent news here.</p>
-        </section>
-
-        <section class="impact-stats">
-            <h3>Our Impact</h3>
-            <p>Volunteers: <strong>100</strong></p>
-            <p>Hours Served: <strong>500</strong></p>
-            <p>Funds Raised: <strong>$2000</strong></p>
-        </section>
-
-        <section class="testimonials">
-            <h3>What People Are Saying</h3>
-            <blockquote>"This organization changed my life!" - Volunteer</blockquote>
-        </section>
-
-        <section class="recent-activities">
-            <h2>Welcome, @User.Identity.Name</h2>
-            <p>This is your personalized dashboard where you can manage your activities.</p>
-
-            @switch (Model.UserRole)
-            {
-                case "Admin":
-                    @Html.Partial("AdminDashboard")
-                    break;
-                case "Auditor":
-                    @Html.Partial("AuditorDashboard")
-                    break;
-                case "Company":
-                    @Html.Partial("CompanyDashboard")
-                    break;
-                case "User":
-                    @Html.Partial("UserDashboard")
-                    break;
-                default:
-                    <p>Invalid role.</p>
-                    break;
-            }
-        </section>
-
-        <footer class="dashboard-footer">
-            <p>Contact us at: info@bumblebee.org</p>
-            <p>Follow us on social media!</p>
-        </footer>
+        <!-- User Profile -->
+        <div class="col-md-4 user-profile">
+            <h2>Your Profile</h2>
+            <img src="https://via.placeholder.com/100" alt="Profile Image" class="profile-image" />
+            <ul>
+                <li><strong>Name:</strong> Jane Doe</li>
+                <li><strong>Role:</strong> Administrator</li>
+                <li><strong>Email:</strong> jane.doe@example.com</li>
+                <li><strong>Last Login:</strong> 2024-09-25</li>
+            </ul>
+        </div>
     </div>
+
+    <section class="user-profile">
+        <h2>Welcome, @User.Identity.Name</h2>
+        <p>This is your personalized dashboard where you can manage your activities.</p>
+
+        @switch (Model.UserRole)
+        {
+            case "Admin":
+                @Html.Partial("AdminDashboard")
+                break;
+            case "Auditor":
+                @Html.Partial("AuditorDashboard")
+                break;
+            case "Company":
+                @Html.Partial("CompanyDashboard")
+                break;
+            case "User":
+                @Html.Partial("UserDashboard")
+                break;
+            default:
+                <p>Invalid role.</p>
+                break;
+        }
+    </section>
+
+    <!-- Action Buttons -->
+    <div class="text-center mt-5">
+        <a class="btn" href="#">View All Projects</a>
+        <a class="btn" href="#">Manage Sponsors</a>
+        <a class="btn" href="#">Track Donations</a>
+    </div>
+</div>
+
+<div class="dashboard-footer">
+    <p>&copy; 2024 Bumblebee Foundation. All Rights Reserved.</p>
 </div>

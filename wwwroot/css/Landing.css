@@ -1,25 +1,102 @@
-﻿
-/* General spacing for sections */
-section {
-    margin-bottom: 40px; /* Increase space between sections */
+﻿section {
+    margin-bottom: 40px; 
 }
 
-    /* Add space between headings and content */
     section h2 {
-        margin-bottom: 30px; /* Space between heading and content */
+        margin-bottom: 30px; 
     }
 
-    /* Add space between images and content */
     section img {
-        margin-top: 20px; /* Space between images and content above */
-        margin-bottom: 30px; /* Space between images and content below */
+        margin-top: 20px;
+        margin-bottom: 30px; 
     }
 
-/* Directors section specific styling */
 #directors h5 {
-    margin-top: 15px; /* Space between director's image and name */
+    margin-top: 15px;
 }
 
 #directors p {
-    margin-top: 5px; /* Space between director's name and title */
+    margin-top: 5px; 
+}
+
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 10px;
+    background-color: #F5F5DC;
+}
+
+.jumbotron, #mission, #vision, #directors, #donate {
+    background-color: #f0f8ff;
+}
+
+a {
+    color: #333;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+}
+
+    a:hover {
+        color: #999;
+    }
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.jumbotron {
+    padding: 20px;
+}
+
+    .jumbotron h1 {
+        color: #333;
+        font-weight: bold;
+    }
+
+    .jumbotron p {
+        color: #666;
+        font-size: 18px;
+    }
+
+.btn-light {
+    background-color: #f5f5f5;
+    border-color: #ddd;
+    color: #333;
+}
+
+    .btn-light:hover {
+        border-color: #ccc;
+    }
+
+#mission, #vision {
+    padding: 20px;
+}
+
+.img-fluid {
+    border-radius: 5px;
+}
+
+#directors {
+    padding: 20px;
+}
+
+.rounded-circle {
+    border: 2px solid #ddd;
+}
+
+#donate {
+    padding: 20px;
+}
+
+.btn-lg {
+    padding: 15px 30px;
+}
+
+h2 {
+    color: #f0a500;
+}
+
+.btn-light:hover {
+    background-color: #ffe0b3;
 }
