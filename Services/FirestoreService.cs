@@ -25,6 +25,30 @@ public class FirestoreService
         await collection.AddAsync(data);
     }
 
+    
+    public async Task<DocumentSnapshot> GetDocumentAsync(string collectionName, string documentId)
+    {
+        DocumentReference document = _firestoreDb.Collection(collectionName).Document(documentId);
+        DocumentSnapshot snapshot = await document.GetSnapshotAsync();
+
+        if (snapshot.Exists)
+        {
+            return snapshot;
+        }
+
+        throw new Exception($"Document with ID '{documentId}' not found in collection '{collectionName}'.");
+    }
+
+    public async Task UpdateDocumentAsync(string collectionName, string documentId, object data)
+    {
+        DocumentReference document = _firestoreDb.Collection(collectionName).Document(documentId);
+        await document.SetAsync(data, SetOptions.MergeAll);
+    }
+
+    public async Task<DocumentSnapshot> GetUserDocumentAsync(string userId)
+    {
+        return await GetDocumentAsync("users", userId);
+    }
 
 
     // Additional methods for Firestore operations to be added later

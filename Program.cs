@@ -11,10 +11,11 @@ builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSingleton<StorageService>();
 builder.Services.AddHttpClient<FunctionsService>();
 
-/*FirebaseApp.Create(new AppOptions()
+//--- might need to be commented out when pushign to git.
+FirebaseApp.Create(new AppOptions()
 {
     Credential = GoogleCredential.FromFile("Secrets/bumble-bee-foundation-firebase-adminsdk.json"),
-}); */
+}); 
 
 var app = builder.Build();
 
