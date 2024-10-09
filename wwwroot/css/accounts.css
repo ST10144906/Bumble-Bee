@@ -1,25 +1,25 @@
 .card {
-    border-radius: 10px; /* Round edges */
+    border-radius: 10px; 
 }
 
 .btn-light {
     border-radius: 15px;
-    background-color: #f8f9fa; /* Match button color with landing page */
-    color: #333; /* Text color */
+    background-color: #f8f9fa; 
+    color: #333; 
 }
 
 .card-body {
-    padding: 20px; /* Increased padding for a spacious look */
+    padding: 20px; 
 }
 
 h1 {
-    font-size: 2.5rem; /* Adjust the size for main titles */
+    font-size: 2.5rem;
 }
 
 h2, h4 {
-    font-size: 1.5rem; /* Adjust the size for section titles */
+    font-size: 1.5rem; 
 }
 
 p {
-    font-size: 1.125rem; /* Adjust paragraph size for better readability */
+    font-size: 1.125rem; 
 }

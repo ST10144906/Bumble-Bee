@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Registration Successful";
+    Layout = "_Layout";
+}
+
+<link rel="stylesheet" type="text/css" href="~/css/landing.css" />
+<link rel="stylesheet" type="text/css" href="~/css/site.css" />
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 rounded shadow">
+                <div class="card-body p-4 text-center">
+                    <h1 class="mb-4">Registration Successful!</h1>
+                    <p class="lead">Thank you for registering with the Bumblebee Foundation!</p>
+                    <p>A confirmation email has been sent to you. Please check your email to confirm your account.</p>
+                    <p>Once you confirm your email, our team will review your account, and it will be activated soon.</p>
+                    <p>If you don't see the confirmation email, please check your spam folder.</p>
+                    <a class="btn btn-light btn-lg mb-3" href="@Url.Action("Index", "Landing")">Return to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

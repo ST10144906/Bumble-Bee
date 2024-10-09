@@ -11,21 +11,31 @@ builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSingleton<StorageService>();
 builder.Services.AddHttpClient<FunctionsService>();
 
-//--- might need to be commented out when pushign to git.
+// Configure session services
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true; 
+});
+
+// Configure Firebase
 FirebaseApp.Create(new AppOptions()
 {
     Credential = GoogleCredential.FromFile("Secrets/bumble-bee-foundation-firebase-adminsdk.json"),
-}); 
+});
 
 var app = builder.Build();
 
-//--- HTTP request pipeline.
+// HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
+app.UseSession(); 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

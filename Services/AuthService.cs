@@ -52,7 +52,7 @@ public class AuthService
     {
         var userId = await RegisterUserAsync(email, password, "Donor");
 
-        var donorInfo = new 
+        var donorInfo = new
         {
             Email = email,
             Type = "Donor",
@@ -65,15 +65,16 @@ public class AuthService
 
         await _firestoreService.AddDocumentAsync("users", donorInfo);
 
+        await SendEmailVerificationAsync(email, userId);
+
         return userId;
     }
 
     public async Task<string> RegisterCompanyAsync(string email, string password, string companyName, string referenceNumber, string taxNumber, string description, string phoneNumber)
     {
         var userId = await RegisterUserAsync(email, password, "Company");
-        
 
-        var companyInfo = new 
+        var companyInfo = new
         {
             Email = email,
             Type = "Company",
@@ -87,7 +88,22 @@ public class AuthService
 
         await _firestoreService.AddDocumentAsync("users", companyInfo);
 
+        await SendEmailVerificationAsync(email, userId);
+
         return userId;
+    }
+
+    public async Task SendEmailVerificationAsync(string email, string userId)
+    {
+        string verificationLink = await FirebaseAuth.DefaultInstance.GenerateEmailVerificationLinkAsync(email);
+        await SendEmailAsync(email, verificationLink);
+    }
+
+    private async Task SendEmailAsync(string email, string verificationLink)
+    {
+        string subject = "BumbleBee Email Verification";
+        string body = $"Please verify your email by clicking the following link: <a href='{verificationLink}'>Verify Email</a>";
+        await Task.CompletedTask;
     }
 
     public async Task<string> LoginUserAsync(string email, string password)

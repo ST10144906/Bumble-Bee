@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using FirebaseAdmin;
+using FirebaseAdmin.Auth;
 
 namespace BumbleBeeWebApp.Controllers
 {
@@ -96,26 +99,56 @@ namespace BumbleBeeWebApp.Controllers
 
         // POST: Register Donor
         [HttpPost]
-        public async Task<IActionResult> RegisterDonor(string userEmail, string password, string confirmPassword, string donorName, string southAfricaId, string taxNumber, string phoneNumber)
+        public async Task<IActionResult> RegisterDonor(
+            string userEmail, string password, string confirmPassword,
+            string donorName, string southAfricaId, string taxNumber, string phoneNumber)
         {
             if (password != confirmPassword)
             {
                 ViewBag.ErrorMessage = "Passwords do not match.";
-                
                 return View();
             }
 
-            if (!IsValidDonorData(userEmail, donorName, southAfricaId, taxNumber, phoneNumber) ||
-                !_authService.ValidatePasswordStrength(password))
+            if (!IsValidEmail(userEmail))
             {
-                ViewBag.ErrorMessage = "Please ensure all fields are correctly filled and password meets the requirements.";
+                ViewBag.ErrorMessage = "Invalid email format.";
+                return View();
+            }
+
+            if (string.IsNullOrWhiteSpace(donorName))
+            {
+                ViewBag.ErrorMessage = "Donor name is required.";
+                return View();
+            }
+
+            if (!IsNumeric(southAfricaId))
+            {
+                ViewBag.ErrorMessage = "South Africa ID must be numeric.";
+                return View();
+            }
+
+            if (!IsNumeric(taxNumber))
+            {
+                ViewBag.ErrorMessage = "Tax number must be numeric.";
+                return View();
+            }
+
+            if (!IsValidPhoneNumber(phoneNumber))
+            {
+                ViewBag.ErrorMessage = "Phone number is invalid. It must include a country code and be in the correct format.";
+                return View();
+            }
+
+            if (!_authService.ValidatePasswordStrength(password))
+            {
+                ViewBag.ErrorMessage = "Password does not meet the strength requirements.";
                 return View();
             }
 
             try
             {
                 var userId = await _authService.RegisterDonorAsync(userEmail, password, donorName, southAfricaId, taxNumber, phoneNumber);
-                return View("RegisterSuccess", userId);
+                return View("RegisterSuccess");
             }
             catch (Exception ex)
             {
@@ -124,6 +157,7 @@ namespace BumbleBeeWebApp.Controllers
                 return View();
             }
         }
+
 
         // GET: Register Company
         [HttpGet]
@@ -134,7 +168,10 @@ namespace BumbleBeeWebApp.Controllers
 
         // POST: Register Company
         [HttpPost]
-        public async Task<IActionResult> RegisterCompany(string userEmail, string password, string confirmPassword, string companyName, string referenceNumber, string taxNumber, string description, string phoneNumber)
+        public async Task<IActionResult> RegisterCompany(
+            string userEmail, string password, string confirmPassword,
+            string companyName, string referenceNumber, string taxNumber,
+            string description, string phoneNumber)
         {
             if (password != confirmPassword)
             {
@@ -142,25 +179,61 @@ namespace BumbleBeeWebApp.Controllers
                 return View();
             }
 
-            if (!IsValidCompanyData(userEmail, companyName, referenceNumber, taxNumber, description, phoneNumber) ||
-                !_authService.ValidatePasswordStrength(password))
+            if (!IsValidEmail(userEmail))
             {
-                ViewBag.ErrorMessage = "Please ensure all fields are correctly filled and password meets the requirements.";
+                ViewBag.ErrorMessage = "Invalid email format.";
+                return View();
+            }
+
+            if (string.IsNullOrWhiteSpace(companyName))
+            {
+                ViewBag.ErrorMessage = "Company name is required.";
+                return View();
+            }
+
+            if (!IsAlphanumeric(referenceNumber))
+            {
+                ViewBag.ErrorMessage = "Reference number must be alphanumeric.";
+                return View();
+            }
+
+            if (!IsAlphanumeric(taxNumber))
+            {
+                ViewBag.ErrorMessage = "Tax number must be alphanumeric.";
+                return View();
+            }
+
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                ViewBag.ErrorMessage = "Description is required.";
+                return View();
+            }
+
+            if (!IsValidPhoneNumber(phoneNumber))
+            {
+                ViewBag.ErrorMessage = "Phone number is invalid. It must include a country code and be in the correct format.";
+                return View();
+            }
+
+            if (!_authService.ValidatePasswordStrength(password))
+            {
+                ViewBag.ErrorMessage = "Password does not meet the strength requirements.";
                 return View();
             }
 
             try
             {
                 var userId = await _authService.RegisterCompanyAsync(userEmail, password, companyName, referenceNumber, taxNumber, description, phoneNumber);
-                return View("RegisterSuccess", userId);
+                return View("RegisterSuccess");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Registration failed: {ex.Message}");
-                ViewBag.ErrorMessage = "Registration failed. Please try again.";
+                ViewBag.ErrorMessage = $"Registration failed: {ex.Message}";
                 return View();
             }
         }
+
 
         // Validation Methods
         private bool IsValidCompanyData(string email, string companyName, string referenceNumber, string taxNumber, string description, string phoneNumber)
@@ -206,5 +279,34 @@ namespace BumbleBeeWebApp.Controllers
         {
             return !string.IsNullOrEmpty(name) && Regex.IsMatch(name, @"^[a-zA-Z\s]+$");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> VerifyEmail(string email)
+        {
+            try
+            {
+                var userRecord = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(email);
+
+                if (userRecord != null)
+                {
+                    if (!userRecord.EmailVerified)
+                    {
+                        return View("RegisterSuccess"); 
+                    }
+
+                    return View("EmailAlreadyVerified"); 
+                }
+
+                return View("Error"); 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Email verification failed: {ex.Message}");
+                return View("Error"); 
+            }
+        }
+
+
+
     }
 }
