@@ -1,0 +1,134 @@
+﻿body {
+    background-color: #F5F5DC;
+    font-family: Arial, sans-serif;
+}
+
+/* Payment Form Header */
+.payment-header {
+    background-color: #f0f8ff;
+    color: #333;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 30px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+    .payment-header h2 {
+        color: #f0a500;
+    }
+
+/* Payment Form Container */
+.payment-container {
+    background-color: #f0f8ff;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: 0 auto;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+    .payment-container label {
+        color: #333;
+        font-weight: bold;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .payment-container input[type="text"],
+    .payment-container input[type="email"],
+    .payment-container input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.1);
+        background-color: #f5f5f5;
+        color: #333;
+    }
+
+        .payment-container input[type="text"]:focus,
+        .payment-container input[type="email"]:focus,
+        .payment-container input[type="number"]:focus {
+            outline: none;
+            border-color: #f0a500;
+            background-color: #fff;
+        }
+
+    .payment-container button[type="submit"] {
+        background-color: #f5f5f5;
+        border-color: #ddd;
+        color: #333;
+        padding: 15px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        margin-top: 10px;
+        width: 100%;
+        cursor: pointer;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+        .payment-container button[type="submit"]:hover {
+            background-color: #ffe0b3;
+            border-color: #ccc;
+        }
+
+    .payment-container .form-group {
+        margin-bottom: 20px;
+    }
+
+/* Modal Styling */
+.modal-header {
+    background-color: #f0a500;
+    color: white;
+    padding: 15px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.modal-body {
+    background-color: #f0f8ff;
+    padding: 20px;
+    color: #333;
+}
+
+.modal-footer {
+    background-color: #f0f8ff;
+    padding: 15px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    text-align: right;
+}
+
+    .modal-footer button {
+        background-color: #f5f5f5;
+        border-color: #ddd;
+        color: #333;
+        padding: 10px 20px;
+        border-radius: 5px;
+    }
+
+        .modal-footer button:hover {
+            background-color: #ffe0b3;
+            border-color: #ccc;
+        }
+
+/* Error and Success Messages */
+.success-message {
+    color: #28a745;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.error-message {
+    color: #dc3545;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
