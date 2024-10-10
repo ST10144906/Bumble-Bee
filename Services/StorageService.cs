@@ -4,7 +4,6 @@ using Google.Apis.Auth.OAuth2;
 public class StorageService
     {
         private readonly StorageClient _storageClient;
-        
 
     public StorageService()
     {
@@ -12,12 +11,16 @@ public class StorageService
         _storageClient = StorageClient.Create(googleCredential);
     }
 
-    public async Task UploadFileAsync(string localPath, string objectName)
+    public async Task<string> UploadFileAsync(Stream fileStream, string objectName)
     {
-        using var fileStream = System.IO.File.OpenRead(localPath);
-        await _storageClient.UploadObjectAsync("bumble-bee-foundation.appspot.com", objectName, null, fileStream);
+        var bucketName = "bumble-bee-foundation.appspot.com";
+        await _storageClient.UploadObjectAsync(bucketName, objectName, null, fileStream);
         Console.WriteLine($"Uploaded {objectName}.");
+
+        string fileUrl = $"https://storage.googleapis.com/{bucketName}/{objectName}";
+        return fileUrl;
     }
+
 
     //--- Additional methods for storage operations to be added later.
 }

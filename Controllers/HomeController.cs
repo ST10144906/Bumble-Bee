@@ -73,7 +73,7 @@ namespace BumbleBeeWebApp.Controllers
                                 break;
                             }
 
-                            await _storageService.UploadFileAsync(projectRelativePath, "uploaded-files/file.txt");
+                            // await _storageService.UploadFileAsync(projectRelativePath, "uploaded-files/file.txt");
                             ViewData["Message"] = "File uploaded to Firebase Storage.";
                         }
                         catch (Exception ex)

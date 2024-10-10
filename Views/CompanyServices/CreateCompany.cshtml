@@ -1,0 +1,61 @@
+﻿@model BumbleBeeWebApp.Models.Company
+
+@{
+    ViewData["Title"] = "Provide Organization Details";
+    Layout = "_Layout";
+}
+
+<link rel="stylesheet" type="text/css" href="~/css/dashboard.css" />
+<link rel="stylesheet" type="text/css" href="~/css/site.css" />
+
+<div class="dashboard-header">
+    <h1>Provide Organization Details</h1>
+</div>
+
+<div class="container dashboard-main">
+    <form asp-action="Create" method="post">
+        <div class="form-group">
+            <label for="Name">Organisation Name</label>
+            <input asp-for="Name" class="form-control" required />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="ReferenceNumber">Organisation Reference Number</label>
+            <input asp-for="ReferenceNumber" class="form-control" required />
+            <span asp-validation-for="ReferenceNumber" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="TaxNumber">Tax Number</label>
+            <input asp-for="TaxNumber" class="form-control" required />
+            <span asp-validation-for="TaxNumber" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="Description">Organisation Description</label>
+            <textarea asp-for="Description" class="form-control" required></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="Email">Email</label>
+            <input asp-for="Email" class="form-control" required />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="PhoneNumber">Phone Number</label>
+            <input asp-for="PhoneNumber" class="form-control" required />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn">Submit Organization Details</button>
+        </div>
+    </form>
+</div>
+
+<div class="dashboard-footer">
+    <p>&copy; 2024 Bumblebee Foundation. All Rights Reserved.</p>
+</div>

@@ -1,6 +1,7 @@
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Builder.Extensions;
+using Google.Cloud.Firestore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,17 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true; 
+});
+
+builder.Services.AddSingleton(sp =>
+{
+    var googleCredential = GoogleCredential.FromFile("Secrets/bumble-bee-foundation-firebase-adminsdk.json");
+    var firestoreDbBuilder = new FirestoreDbBuilder
+    {
+        ProjectId = "bumble-bee-foundation",
+        Credential = googleCredential
+    };
+    return firestoreDbBuilder.Build();
 });
 
 // Configure Firebase
