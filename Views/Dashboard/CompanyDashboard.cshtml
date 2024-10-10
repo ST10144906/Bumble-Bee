@@ -1,7 +1,5 @@
-﻿@section DashboardContent {
-    <h2>Company Activities</h2>
+﻿<h2>Company Activities</h2>
     <div class="company-controls">
-        <button class="btn btn-info">Submit Funding Request</button>
-        <button class="btn btn-warning">Upload Documents</button>
+        <a class="btn" href="@Url.Action("Create", "Company")">Provide Organization Details</a>
+        <a class="btn" href="@Url.Action("Create", "Project")">Submit New Project</a>
     </div>
-}

@@ -55,6 +55,7 @@
     <section class="user-profile">
         <h2>Welcome, @User.Identity.Name</h2>
         <p>This is your personalized dashboard where you can manage your activities.</p>
+        <p>User Role: @Model.UserRole</p> <!-- Debug line to check role -->
 
         @switch (Model.UserRole)
         {
