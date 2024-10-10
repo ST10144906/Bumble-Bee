@@ -1,0 +1,108 @@
+﻿@model BumbleBeeWebApp.Controllers.PaymentViewModel
+@{
+    ViewData["Title"] = "Payment Page";
+    Layout = "_Layout";
+}
+
+<link rel="stylesheet" type="text/css" href="~/css/site.css" />
+<link rel="stylesheet" type="text/css" href="~/css/payment.css" />
+
+<div class="container">
+    <div class="payment-header text-center">
+        <h2>Make a Payment</h2>
+    </div>
+
+    <div class="payment-container">
+        <form id="paymentForm">
+            <div class="form-group">
+                <label for="email-address">Email</label>
+                <input type="email" id="email-address" class="form-control" value="@Model.Email" required />
+            </div>
+
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="number" id="amount" class="form-control" value="@Model.Amount" required />
+            </div>
+
+            <div class="form-group">
+                <label for="first-name">Name</label>
+                <input type="text" id="first-name" class="form-control" value="@Model.Name" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Pay Now</button>
+        </form>
+    </div>
+
+    <!-- Modals for Payment Success and Failure -->
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Payment Successful</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Your payment was processed successfully!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="failureModal" tabindex="-1" role="dialog" aria-labelledby="failureModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="failureModalLabel">Payment Failed</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Unfortunately, your payment could not be completed. Please try again.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Paystack SDK -->
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    const paymentForm = document.getElementById('paymentForm');
+    paymentForm.addEventListener("submit", payWithPaystack, false);
+
+    function payWithPaystack(e) {
+        e.preventDefault();
+        let handler = PaystackPop.setup({
+            key: '@Model.PublicKey',
+            email: document.getElementById('email-address').value,
+            amount: document.getElementById('amount').value * 100, // Amount in kobo
+            currency: 'NGN',
+            first_name: document.getElementById('first-name').value,
+            callback: function(response) {
+                $.get('/Payment/VerifyPayment', { reference: response.reference }, function(result) {
+                    if (result === 'success') {
+                        $('#successModal').modal('show');
+                    } else {
+                        $('#failureModal').modal('show');
+                    }
+                });
+            },
+            onClose: function() {
+                alert('Transaction was not completed, window closed.');
+            }
+        });
+        handler.openIframe();
+    }
+</script>

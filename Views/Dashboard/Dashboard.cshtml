@@ -2,9 +2,6 @@
 
 @{
     ViewData["Title"] = "Dashboard";
-}
-
-@{
     Layout = "_Layout";
 }
 
@@ -44,32 +41,49 @@
             <h2>Your Profile</h2>
             <img src="https://via.placeholder.com/100" alt="Profile Image" class="profile-image" />
             <ul>
-                <li><strong>Name:</strong> Jane Doe</li>
-                <li><strong>Role:</strong> Administrator</li>
-                <li><strong>Email:</strong> jane.doe@example.com</li>
+                <li><strong>Name:</strong> @Model.UserName</li>
+                <li><strong>Role:</strong> @Model.UserRole</li>
+                <li><strong>Email:</strong> @Model.UserEmail</li>
                 <li><strong>Last Login:</strong> 2024-09-25</li>
             </ul>
         </div>
     </div>
 
+    <!-- Personalized Section Based on User Role -->
     <section class="user-profile">
         <h2>Welcome, @User.Identity.Name</h2>
         <p>This is your personalized dashboard where you can manage your activities.</p>
-        <p>User Role: @Model.UserRole</p> <!-- Debug line to check role -->
+        <p>User Role: @Model.UserRole</p>
 
         @switch (Model.UserRole)
         {
             case "Admin":
-                @Html.Partial("AdminDashboard")
+                <div>
+                    <h3>Admin Dashboard</h3>
+                    <p>Admin-specific content goes here.</p>
+                </div>
+                @* @Html.Partial("AdminDashboard") *@
                 break;
             case "Auditor":
-                @Html.Partial("AuditorDashboard")
+                <div>
+                    <h3>Auditor Dashboard</h3>
+                    <p>Auditor-specific content goes here.</p>
+                </div>
+                @* @Html.Partial("AuditorDashboard") *@
                 break;
             case "Company":
-                @Html.Partial("CompanyDashboard")
+                <div>
+                    <h3>Company Dashboard</h3>
+                    <p>Company-specific content goes here.</p>
+                </div>
+                @* @Html.Partial("CompanyDashboard") *@
                 break;
             case "User":
-                @Html.Partial("UserDashboard")
+                <div>
+                    <h3>User Dashboard</h3>
+                    <p>User-specific content goes here.</p>
+                </div>
+                @* @Html.Partial("UserDashboard") *@
                 break;
             default:
                 <p>Invalid role.</p>

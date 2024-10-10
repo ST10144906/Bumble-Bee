@@ -46,9 +46,28 @@ public class FirestoreService
     }
 
     public async Task<DocumentSnapshot> GetUserDocumentAsync(string userId)
+{
+    // Replace "users" with your Firestore collection name
+    CollectionReference usersRef = _firestoreDb.Collection("users");
+    
+    // Create a query to find the document with uid field equal to userId
+    Query query = usersRef.WhereEqualTo("Uid", userId);
+
+    // Execute the query
+    QuerySnapshot querySnapshot = await query.GetSnapshotAsync();
+
+    // Check if any document was found
+    if (querySnapshot.Documents.Count > 0)
     {
-        return await GetDocumentAsync("users", userId);
+        // Return the first matching document
+        return querySnapshot.Documents[0];
     }
+    else
+    {
+        return null; // Return null if no document was found
+    }
+}
+
 
 
     // Additional methods for Firestore operations to be added later
