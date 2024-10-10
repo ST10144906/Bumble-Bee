@@ -31,15 +31,12 @@ namespace BumbleBeeWebApp.Controllers
             try
             {
                 var userId = await _authService.LoginUserAsync(email, password);
-                var userDoc = await _authService.GetUserDocumentAsync(userId);
-                var userType = userDoc.GetValue<string>("Type");
-
-                return userType switch
-                {
-                    "Company" => View("CompanyLoginSuccess", userId),
-                    "Donor" => View("DonorLoginSuccess", userId),
-                    _ => View("LoginSuccess", userId),
-                };
+                var userDoc = await _authService.GetUserDocumentAsync(userId); //--- FIXED!!!! this was failing (searching by doc id with user id --- needs to find doc id that contains the user id)
+                
+                var userType = userDoc.GetValue<string>("Type"); //--- Get the "Type" field EXAMPLE! - this is how you can fetch 
+                Console.WriteLine($"User Type: {userType}");
+                
+                return RedirectToAction("Index", "Dashboard", new { userId });
             }
             catch (Exception ex)
             {

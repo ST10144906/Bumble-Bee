@@ -43,7 +43,7 @@ public class AuthService
             Uid = userRecord.Uid
         };
 
-        await _firestoreService.AddDocumentAsync("users", userInfo);
+        //await _firestoreService.AddDocumentAsync("users", userInfo);  this creates duplicate records
 
         return userRecord.Uid;
     }
