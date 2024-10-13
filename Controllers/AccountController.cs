@@ -167,8 +167,7 @@ namespace BumbleBeeWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterCompany(
             string userEmail, string password, string confirmPassword,
-            string companyName, string referenceNumber, string taxNumber,
-            string description, string phoneNumber)
+        string companyName, string description, string phoneNumber)
         {
             if (password != confirmPassword)
             {
@@ -185,18 +184,6 @@ namespace BumbleBeeWebApp.Controllers
             if (string.IsNullOrWhiteSpace(companyName))
             {
                 ViewBag.ErrorMessage = "Company name is required.";
-                return View();
-            }
-
-            if (!IsAlphanumeric(referenceNumber))
-            {
-                ViewBag.ErrorMessage = "Reference number must be alphanumeric.";
-                return View();
-            }
-
-            if (!IsAlphanumeric(taxNumber))
-            {
-                ViewBag.ErrorMessage = "Tax number must be alphanumeric.";
                 return View();
             }
 
@@ -220,7 +207,8 @@ namespace BumbleBeeWebApp.Controllers
 
             try
             {
-                var userId = await _authService.RegisterCompanyAsync(userEmail, password, companyName, referenceNumber, taxNumber, description, phoneNumber);
+                var userId = await _authService.RegisterCompanyAsync(userEmail, password, companyName, description, phoneNumber);
+                Console.WriteLine($"Company registered successfully. UserId: {userId}");
                 return View("RegisterSuccess");
             }
             catch (Exception ex)
@@ -233,7 +221,7 @@ namespace BumbleBeeWebApp.Controllers
 
 
         // Validation Methods
-        private bool IsValidCompanyData(string email, string companyName, string referenceNumber, string taxNumber, string description, string phoneNumber)
+        private bool IsValidCompanyData(string email, string companyName, string description, string phoneNumber)
         {
             return IsValidEmail(email) &&
                    !string.IsNullOrWhiteSpace(companyName) &&

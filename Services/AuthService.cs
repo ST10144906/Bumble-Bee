@@ -70,7 +70,7 @@ public class AuthService
         return userId;
     }
 
-    public async Task<string> RegisterCompanyAsync(string email, string password, string companyName, string referenceNumber, string taxNumber, string description, string phoneNumber)
+    public async Task<string> RegisterCompanyAsync(string email, string password, string companyName, string description, string phoneNumber)
     {
         var userId = await RegisterUserAsync(email, password, "Company");
 
@@ -80,8 +80,6 @@ public class AuthService
             Type = "Company",
             Uid = userId,
             CompanyName = companyName,
-            ReferenceNumber = referenceNumber,
-            TaxNumber = taxNumber,
             Description = description,
             PhoneNumber = phoneNumber
         };

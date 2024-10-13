@@ -2,7 +2,7 @@
 {
     public class Company
     {
-        public string UID { get; set; } = "Test";
+        public string UID { get; set; }
         public string Name { get; set; }
         public string ReferenceNumber { get; set; }
         public string TaxNumber { get; set; }

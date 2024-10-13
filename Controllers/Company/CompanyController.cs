@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using BumbleBeeWebApp.Models;
+﻿using BumbleBeeWebApp.Models;
 using Google.Cloud.Firestore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace BumbleBeeWebApp.Controllers.Company
@@ -25,11 +26,29 @@ namespace BumbleBeeWebApp.Controllers.Company
         }
 
         // POST: Company/Create
+        // POST: Company/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Models.Company company)
         {
             _logger.LogInformation("Entering Create action for Company.");
+
+            // Get the UID from session
+            var uid = HttpContext.Session.GetString("Uid");
+            _logger.LogInformation("UID" + uid);
+            if (string.IsNullOrEmpty(uid))
+            {
+                ModelState.AddModelError(string.Empty, "User is not logged in. Please log in first.");
+                return View("~/Views/CompanyServices/CreateCompany.cshtml", company);
+            }
+
+            // Assign UID from session to the company model
+            company.UID = uid;
+
+            // Remove UID from ModelState validation
+            ModelState.Remove("UID");
+
+            // Validate model state
             if (ModelState.IsValid)
             {
                 try
@@ -47,9 +66,7 @@ namespace BumbleBeeWebApp.Controllers.Company
                     });
 
                     _logger.LogInformation("Company data saved to Firestore with Document ID: {DocumentId}", companyDocRef.Id);
-
                     TempData["SuccessMessage"] = "Company created successfully! You can add projects later.";
-
                     return View("~/Views/Dashboard/Dashboard.cshtml");
                 }
                 catch (Exception ex)
@@ -61,17 +78,18 @@ namespace BumbleBeeWebApp.Controllers.Company
             else
             {
                 _logger.LogWarning("ModelState is invalid. Company creation failed.");
-                foreach (var key in ModelState.Keys)
+                foreach (var modelState in ModelState.Values)
                 {
-                    var errors = ModelState[key].Errors;
-                    foreach (var error in errors)
+                    foreach (var error in modelState.Errors)
                     {
-                        _logger.LogWarning("Validation error in '{Key}': {ErrorMessage}", key, error.ErrorMessage);
+                        _logger.LogWarning("ModelState error: {ErrorMessage}", error.ErrorMessage);
                     }
                 }
             }
 
             return View("~/Views/CompanyServices/CreateCompany.cshtml", company);
         }
+
+
     }
 }
