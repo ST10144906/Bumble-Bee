@@ -167,7 +167,7 @@ namespace BumbleBeeWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterCompany(
             string userEmail, string password, string confirmPassword,
-        string companyName, string description, string phoneNumber)
+        string fullName, string description, string phoneNumber)
         {
             if (password != confirmPassword)
             {
@@ -181,7 +181,7 @@ namespace BumbleBeeWebApp.Controllers
                 return View();
             }
 
-            if (string.IsNullOrWhiteSpace(companyName))
+            if (string.IsNullOrWhiteSpace(fullName))
             {
                 ViewBag.ErrorMessage = "Company name is required.";
                 return View();
@@ -207,7 +207,7 @@ namespace BumbleBeeWebApp.Controllers
 
             try
             {
-                var userId = await _authService.RegisterCompanyAsync(userEmail, password, companyName, description, phoneNumber);
+                var userId = await _authService.RegisterCompanyAsync(userEmail, password, fullName, description, phoneNumber);
                 Console.WriteLine($"Company registered successfully. UserId: {userId}");
                 return View("RegisterSuccess");
             }
@@ -225,8 +225,6 @@ namespace BumbleBeeWebApp.Controllers
         {
             return IsValidEmail(email) &&
                    !string.IsNullOrWhiteSpace(companyName) &&
-                   IsAlphanumeric(referenceNumber) &&
-                   IsAlphanumeric(taxNumber) &&
                    !string.IsNullOrWhiteSpace(description) &&
                    IsValidPhoneNumber(phoneNumber);
         }
