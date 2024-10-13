@@ -35,32 +35,25 @@ namespace BumbleBeeWebApp.Controllers.Company
         {
             _logger.LogInformation("Entering Create action for Project.");
             project.MiscellaneousDocumentsUrl = string.Empty;
-
+            project.Status = "Pending Approval";
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var uid = HttpContext.Session.GetString("Uid");
+                    var companyId = HttpContext.Session.GetString("CompanyId");
 
-                    var companyQuery = _firestoreDb.Collection("companies").WhereEqualTo("UID", uid);
-                    var companySnapshot = await companyQuery.GetSnapshotAsync();
-
-                    if (companySnapshot.Documents.Count == 0)
+                    if (string.IsNullOrEmpty(companyId))
                     {
-                        ModelState.AddModelError(string.Empty, "No company found for the current user.");
+                        _logger.LogWarning("CompanyId is not set in session. Redirecting to error page.");
+                        ModelState.AddModelError(string.Empty, "No company found for the current user. Please ensure your company is created and try again.");
                         return View("~/Views/CompanyServices/CreateProject.cshtml", project);
                     }
-
-                    var companyId = companySnapshot.Documents[0].Id; // Get the first company's ID
-
-                    project.Status = "Pending";
 
                     DocumentReference projectDocRef = _firestoreDb.Collection("companies").Document(companyId).Collection("projects").Document();
                     await projectDocRef.SetAsync(new
                     {
                         project.ProjectName,
                         project.Description,
-                        project.FundingTarget,
                         project.Status,
                         CompanyId = companyId
                     });
@@ -89,7 +82,7 @@ namespace BumbleBeeWebApp.Controllers.Company
                     }
 
                     _logger.LogInformation("Project creation process completed successfully.");
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Dashboard", "Dashboard");
                 }
                 catch (Exception ex)
                 {
@@ -100,6 +93,18 @@ namespace BumbleBeeWebApp.Controllers.Company
             else
             {
                 _logger.LogWarning("ModelState is invalid. Project creation failed.");
+
+                foreach (var key in ModelState.Keys)
+                {
+                    var state = ModelState[key];
+                    if (state.Errors.Count > 0)
+                    {
+                        foreach (var error in state.Errors)
+                        {
+                            _logger.LogWarning("ModelState Error for {Key}: {ErrorMessage}", key, error.ErrorMessage);
+                        }
+                    }
+                }
             }
 
             return View("~/Views/CompanyServices/CreateProject.cshtml", project);
