@@ -31,12 +31,29 @@ namespace BumbleBeeWebApp.Controllers
             try
             {
                 var userId = await _authService.LoginUserAsync(email, password);
-                var userDoc = await _authService.GetUserDocumentAsync(userId); //--- FIXED!!!! this was failing (searching by doc id with user id --- needs to find doc id that contains the user id)
-                
-                var userType = userDoc.GetValue<string>("Type"); //--- Get the "Type" field EXAMPLE! - this is how you can fetch 
+                var userDoc = await _authService.GetUserDocumentAsync(userId);
+
+                var userType = userDoc.GetValue<string>("Type");
                 Console.WriteLine($"User Type: {userType}");
-                
-                return RedirectToAction("Index", "Dashboard", new { userId });
+
+                var companyDoc = await _authService.GetCompanyDocumentByUserIdAsync(userId); 
+                if (companyDoc != null)
+                {
+                    HttpContext.Session.SetString("UserId", userDoc.GetValue<string>("Uid"));
+                    HttpContext.Session.SetString("CompanyId", companyDoc.Id);
+                    HttpContext.Session.SetString("UserType", userType);
+                    HttpContext.Session.SetString("UserFullName", userDoc.GetValue<string>("FullName"));
+                    HttpContext.Session.SetString("UserEmail", userDoc.GetValue<string>("Email"));
+                }
+                else
+                {
+                    HttpContext.Session.SetString("UserId", userDoc.GetValue<string>("Uid"));
+                    HttpContext.Session.SetString("UserType", userType);
+                    HttpContext.Session.SetString("UserFullName", userDoc.GetValue<string>("FullName"));
+                    HttpContext.Session.SetString("UserEmail", userDoc.GetValue<string>("Email"));
+                }
+
+                return RedirectToAction("Dashboard", "Dashboard", new { userId });
             }
             catch (Exception ex)
             {

@@ -45,6 +45,14 @@ public class FirestoreService
         await document.SetAsync(data, SetOptions.MergeAll);
     }
 
+    public async Task<QuerySnapshot> GetCollectionAsync(string collectionName)
+    {
+        CollectionReference collectionRef = _firestoreDb.Collection(collectionName);
+        return await collectionRef.GetSnapshotAsync();
+    }
+
+
+
     public async Task<DocumentSnapshot> GetUserDocumentAsync(string userId)
 {
     // Replace "users" with your Firestore collection name

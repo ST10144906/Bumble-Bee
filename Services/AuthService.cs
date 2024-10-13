@@ -121,6 +121,29 @@ public class AuthService
         return await _firestoreService.GetUserDocumentAsync(userId);
     }
 
+    public async Task<DocumentSnapshot> GetCompanyDocumentByUserIdAsync(string userId)
+    {
+        var companiesCollection = _firestoreService.GetCollectionAsync("companies");
+
+        var companyDocuments = await companiesCollection;
+
+        foreach (var companyDoc in companyDocuments.Documents)
+        {
+            var companyData = companyDoc.ConvertTo<Dictionary<string, object>>();
+
+            if (companyData.TryGetValue("UID", out var uid) && uid.ToString() == userId)
+            {
+                return companyDoc;
+            }
+        }
+
+        return null;
+    }
+
+
+
+
+
 
 
     //---   Old function that will not be in use later on (Still used for example in Home Controller)

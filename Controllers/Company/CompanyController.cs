@@ -3,6 +3,7 @@ using Google.Cloud.Firestore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BumbleBeeWebApp.Controllers.Company
@@ -26,29 +27,32 @@ namespace BumbleBeeWebApp.Controllers.Company
         }
 
         // POST: Company/Create
-        // POST: Company/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Models.Company company)
         {
             _logger.LogInformation("Entering Create action for Company.");
+             
+            var uid = HttpContext.Session.GetString("UserId");
+            _logger.LogInformation("UID: " + uid);
 
-            // Get the UID from session
-            var uid = HttpContext.Session.GetString("Uid");
-            _logger.LogInformation("UID" + uid);
             if (string.IsNullOrEmpty(uid))
             {
                 ModelState.AddModelError(string.Empty, "User is not logged in. Please log in first.");
                 return View("~/Views/CompanyServices/CreateCompany.cshtml", company);
             }
 
-            // Assign UID from session to the company model
+            var existingCompany = await GetCompanyByUserIdAsync(uid);
+            if (existingCompany != null)
+            {
+                ModelState.AddModelError(string.Empty, "You have already created a company. You cannot create another one.");
+                return View("~/Views/CompanyServices/CreateCompany.cshtml", company);
+            }
+
             company.UID = uid;
 
-            // Remove UID from ModelState validation
             ModelState.Remove("UID");
 
-            // Validate model state
             if (ModelState.IsValid)
             {
                 try
@@ -67,7 +71,7 @@ namespace BumbleBeeWebApp.Controllers.Company
 
                     _logger.LogInformation("Company data saved to Firestore with Document ID: {DocumentId}", companyDocRef.Id);
                     TempData["SuccessMessage"] = "Company created successfully! You can add projects later.";
-                    return View("~/Views/Dashboard/Dashboard.cshtml");
+                    return RedirectToAction("Dashboard", "Dashboard");
                 }
                 catch (Exception ex)
                 {
@@ -90,6 +94,15 @@ namespace BumbleBeeWebApp.Controllers.Company
             return View("~/Views/CompanyServices/CreateCompany.cshtml", company);
         }
 
+        private async Task<Models.Company> GetCompanyByUserIdAsync(string uid)
+        {
+            var companiesCollection = _firestoreDb.Collection("companies");
+            var companyQuery = companiesCollection.WhereEqualTo("UID", uid);
+            var querySnapshot = await companyQuery.GetSnapshotAsync();
 
+            return querySnapshot.Documents
+                .Select(doc => doc.ConvertTo<Models.Company>())
+                .FirstOrDefault();
+        }
     }
 }

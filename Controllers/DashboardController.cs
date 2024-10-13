@@ -1,6 +1,7 @@
 ﻿using BumbleBeeWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using BumbleBeeWebApp.Models;
 
 namespace BumbleBeeWebApp.Controllers
 {
@@ -14,36 +15,40 @@ namespace BumbleBeeWebApp.Controllers
             _authService = authService;
         }
 
-        public async Task<IActionResult> Index(string userId)
+        public async Task<IActionResult> Dashboard()
         {
-            // Fetch user document from Firestore using userId
-            var userDoc = await _authService.GetUserDocumentAsync(userId);
+            string userId = HttpContext.Session.GetString("UserId");
+            bool isPartOfCompany = false; 
+            string companyId = null;
 
-            if (userDoc == null)
+            
+            var companyDocument = await _authService.GetCompanyDocumentByUserIdAsync(userId);
+            if (companyDocument != null)
             {
-                return NotFound("User document not found.");
+                isPartOfCompany = true;
+                companyId = companyDocument.Id;
+                HttpContext.Session.SetString("CompanyId", companyId);
             }
 
-            // Map userDoc to DashboardViewModel
-            var model = new DashboardViewModel
+            var userDocument = await _authService.GetUserDocumentAsync(userId);
+            var userData = userDocument.ConvertTo<Dictionary<string, object>>();
+
+            var dashboardViewModel = new DashboardViewModel
             {
-                UserRole = userDoc.ContainsField("Type") ? userDoc.GetValue<string>("Type") : "Unknown",
-                UserName = userDoc.ContainsField("FullName") ? userDoc.GetValue<string>("FullName") : "Guest",
-                UserEmail = userDoc.ContainsField("Email") ? userDoc.GetValue<string>("Email") : "Unknown"
+                UserId = userId,
+                IsPartOfCompany = isPartOfCompany,
+                CompanyId = companyId,
+                UserName = userData["FullName"]?.ToString(),
+                UserEmail = userData["Email"]?.ToString(),
+                UserRole = userData["Type"]?.ToString()
             };
 
-            //--- FOR TESTING PURPOSES REMOVE LATER
-            var userDocData = userDoc.ToDictionary();
-            foreach (var field in userDocData)
-            {
-                Console.WriteLine($"{field.Key}: {field.Value}");
-            }
-            //Console.WriteLine("name: "+ userDoc.GetValue<string>("FullName")  );
-            return View("~/Views/Dashboard/Dashboard.cshtml", model);
+            return View(dashboardViewModel);
         }
-    
 
-    
+
+
+
 
         /*
         public async Task<IActionResult> Index()
