@@ -30,7 +30,7 @@ body {
 /* Make navbar items rounded */
 .nav-btn {
     margin-right: 10px;
-    border-radius: 20px; /* This makes the buttons rounded */
+    border-radius: 10px; /* This makes the buttons rounded */
     border-color: var(--accent);
     background-color: var(--primary);
     border: 1px solid transparent;
@@ -43,5 +43,39 @@ body {
     color: white !important;
     border-color: var(--accent); /* Border color matches hover */
 }
+
+.curved-navbar {
+    border-radius: 50px; /* Creates a curved effect */
+    padding: 10px; /* Adds spacing inside the navbar */
+    margin: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for depth */
+    background-color: var(--background); /* Using the background from the :root colors */
+    border: none; /* Removes any border */
+}
+
+    .curved-navbar .nav-link {
+        color: var(--text); /* Ensures the text uses the defined color */
+        font-weight: 500; /* Slightly bolder for emphasis */
+    }
+
+        .curved-navbar .nav-link:hover {
+            color: var(--primary); /* Changes the text color on hover */
+        }
+
+    .curved-navbar .navbar-toggler {
+        border: none; /* Removes the default border from the toggler */
+    }
+
+    .curved-navbar .navbar-toggler-icon {
+        background-color: var(--primary); /* Matches the icon color with the theme */
+    }
+
+@media (max-width: 768px) {
+    .curved-navbar {
+        border-radius: 0; /* Removes the curve on smaller screens for better responsiveness */
+    }
+}
+
+
 
 
