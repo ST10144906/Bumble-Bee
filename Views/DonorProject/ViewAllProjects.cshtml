@@ -1,0 +1,45 @@
+﻿@model List<BumbleBeeWebApp.Models.Project>
+
+@{
+    ViewBag.Title = "View All Projects";
+}
+
+<h1>All Projects</h1>
+
+@if (Model != null && Model.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Project Name</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Documents</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var project in Model)
+            {
+                <tr>
+                    <td>@project.ProjectName</td>
+                    <td>@project.Description</td>
+                    <td>@project.Status</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(project.MiscellaneousDocumentsUrl))
+                        {
+                            <a href="@project.MiscellaneousDocumentsUrl" target="_blank">Download Document</a>
+                        }
+                        else
+                        {
+                            <span>No Documents</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>@ViewBag.NoProjectsMessage ?? "No projects found." </p>
+}
