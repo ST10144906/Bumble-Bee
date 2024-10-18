@@ -1,43 +1,61 @@
-﻿section {
-    margin-bottom: 40px; 
+﻿:root {
+    --color-very-light-green: #F1F7EE;
+    --color-light-green: #B0BEA9;
+    --color-medium-green: #92AA83;
+    --color-pastel-green: #E0EDC5;
+    --color-light-yellow: #E7F59E;
+    --primary: var(--color-medium-green);
+    --accent: var(--color-light-yellow);
+    --background: var(--color-very-light-green);
+    --text: #000000; /* Set all text to black */
+}
+
+section {
+    margin-bottom: 40px;
 }
 
     section h2 {
-        margin-bottom: 30px; 
+        margin-bottom: 30px;
+        color: var(--text); /* Set to black */
     }
 
     section img {
         margin-top: 20px;
-        margin-bottom: 30px; 
+        margin-bottom: 30px;
     }
 
 #directors h5 {
     margin-top: 15px;
+    color: var(--text); /* Set to black */
 }
 
 #directors p {
-    margin-top: 5px; 
+    margin-top: 5px;
+    color: var(--text); /* Set to black */
 }
 
 body {
     font-family: sans-serif;
     margin: 0;
     padding: 10px;
-    background-color: #F5F5DC;
+    background-color: var(--background); /* Kept background color */
+    color: var(--text); /* Set body text to black */
 }
 
 .jumbotron, #mission, #vision, #directors, #donate {
-    background-color: #f0f8ff;
+    background-color: var(--color-pastel-green); /* Kept pastel green background */
+    border-radius: 10px;
+    color: var(--text); /* Set text to black */
 }
 
 a {
-    color: #333;
+    color: var(--text); /* Set links to black */
     text-decoration: none;
     transition: all 0.2s ease-in-out;
 }
 
     a:hover {
-        color: #999;
+        color: var(--primary); /* Change to primary color on hover */
     }
 
 img {
@@ -50,23 +68,23 @@ img {
 }
 
     .jumbotron h1 {
-        color: #333;
+        color: var(--text); /* Set to black */
         font-weight: bold;
     }
 
     .jumbotron p {
-        color: #666;
+        color: var(--text); /* Set to black */
         font-size: 18px;
     }
 
 .btn-light {
-    background-color: #f5f5f5;
-    border-color: #ddd;
-    color: #333;
+    background-color: var(--color-very-light-green); /* Kept light green background */
+    border-color: var(--color-pastel-green); /* Kept pastel green border */
+    color: var(--text); /* Set button text to black */
 }
 
     .btn-light:hover {
-        border-color: #ccc;
+        border-color: var(--color-light-green); /* Kept light green border on hover */
     }
 
 #mission, #vision {
@@ -82,7 +100,7 @@ img {
 }
 
 .rounded-circle {
-    border: 2px solid #ddd;
+    border: 2px solid var(--color-pastel-green); /* Kept pastel green border */
 }
 
 #donate {
@@ -91,12 +109,13 @@ img {
 
 .btn-lg {
     padding: 15px 30px;
+    color: var(--text); /* Set button text to black */
 }
 
 h2 {
-    color: #f0a500;
+    color: var(--text); /* Set all h2 text to black */
 }
 
 .btn-light:hover {
-    background-color: #ffe0b3;
+    background-color: var(--color-light-yellow); /* Kept light yellow background on hover */
 }

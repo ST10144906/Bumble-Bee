@@ -1,9 +1,14 @@
 :root {
-    --text: #080f0a;
-    --background: #f4faf6;
-    --primary: #57b56e;
-    --secondary: #9bd6aa;
-    --accent: #72ca88;
+    --color-very-light-green: #F1F7EE;
+    --color-light-green: #B0BEA9;
+    --color-medium-green: #92AA83;
+    --color-pastel-green: #E0EDC5;
+    --color-light-yellow: #E7F59E;
+
+    --primary: var(--color-medium-green);
+    --accent: var(--color-light-yellow);
+    --background: var(--color-very-light-green);
+    --text: #000000;
 }
 
 html {
@@ -30,7 +35,8 @@ body {
 /* Make navbar items rounded */
 .nav-btn {
     margin-right: 10px;
-    border-radius: 10px; /* This makes the buttons rounded */
+    border-radius: 10px;
+    color: white !important;
     border-color: var(--accent);
     background-color: var(--primary);
     border: 1px solid transparent;
@@ -39,43 +45,39 @@ body {
 
 /* Add a hover effect for the navbar buttons */
 .hover-color:hover {
-    background-color: var(--primary); /* Use primary color for hover */
-    color: white !important;
-    border-color: var(--accent); /* Border color matches hover */
+    background-color: var(--primary);
+    color: black !important;
+    border-color: var(--accent);
 }
 
 .curved-navbar {
-    border-radius: 50px; /* Creates a curved effect */
-    padding: 10px; /* Adds spacing inside the navbar */
+    border-radius: 50px;
+    padding: 10px;
     margin: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for depth */
-    background-color: var(--background); /* Using the background from the :root colors */
-    border: none; /* Removes any border */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: var(--background);
+    border: none;
 }
 
     .curved-navbar .nav-link {
-        color: var(--text); /* Ensures the text uses the defined color */
-        font-weight: 500; /* Slightly bolder for emphasis */
+        color: var(--text);
+        font-weight: 500;
     }
 
         .curved-navbar .nav-link:hover {
-            color: var(--primary); /* Changes the text color on hover */
+            color: var(--primary);
         }
 
     .curved-navbar .navbar-toggler {
-        border: none; /* Removes the default border from the toggler */
+        border: none;
     }
 
     .curved-navbar .navbar-toggler-icon {
-        background-color: var(--primary); /* Matches the icon color with the theme */
+        background-color: var(--primary);
     }
 
 @media (max-width: 768px) {
     .curved-navbar {
-        border-radius: 0; /* Removes the curve on smaller screens for better responsiveness */
+        border-radius: 0;
     }
 }
-
-
-
-

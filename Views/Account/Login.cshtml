@@ -3,8 +3,8 @@
     Layout = "_Layout";
 }
 
-<link rel="stylesheet" type="text/css" href="~/css/accounts.css" />
 <link rel="stylesheet" type="text/css" href="~/css/site.css" />
+<link rel="stylesheet" type="text/css" href="~/css/accounts.css" />
 
 <div class="container my-5">
     <div class="row justify-content-center">
@@ -19,7 +19,6 @@
                             <div class="card-body">
                                 <h1 class="text-center mb-4">Welcome Back</h1>
                                 <p class="text-center mb-4">Please sign in to continue</p>
-                                <h2 class="h4 text-center">Sign In</h2>
                                 <form method="post" action="/Account/Login">
                                     <div class="form-group">
                                         <input type="text" id="email" name="email" class="form-control mb-3" placeholder="Email" required>
@@ -28,7 +27,7 @@
                                         <input type="password" id="password" name="password" class="form-control mb-4" placeholder="Password" required>
                                     </div>
                                     <div class="text-center mb-4">
-                                        <button type="submit" class="btn btn-light btn-lg">Sign In</button>
+                                        <button type="submit" class="btn btn-light btn-lg" title="Click here to Sign In">Sign In</button>
                                     </div>
                                 </form>
 
