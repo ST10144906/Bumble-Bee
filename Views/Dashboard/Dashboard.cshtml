@@ -1,61 +1,21 @@
-﻿@model BumbleBeeWebApp.Models.DashboardViewModel
-
-@{
-    ViewData["Title"] = "Dashboard";
-    Layout = "_Layout";
-}
-
-<link rel="stylesheet" type="text/css" href="~/css/dashboard.css" />
+﻿<link rel="stylesheet" type="text/css" href="~/css/dashboard.css" />
 
 <div class="dashboard-header">
-    <h1>Welcome to the Bumblebee Foundation Dashboard</h1>
-    <p>Your one-stop overview for managing projects and resources.</p>
+    <h1>Bumblebee Foundation</h1>
+    <p>Help us make a better tomorrow</p>
 </div>
 
 <div class="container dashboard-main">
     <div class="row">
-        <!-- Dashboard Overview -->
-        <div class="col-md-4 dashboard-overview">
-            <h2>Overview</h2>
-            <ul>
-                <li><strong>Total Projects:</strong> 25</li>
-                <li><strong>Active Sponsors:</strong> 10</li>
-                <li><strong>Funds Raised:</strong> $50,000</li>
-                <li><strong>Pending Tasks:</strong> 5</li>
-            </ul>
-        </div>
-
-        <!-- Recent Activities -->
-        <div class="col-md-4 recent-activities">
-            <h2>Recent Activities</h2>
-            <ul>
-                <li><strong>New Sponsor:</strong> ABC Corporation</li>
-                <li><strong>Task Completed:</strong> Community Water Project</li>
-                <li><strong>Donation Received:</strong> $5,000 from XYZ Foundation</li>
-                <li><strong>Meeting Scheduled:</strong> With Local NGO Partners</li>
-            </ul>
-        </div>
-
-        <!-- User Profile -->
-        <div class="col-md-4 user-profile">
-            <h2>Your Profile</h2>
-            <img src="https://via.placeholder.com/100" alt="Profile Image" class="profile-image" />
-            <ul>
-                <li><strong>Name:</strong> @Model.UserName</li>
-                <li><strong>Role:</strong> @Model.UserRole</li>
-                <li><strong>Email:</strong> @Model.UserEmail</li>
-                <li><strong>Last Login:</strong> 2024-09-25</li>
-            </ul>
-        </div>
+        
     </div>
 
     <!-- Personalized Section Based on User Role -->
     <section class="user-profile">
-        <h2>Welcome, @User.Identity.Name</h2>
-        <p>This is your personalized dashboard where you can manage your activities.</p>
-        <p>User Role: @Model.UserRole</p>
+        <h2>Donor Portal</h2>
+        <h6>Welcome, @Context.Session.GetString("UserFullName")</h6>
 
-        @switch (Model.UserRole)
+        @switch (@Context.Session.GetString("UserType"))
         {
             case "Admin":
                 <div>
@@ -83,7 +43,7 @@
                     <h3>User Dashboard</h3>
                     <p>User-specific content goes here.</p>
                 </div>
-                @Html.Partial("UserDashboard")
+                @Html.Partial("DonorDashboard")
                 break;
             default:
                 <p>Invalid role.</p>

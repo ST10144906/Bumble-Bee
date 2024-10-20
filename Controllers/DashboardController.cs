@@ -33,17 +33,7 @@ namespace BumbleBeeWebApp.Controllers
             var userDocument = await _authService.GetUserDocumentAsync(userId);
             var userData = userDocument.ConvertTo<Dictionary<string, object>>();
 
-            var dashboardViewModel = new DashboardViewModel
-            {
-                UserId = userId,
-                IsPartOfCompany = isPartOfCompany,
-                CompanyId = companyId,
-                UserName = userData["FullName"]?.ToString(),
-                UserEmail = userData["Email"]?.ToString(),
-                UserRole = userData["Type"]?.ToString()
-            };
-
-            return View(dashboardViewModel);
+            return View();
         }
 
 

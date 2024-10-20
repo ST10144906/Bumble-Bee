@@ -306,6 +306,12 @@ namespace BumbleBeeWebApp.Controllers
             }
         }
 
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Landing");
+        }
+
 
 
     }

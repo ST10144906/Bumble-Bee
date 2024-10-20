@@ -25,11 +25,10 @@ body {
 
 .btn-light {
     border-radius: 10px;
-    color: white !important;
+    text-decoration-color: white;
     border-color: var(--accent);
     background-color: var(--primary);
     border: 1px solid transparent;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .btn-light:hover {

@@ -109,6 +109,7 @@ img {
 
 .btn-lg {
     padding: 15px 30px;
+    border-radius: 10px;
     color: var(--text); /* Set button text to black */
 }
 
