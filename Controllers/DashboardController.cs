@@ -1,27 +1,32 @@
 ﻿using BumbleBeeWebApp.Models;
+using Google.Cloud.Firestore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using BumbleBeeWebApp.Models;
 
 namespace BumbleBeeWebApp.Controllers
 {
-
     public class DashboardController : Controller
     {
         private readonly AuthService _authService;
+        private readonly FirestoreService _firestoreService;
+        private readonly ILogger<DashboardController> _logger;
 
-        public DashboardController(AuthService authService)
+        public DashboardController(FirestoreService firestoreService, ILogger<DashboardController> logger)
         {
-            _authService = authService;
+            _authService = new AuthService(firestoreService);
+            _firestoreService = firestoreService;
+            _logger = logger;
         }
 
+        // GET: Dashboard
         public async Task<IActionResult> Dashboard()
         {
             string userId = HttpContext.Session.GetString("UserId");
-            bool isPartOfCompany = false; 
+            bool isPartOfCompany = false;
             string companyId = null;
 
-            
             var companyDocument = await _authService.GetCompanyDocumentByUserIdAsync(userId);
             if (companyDocument != null)
             {
@@ -33,50 +38,67 @@ namespace BumbleBeeWebApp.Controllers
             var userDocument = await _authService.GetUserDocumentAsync(userId);
             var userData = userDocument.ConvertTo<Dictionary<string, object>>();
 
-            return View();
-        }
-
-
-
-
-
-        /*
-        public async Task<IActionResult> Index()
-        {
-            var userEmail = User.Identity.Name;
-            var userRecord = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(userEmail);
-            var userId = userRecord.Uid;
-
-            var userDoc = await _authService.GetUserDocumentAsync(userId);
-            string userType = userDoc.ContainsField("Type") ? userDoc.GetValue<string>("Type") : "Unknown";
-
-            var model = new DashboardViewModel
+            // Load projects if the user is a donor
+            List<CompanyProjectsViewModel> companyProjects = new List<CompanyProjectsViewModel>();
+            if (HttpContext.Session.GetString("UserType") == "Donor")
             {
-                UserRole = userType
-            };
+                companyProjects = await LoadDonorProjects();
+            }
 
-            return View("Dashboard", model);
+            // Pass userData and companyProjects to the view
+            ViewBag.UserData = userData;
+            return View(companyProjects); // Return the populated companyProjects list
         }
-        */
 
-        /*public ActionResult Index()
+        private async Task<List<CompanyProjectsViewModel>> LoadDonorProjects()
         {
-            string role = "Company";
+            List<CompanyProjectsViewModel> companyProjects = new List<CompanyProjectsViewModel>();
 
-            var model = new DashboardViewModel
+            try
             {
-                UserRole = role
-            };
+                var companySnapshots = await _firestoreService.GetCollectionAsync("companies");
 
-            return View("Dashboard", model);
-        }
+                foreach (var companySnapshot in companySnapshots.Documents)
+                {
+                    var companyName = companySnapshot.GetValue<string>("Name");
+                    var companyDescription = companySnapshot.GetValue<string>("Description");
 
-        private string GetUserRole(string username)
-        {
-            // Placeholder for getting user role, replace with actual logic
-            return "Company"; // Default to Admin for testing
+                    var companyProjectsViewModel = new CompanyProjectsViewModel
+                    {
+                        CompanyName = companyName,
+                        CompanyDescription = companyDescription,
+                        Projects = new List<Project>()
+                    };
+
+                    var projectSnapshots = await companySnapshot.Reference.Collection("projects").GetSnapshotAsync();
+
+                    foreach (var projectSnapshot in projectSnapshots.Documents)
+                    {
+                        // Convert project document to the Project model
+                        var project = projectSnapshot.ConvertTo<Project>();
+
+                        // Ensure project has all necessary properties set
+                        if (project != null)
+                        {
+                            companyProjectsViewModel.Projects.Add(project);
+                        }
+                    }
+
+                    companyProjects.Add(companyProjectsViewModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching projects from Firestore.");
+                ModelState.AddModelError(string.Empty, "Error with servers right now.");
+            }
+
+            if (companyProjects.Count == 0)
+            {
+                ViewBag.NoProjectsMessage = "No projects found.";
+            }
+
+            return companyProjects;
         }
-        */
     }
 }
-

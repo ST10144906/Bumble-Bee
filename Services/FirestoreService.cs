@@ -1,6 +1,7 @@
 using Google.Cloud.Firestore;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Firestore.V1;
+using BumbleBeeWebApp.Models;
 
 public class FirestoreService
 {
@@ -51,27 +52,22 @@ public class FirestoreService
         return await collectionRef.GetSnapshotAsync();
     }
 
-
-
     public async Task<DocumentSnapshot> GetUserDocumentAsync(string userId)
-{
-    CollectionReference usersRef = _firestoreDb.Collection("users");
+    {
+        CollectionReference usersRef = _firestoreDb.Collection("users");
     
-    Query query = usersRef.WhereEqualTo("Uid", userId);
+        Query query = usersRef.WhereEqualTo("Uid", userId);
 
-    QuerySnapshot querySnapshot = await query.GetSnapshotAsync();
+        QuerySnapshot querySnapshot = await query.GetSnapshotAsync();
 
-    if (querySnapshot.Documents.Count > 0)
-    {
-        return querySnapshot.Documents[0];
-    }
-    else
-    {
-        return null;
+        if (querySnapshot.Documents.Count > 0)
+        {
+            return querySnapshot.Documents[0];
+        }
+        else
+        {
+            return null;
+        }
     }
 }
 
-
-
-    // Additional methods for Firestore operations to be added later
-}

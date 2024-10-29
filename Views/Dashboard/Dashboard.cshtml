@@ -1,4 +1,5 @@
-﻿<link rel="stylesheet" type="text/css" href="~/css/dashboard.css" />
+﻿@model List<BumbleBeeWebApp.Models.CompanyProjectsViewModel>
+<link rel="stylesheet" type="text/css" href="~/css/dashboard.css" />
 
 <div class="dashboard-header">
     <h1>Bumblebee Foundation</h1>
@@ -7,7 +8,7 @@
 
 <div class="container dashboard-main">
     <div class="row">
-        
+        <!-- You can add any additional content here if needed -->
     </div>
 
     <!-- Personalized Section Based on User Role -->
@@ -44,6 +45,36 @@
                     <p>User-specific content goes here.</p>
                 </div>
                 @Html.Partial("DonorDashboard")
+
+                <!-- Projects Section for Donors -->
+                <h2>Projects</h2>
+                <div class="container">
+                    @if (ViewBag.NoProjectsMessage != null)
+                    {
+                        <p>@ViewBag.NoProjectsMessage</p>
+                    }
+                    else
+                    {
+                        foreach (var company in Model)
+                        {
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>@company.CompanyName</h3>
+                                    <p>@company.CompanyDescription</p>
+                                </div>
+                                <div class="card-body">
+                                    @foreach (var project in company.Projects)
+                                    {
+                                        <div>
+                                            <h4>@project.ProjectName</h4>
+                                            <p>@project.Description</p>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
                 break;
             default:
                 <p>Invalid role.</p>
@@ -58,5 +89,3 @@
         <a class="btn" href="#">Track Donations</a>
     </div>
 </div>
-
-
