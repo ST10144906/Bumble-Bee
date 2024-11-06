@@ -8,36 +8,26 @@
 
 @if (Model != null && Model.Count > 0)
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Project Name</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Documents</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var project in Model)
-            {
-                <tr>
-                    <td>@project.ProjectName</td>
-                    <td>@project.Description</td>
-                    <td>@project.Status</td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(project.MiscellaneousDocumentsUrl))
-                        {
-                            <a href="@project.MiscellaneousDocumentsUrl" target="_blank">Download Document</a>
-                        }
-                        else
-                        {
-                            <span>No Documents</span>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="project-container">
+        @foreach (var project in Model)
+        {
+            <div class="project-card">
+                <h3>@project.ProjectName</h3>
+                <p class="project-description">@project.Description</p>
+                <p><strong>Status:</strong> @project.Status</p>
+                <p>
+                    @if (!string.IsNullOrEmpty(project.MiscellaneousDocumentsUrl))
+                    {
+                        <a href="@project.MiscellaneousDocumentsUrl" target="_blank" class="btn">Download Document</a>
+                    }
+                    else
+                    {
+                        <span>No Documents</span>
+                    }
+                </p>
+            </div>
+        }
+    </div>
 }
 else
 {

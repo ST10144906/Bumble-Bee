@@ -4,10 +4,11 @@
     --color-medium-green: #92AA83;
     --color-pastel-green: #E0EDC5;
     --color-light-yellow: #E7F59E;
+
     --primary: var(--color-medium-green);
     --accent: var(--color-light-yellow);
     --background: var(--color-very-light-green);
-    --text: #000000; /* Set all text to black */
+    --text: #000000;
 }
 
 body {
