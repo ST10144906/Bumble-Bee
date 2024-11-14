@@ -10,7 +10,9 @@
     <h1 class="display-4">Bumblebee Foundation</h1>
     <p>Fostering partnerships for a better South Africa, through collaboration and collective action.</p>
     <div>
-        <button class="btn btn-light btn-lg" href="#mission">Learn More</button>
+        <form asp-action="LearnMore" asp-controller="Landing" method="post">
+            <button type="submit" class="btn btn-light btn-lg">Learn More</button>
+        </form>
     </div>
 </div>
 
@@ -85,5 +87,7 @@
         Join us in making a lasting impact by supporting our initiatives. Your contribution
         will help foster positive change in South Africa.
     </p>
-    <a class="btn btn-light btn-lg" href="#donate">Donate Now</a>
+    <form asp-action="DonateNow" asp-controller="Landing" method="post">
+        <button type="submit" class="btn btn-light btn-lg">Donate Now</button>
+    </form>
 </section>
