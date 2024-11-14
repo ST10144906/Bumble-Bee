@@ -96,7 +96,12 @@ To generate a Firebase service account key and connect it to your project:
 
 1. Rename the downloaded JSON file to **bumble-bee-foundation-firebase-adminsdk.json** 
 2. Move the file to the **/Secrets** folder within your project directory.
-   
+
+### Paystack Payment Keys
+**Please Follow the following**
+1. Create a file called **paymentKeys.json** this will need to go into the **/Secrets/** Folder.
+2. Add **sk_live**, **sk_test** and **public_key** in JSON fromat.
+
 ## Notes
 ###Environment Configuration: 
 Ensure the environment is correctly configured for your deployment scenario (development or production).
