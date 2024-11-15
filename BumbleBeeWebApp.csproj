@@ -7,16 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Login\**" />
+    <Compile Remove="Views\Register\**" />
+    <Content Remove="Views\Login\**" />
+    <Content Remove="Views\Register\**" />
+    <EmbeddedResource Remove="Views\Login\**" />
+    <EmbeddedResource Remove="Views\Register\**" />
+    <None Remove="Views\Login\**" />
+    <None Remove="Views\Register\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Firebase.Auth" Version="1.0.0" />
     <PackageReference Include="FirebaseAdmin" Version="3.0.1" />
     <PackageReference Include="Google.Cloud.Firestore" Version="3.8.0" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="4.10.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\Login\" />
-    <Folder Include="Views\Register\" />
   </ItemGroup>
 
 </Project>
