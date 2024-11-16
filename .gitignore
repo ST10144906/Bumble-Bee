@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 # Secrets file 
 Secrets/bumble-bee-foundation-firebase-adminsdk.json
+Secrets/paymentKeys.json

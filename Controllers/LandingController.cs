@@ -24,5 +24,18 @@ namespace BumbleBeeWebApp.Controllers
         {
             return RedirectToAction("Register", "Account");
         }
+
+        // Button Actions
+        public IActionResult LearnMore()
+        {
+            // Redirects to the mission section on the landing page
+            return RedirectToAction("Index", "Landing", new { section = "mission" });
+        }
+
+        // --- Payment Page
+        public IActionResult DonateNow()
+        {
+            return RedirectToAction("Index", "Payment");
+        }
     }
 }

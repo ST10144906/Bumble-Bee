@@ -3,8 +3,8 @@
     Layout = "_Layout";
 }
 
-<link rel="stylesheet" type="text/css" href="~/css/accounts.css" />
 <link rel="stylesheet" type="text/css" href="~/css/site.css" />
+<link rel="stylesheet" type="text/css" href="~/css/accounts.css" />
 
 <div class="container my-5">
     <div class="row justify-content-center">
@@ -20,11 +20,11 @@
                                 <h1 class="text-center mb-4">Create Account</h1>
                                 <p class="text-center mb-4">Join us and help make a difference.</p>
                                 <div class="d-flex flex-column align-items-center">
-                                    <a class="btn btn-light btn-lg mb-3" asp-area="" asp-controller="Account" asp-action="RegisterDonor" title="Click here to donate">Register as a Donor</a>
-                                    <a class="btn btn-light btn-lg" asp-area="" asp-controller="Account" asp-action="RegisterCompany" title="Click here to recieve donations">Register as a Organisation</a>
+                                    <button class="btn btn-light btn-lg mb-3" asp-area="" asp-controller="Account" asp-action="RegisterDonor" title="Click here to donate">Register as a Donor</button>
+                                    <button class="btn btn-light btn-lg" asp-area="" asp-controller="Account" asp-action="RegisterCompany" title="Click here to recieve donations">Register as a Organisation</button>
                                 </div>
                                 <div class="my-4">
-                                    <a href="/Account/Login" class="btn btn-link">I already have an account</a>
+                                    <a href="/Account/Login" class="text">I already have an account</a>
                                 </div>
                             </div>
                         </div>

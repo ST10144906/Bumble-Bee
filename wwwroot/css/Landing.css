@@ -5,9 +5,9 @@
     --color-pastel-green: #E0EDC5;
     --color-light-yellow: #E7F59E;
     --primary: var(--color-medium-green);
-    --accent: var(--color-light-yellow);
+    --secondary: var(--color-pastel-green);
     --background: var(--color-very-light-green);
-    --text: #000000; /* Set all text to black */
+    --text: #000000; /* Using color-light-green for text */
 }
 
 section {
@@ -78,14 +78,19 @@ img {
     }
 
 .btn-light {
-    background-color: var(--color-very-light-green); /* Kept light green background */
-    border-color: var(--color-pastel-green); /* Kept pastel green border */
-    color: var(--text); /* Set button text to black */
+    border-radius: 10px;
+    color: white !important;
+    border-color: var(--accent);
+    background-color: var(--primary);
+    border: 1px solid transparent;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-    .btn-light:hover {
-        border-color: var(--color-light-green); /* Kept light green border on hover */
-    }
+.btn-light:hover {
+        background-color: var(--primary);
+        color: black !important;
+        border-color: var(--accent);
+}
 
 #mission, #vision {
     padding: 20px;
@@ -107,16 +112,6 @@ img {
     padding: 20px;
 }
 
-.btn-lg {
-    padding: 15px 30px;
-    border-radius: 10px;
-    color: var(--text); /* Set button text to black */
-}
-
 h2 {
     color: var(--text); /* Set all h2 text to black */
-}
-
-.btn-light:hover {
-    background-color: var(--color-light-yellow); /* Kept light yellow background on hover */
 }
