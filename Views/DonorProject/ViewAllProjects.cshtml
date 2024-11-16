@@ -1,4 +1,4 @@
-﻿@model List<BumbleBeeWebApp.Models.Project>
+﻿@model List<(string CompanyName, BumbleBeeWebApp.Models.Project Project)>
 
 @{
     ViewBag.Title = "View All Projects";
@@ -9,16 +9,18 @@
 @if (Model != null && Model.Count > 0)
 {
     <div class="project-container">
-        @foreach (var project in Model)
+        @foreach (var entry in Model)
         {
             <div class="project-card">
-                <h3>@project.ProjectName</h3>
-                <p class="project-description">@project.Description</p>
-                <p><strong>Status:</strong> @project.Status</p>
+                <h3>@entry.Project.ProjectName</h3>
+                <p><strong>Created By:</strong> @entry.CompanyName</p>
+                <p><strong>Date Created:</strong> @entry.Project.DateCreated.ToString("MMMM dd, yyyy")</p>
+                <p class="project-description">@entry.Project.Description</p>
+
                 <p>
-                    @if (!string.IsNullOrEmpty(project.MiscellaneousDocumentsUrl))
+                    @if (!string.IsNullOrEmpty(entry.Project.MiscellaneousDocumentsUrl))
                     {
-                        <a href="@project.MiscellaneousDocumentsUrl" target="_blank" class="btn">Download Document</a>
+                        <a href="@entry.Project.MiscellaneousDocumentsUrl" target="_blank" class="btn">Download Document</a>
                     }
                     else
                     {

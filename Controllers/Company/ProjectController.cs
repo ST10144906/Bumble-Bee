@@ -36,6 +36,7 @@ namespace BumbleBeeWebApp.Controllers.Company
             _logger.LogInformation("Entering Create action for Project.");
             project.MiscellaneousDocumentsUrl = string.Empty;
             project.Status = "Pending Approval";
+            project.DateCreated = DateTime.UtcNow;
             if (ModelState.IsValid)
             {
                 try
@@ -55,6 +56,7 @@ namespace BumbleBeeWebApp.Controllers.Company
                         project.ProjectName,
                         project.Description,
                         project.Status,
+                        project.DateCreated,
                         CompanyId = companyId
                     });
 

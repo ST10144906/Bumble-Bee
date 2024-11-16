@@ -20,7 +20,7 @@ public class DonorProjectController : Controller
     // GET: DonorProject/ViewAllProjects
     public async Task<IActionResult> ViewAllProjects()
     {
-        List<Project> allProjects = new List<Project>();
+        List<(string CompanyName, Project Project)> allProjects = new List<(string, Project)>();
 
         try
         {
@@ -32,6 +32,8 @@ public class DonorProjectController : Controller
             {
                 if (companyDoc.Exists)
                 {
+                    string companyName = companyDoc.ContainsField("Name") ? companyDoc.GetValue<string>("Name") : "Unknown Company";
+
                     // Get the "projects" subcollection for each company
                     CollectionReference projectsCollection = companyDoc.Reference.Collection("projects");
                     QuerySnapshot projectsSnapshot = await projectsCollection.GetSnapshotAsync();
@@ -43,16 +45,20 @@ public class DonorProjectController : Controller
                         {
                             try
                             {
-                                // Retrieve fields individually to debug any missing or mismatched fields
-                                var project = new Project
-                                {
-                                    ProjectName = projectDoc.ContainsField("ProjectName") ? projectDoc.GetValue<string>("ProjectName") : "Unknown Project",
-                                    Description = projectDoc.ContainsField("Description") ? projectDoc.GetValue<string>("Description") : "No Description",
-                                    Status = projectDoc.ContainsField("Status") ? projectDoc.GetValue<string>("Status") : "Unknown Status",
-                                    MiscellaneousDocumentsUrl = projectDoc.ContainsField("MiscellaneousDocumentsUrl") ? projectDoc.GetValue<string>("MiscellaneousDocumentsUrl") : null
-                                };
+                                string status = projectDoc.ContainsField("Status") ? projectDoc.GetValue<string>("Status") : null;
 
-                                allProjects.Add(project);
+                                if (status == "Funding Approved")
+                                {
+                                    var project = new Project
+                                    {
+                                        ProjectName = projectDoc.ContainsField("ProjectName") ? projectDoc.GetValue<string>("ProjectName") : "Unknown Project",
+                                        Description = projectDoc.ContainsField("Description") ? projectDoc.GetValue<string>("Description") : "No Description",
+                                        DateCreated = projectDoc.ContainsField("DateCreated") ? projectDoc.GetValue<DateTime>("DateCreated") : DateTime.MinValue,
+                                        MiscellaneousDocumentsUrl = projectDoc.ContainsField("MiscellaneousDocumentsUrl") ? projectDoc.GetValue<string>("MiscellaneousDocumentsUrl") : null
+                                    };
+
+                                    allProjects.Add((companyName, project));
+                                }
                             }
                             catch (Exception innerEx)
                             {
