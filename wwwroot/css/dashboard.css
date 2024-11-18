@@ -83,3 +83,11 @@ body {
         background-color: var(--color-light-yellow); /* Light yellow on hover */
         border-color: var(--color-medium-green); /* Use medium green for border on hover */
     }
+
+.h3 {
+    margin: 10px;
+}
+
+.h6 {
+    margin: 10px;
+}

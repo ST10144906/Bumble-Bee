@@ -100,5 +100,6 @@ namespace BumbleBeeWebApp.Controllers
 
             return companyProjects;
         }
+
     }
 }

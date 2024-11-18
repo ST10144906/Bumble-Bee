@@ -2,6 +2,7 @@ using Google.Cloud.Firestore;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Firestore.V1;
 using BumbleBeeWebApp.Models;
+using Microsoft.AspNetCore.Mvc;
 
 public class FirestoreService
 {

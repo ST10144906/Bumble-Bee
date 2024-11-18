@@ -1,0 +1,66 @@
+﻿:root {
+    --color-very-light-green: #F1F7EE;
+    --color-light-green: #B0BEA9;
+    --color-medium-green: #92AA83;
+    --color-pastel-green: #E0EDC5;
+    --color-light-yellow: #E7F59E;
+    --primary: var(--color-medium-green);
+    --accent: var(--color-light-yellow);
+    --background: var(--color-very-light-green);
+    --text: #000000;
+}
+
+.scrolling-container {
+    display: flex;
+    margin: 20px auto;
+    padding: 15px;
+    max-width: 100%; /* Ensures the container spans the full available width */
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    gap: 1rem; /* Adds space between blocks */
+    background-color: #B0BEA9; /* Light background for contrast */
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    padding-bottom: 10px;
+    scrollbar-width: thin; /* Thin scrollbar for Firefox */
+}
+
+    .scrolling-container::-webkit-scrollbar {
+        height: 8px; /* Height for horizontal scrollbar */
+    }
+
+    .scrolling-container::-webkit-scrollbar-thumb {
+        background-color: #ced4da; /* Thumb color */
+        border-radius: 10px;
+    }
+
+    .scrolling-container::-webkit-scrollbar-track {
+        background-color: #e9ecef; /* Track color */
+    }
+
+.block {
+    background-color: #ffffff; /* White background for content */
+    border: 1px solid #dee2e6; /* Light border for contrast */
+    padding: 15px;
+    min-width: 200px; /* Width of each scrollable block */
+    text-align: center;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+    .block:hover {
+        transform: translateY(-5px); /* Lift effect */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+    }
+
+
+/* Ensure the block sizes stay consistent */
+.row .col-md-3 {
+    padding: 5px;
+}
+

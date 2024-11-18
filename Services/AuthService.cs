@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 public class AuthService
 {
     private readonly FirestoreService _firestoreService;
+    private readonly FirebaseAuth _firebaseAuth;
 
     public AuthService(FirestoreService firestoreService)
     {
         _firestoreService = firestoreService;
+        _firebaseAuth = FirebaseAuth.DefaultInstance;
     }
 
     public bool ValidatePasswordStrength(string password)
@@ -69,6 +71,26 @@ public class AuthService
 
         return userId;
     }
+
+    public async Task<string> RegisterAdminAsync(string email, string password, string fullName)
+    {
+        var userId = await RegisterUserAsync(email, password, "Admin");
+
+        var adminInfor = new
+        {
+            Email = email,
+            FullName = fullName,
+            Type = "Admin",
+            Uid = userId
+        };
+
+        await _firestoreService.AddDocumentAsync("users", adminInfor);
+
+        await SendEmailVerificationAsync(email, userId);
+
+        return userId;
+    }
+
 
     public async Task<string> RegisterCompanyAsync(string email, string password, string fullName, string description, string phoneNumber)
     {

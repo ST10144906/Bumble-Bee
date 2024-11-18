@@ -1,7 +1,20 @@
-﻿<h2>Admin Dashboard</h2>
-    <div class="admin-controls">
-        <a class="btn rounded-btn hover-color" href="/Admin/ManageUsers">Manage Users</a>
-        <a class="btn rounded-btn hover-color" href="/Admin/ViewReports">View Reports</a>
-        <a class="btn rounded-btn hover-color" href="/Admin/SiteSettings">Site Settings</a>
-        
+﻿
+<link rel="stylesheet" type="text/css" href="~/css/admin.css" />
+
+<!-- Second Row: Scrollable Blocks -->
+<div class="row">
+    <div class="col-12">
+        <div class="scrolling-container">
+            
+        </div>
     </div>
+</div>
+
+<!-- Row of Buttons -->
+<div class="row mt-3">
+    <div class="admin-controls">
+        <form asp-action="LoadUsers" asp-controller="AdminManager" method="get">
+            <button type="submit" class="btn btn-light btn-lg">Manage Admin</button>
+        </form>
+    </div>
+</div>

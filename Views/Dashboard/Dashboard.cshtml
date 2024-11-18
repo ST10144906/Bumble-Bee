@@ -1,4 +1,5 @@
 ﻿@model List<BumbleBeeWebApp.Models.CompanyProjectsViewModel>
+
 <link rel="stylesheet" type="text/css" href="~/css/dashboard.css" />
 
 <div class="dashboard-header">
@@ -13,35 +14,33 @@
 
     <!-- Personalized Section Based on User Role -->
     <section class="user-profile">
-        <h6>Welcome, @Context.Session.GetString("UserFullName")</h6>
-
         @switch (@Context.Session.GetString("UserType"))
         {
             case "Admin":
                 <div>
-                    <h3>Admin Dashboard</h3>
-                    <p>Access Admin-specific content here.</p>
+                    <h3 class="row justify-content-center">Admin Dashboard</h3>
+                    <h6 class="row justify-content-center">Welcome, @Context.Session.GetString("UserFullName")</h6>
                 </div>
                 @Html.Partial("AdminDashboard")
                 break;
             case "Auditor":
                 <div>
-                    <h3>Auditor Dashboard</h3>
-                    <p>Access Auditor-specific content here.</p>
+                    <h3 class ="row justify-content-center">Auditor Dashboard</h3>
+                    <h6 class="row justify-content-center">Welcome, @Context.Session.GetString("UserFullName")</h6>
                 </div>
                 @Html.Partial("AuditorDashboard")
                 break;
             case "Company":
                 <div>
-                    <h3>Company Dashboard</h3>
-                    <p>Access Company-specific content here.</p>
+                    <h3 class="row justify-content-center">Company Dashboard</h3>
+                    <h6 class="row justify-content-center">Welcome, @Context.Session.GetString("UserFullName")</h6>
                 </div>
                 @Html.Partial("CompanyDashboard")
                 break;
             case "Donor":
                 <div>
-                    <h3>User Dashboard</h3>
-                    <p>Access User-specific content here.</p>
+                    <h3 class="row justify-content-center">User Dashboard</h3>
+                    <h6 class="row justify-content-center">Welcome, @Context.Session.GetString("UserFullName")</h6>
                 </div>
                 @Html.Partial("DonorDashboard")
 

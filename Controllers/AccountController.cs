@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using FirebaseAdmin;
 using FirebaseAdmin.Auth;
+using Google.Type;
 
 namespace BumbleBeeWebApp.Controllers
 {
@@ -172,7 +173,53 @@ namespace BumbleBeeWebApp.Controllers
             }
         }
 
+        // GET: Register Admin
+        [HttpGet]
+        public IActionResult RegisterAdmin()
+        {
+            return View();
+        }
 
+        // POST: Register Admin
+        [HttpPost]
+        public async Task<IActionResult> RegisterAdmin(string userEmail, string password, string confirmPassword, string fullName) 
+        {
+            if (password != confirmPassword)
+            {
+                ViewBag.ErrorMessage = "Passwords do not match.";
+                return View();
+            }
+
+            if (!IsValidEmail(userEmail))
+            {
+                ViewBag.ErrorMessage = "Invalid email format.";
+                return View();
+            }
+
+            if (string.IsNullOrWhiteSpace(fullName))
+            {
+                ViewBag.ErrorMessage = "Donor name is required.";
+                return View();
+            }
+
+            if (!_authService.ValidatePasswordStrength(password))
+            {
+                ViewBag.ErrorMessage = "Password does not meet the strength requirements.";
+                return View();
+            }
+
+            try
+            {
+                var userId = await _authService.RegisterAdminAsync(userEmail, password, fullName);
+                return View("RegisterSuccess");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Registration failed: {ex.Message}");
+                ViewBag.ErrorMessage = "Registration failed. Please try again.";
+                return View();
+            }
+        }
         // GET: Register Company
         [HttpGet]
         public IActionResult RegisterCompany()
