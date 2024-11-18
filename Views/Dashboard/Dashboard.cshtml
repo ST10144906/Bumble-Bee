@@ -1,4 +1,4 @@
-﻿@model List<BumbleBeeWebApp.Models.CompanyProjectsViewModel>
+﻿@model List<BumbleBeeWebApp.Models.Project>
 
 <link rel="stylesheet" type="text/css" href="~/css/dashboard.css" />
 
@@ -43,41 +43,34 @@
                     <h6 class="row justify-content-center">Welcome, @Context.Session.GetString("UserFullName")</h6>
                 </div>
                 @Html.Partial("DonorDashboard")
-
-                <!-- Projects Section for Donors -->
-                <h2>Projects</h2>
-                <div class="container">
-                    @if (ViewBag.NoProjectsMessage != null)
-                    {
-                        <p>@ViewBag.NoProjectsMessage</p>
-                    }
-                    else
-                    {
-                        foreach (var company in Model)
-                        {
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3>@company.CompanyName</h3>
-                                    <p>@company.CompanyDescription</p>
-                                </div>
-                                <div class="card-body">
-                                    @foreach (var project in company.Projects)
-                                    {
-                                        <div>
-                                            <h4>@project.ProjectName</h4>
-                                            <p>@project.Description</p>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-                        }
-                    }
-                </div>
                 break;
             default:
                 <p>Invalid account. Please contact support.</p>
                 break;
         }
+        @if (@Context.Session.GetString("UserType") == "Admin" || @Context.Session.GetString("UserType") == "Donor")
+        {
+            <h2 class="section-title">Projects</h2>
+            <div class="projects-container">
+                @if (Model == null || !Model.Any())
+                {
+                    <p>No projects available at the moment.</p>
+                }
+                else
+                {
+                    @foreach (var project in Model)
+                    {
+                        <div class="project-card">
+                            <h4>@project.ProjectName</h4>
+                            <p>@project.Description</p>
+                            <p><strong>Date Created:</strong> @project.DateCreated.ToString("yyyy-MM-dd")</p>
+                            <a href="@Url.Action("ProjectDetails", "Dashboard", new { projectId = project.Id })">View Details</a>
+                        </div>
+                    }
+                }
+            </div>
+        }
+
     </section>
 
     <!-- Action Buttons -->
