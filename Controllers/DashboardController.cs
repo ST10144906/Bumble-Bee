@@ -133,6 +133,17 @@ namespace BumbleBeeWebApp.Controllers
                 return NotFound();
             }
 
+            // Fetch company details for the project
+            var company = await LoadCompanyByProjectId(projectId);
+            if (company != null)
+            {
+                ViewData["CompanyName"] = company.Name;
+                ViewData["ReferenceNumber"] = company.ReferenceNumber;
+                ViewData["TaxNumber"] = company.TaxNumber;
+                ViewData["Email"] = company.Email;
+                ViewData["PhoneNumber"] = company.PhoneNumber;
+            }
+
             return View(project);
         }
 
@@ -158,7 +169,7 @@ namespace BumbleBeeWebApp.Controllers
                             {
                                 return new Project
                                 {
-                                    Id = projectDoc.Id,  // Capture the Firestore document ID
+                                    Id = projectDoc.Id,  
                                     ProjectName = projectDoc.ContainsField("ProjectName") ? projectDoc.GetValue<string>("ProjectName") : "Unknown Project",
                                     Description = projectDoc.ContainsField("Description") ? projectDoc.GetValue<string>("Description") : "No Description",
                                     DateCreated = projectDoc.ContainsField("DateCreated") ? projectDoc.GetValue<DateTime>("DateCreated") : DateTime.MinValue,
@@ -174,7 +185,41 @@ namespace BumbleBeeWebApp.Controllers
                 _logger.LogError(ex, "Error retrieving project details from Firestore.");
             }
 
-            return null; // Return null if no project was found
+            return null; 
+        }
+
+        private async Task<Models.Company> LoadCompanyByProjectId(string projectId)
+        {
+            try
+            {
+                // Retrieve all documents from the "companies" collection
+                CollectionReference companiesCollection = _firestoreDb.Collection("companies");
+                QuerySnapshot companiesSnapshot = await companiesCollection.GetSnapshotAsync();
+
+                foreach (DocumentSnapshot companyDoc in companiesSnapshot.Documents)
+                {
+                    if (companyDoc.Exists)
+                    {
+                        // Check if the company has the project in its "projects" subcollection
+                        CollectionReference projectsCollection = companyDoc.Reference.Collection("projects");
+                        QuerySnapshot projectsSnapshot = await projectsCollection.GetSnapshotAsync();
+
+                        foreach (DocumentSnapshot projectDoc in projectsSnapshot.Documents)
+                        {
+                            if (projectDoc.Exists && projectDoc.Id == projectId)
+                            {
+                                return companyDoc.ConvertTo<Models.Company>();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving company details from Firestore.");
+            }
+
+            return null;
         }
     }
 }

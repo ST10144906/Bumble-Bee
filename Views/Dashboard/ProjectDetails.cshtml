@@ -8,24 +8,39 @@
 </div>
 
 <div class="container dashboard-main">
-    <div class="project-details-container">
-        <div class="project-card">
-            <h2>@Model.ProjectName</h2>
-            <p><strong>Description:</strong> @Model.Description</p>
-            <p><strong>Status:</strong> @Model.Status</p>
-            <p><strong>Date Created:</strong> @Model.DateCreated.ToString("yyyy-MM-dd")</p>
+    <div class="project-details-grid">
+        <!-- Project Details Section -->
+        <div class="project-details">
+            <div class="project-card">
+                <h2>@Model.ProjectName</h2>
+                <p><strong>Description:</strong> @Model.Description</p>
+                <p><strong>Status:</strong> @Model.Status</p>
+                <p><strong>Date Created:</strong> @Model.DateCreated.ToString("yyyy-MM-dd")</p>
 
-            @if (!string.IsNullOrEmpty(Model.MiscellaneousDocumentsUrl))
-            {
-                <p>
-                    <strong>Miscellaneous Document:</strong>
-                    <a href="@Model.MiscellaneousDocumentsUrl" target="_blank" class="btn btn-secondary">View Document</a>
-                </p>
-            }
-            else
-            {
-                <p><strong>Miscellaneous Document:</strong> Not uploaded.</p>
-            }
+                @if (!string.IsNullOrEmpty(Model.MiscellaneousDocumentsUrl))
+                {
+                    <p>
+                        <strong>Miscellaneous Document:</strong>
+                        <a href="@Model.MiscellaneousDocumentsUrl" target="_blank" class="btn btn-secondary">View Document</a>
+                    </p>
+                }
+                else
+                {
+                    <p><strong>Miscellaneous Document:</strong> Not uploaded.</p>
+                }
+            </div>
+        </div>
+
+        <!-- Company Details Section -->
+        <div class="company-details">
+            <div class="company-card">
+                <h3>Company Information</h3>
+                <p><strong>Name:</strong> @ViewData["CompanyName"]</p>
+                <p><strong>Reference Number:</strong> @ViewData["ReferenceNumber"]</p>
+                <p><strong>Tax Number:</strong> @ViewData["TaxNumber"]</p>
+                <p><strong>Email:</strong> @ViewData["Email"]</p>
+                <p><strong>Phone:</strong> @ViewData["PhoneNumber"]</p>
+            </div>
         </div>
     </div>
 </div>
