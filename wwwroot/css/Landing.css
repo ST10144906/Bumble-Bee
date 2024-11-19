@@ -40,7 +40,7 @@ body {
     color: var(--text); /* Set body text to black */
 }
 
-.jumbotron, #mission, #vision, #directors, #donate {
+.jumbotron, #mission, #vision, #directors, #donate, #testimonials {
     background-color: var(--color-pastel-green); /* Kept pastel green background */
     border-radius: 10px;
     color: var(--text); /* Set text to black */
@@ -108,6 +108,10 @@ img {
 
 #donate {
     padding: 20px;
+}
+
+.button_submit {
+    margin: 20px
 }
 
 h2 {

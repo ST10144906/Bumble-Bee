@@ -70,5 +70,16 @@ public class FirestoreService
             return null;
         }
     }
+
+    public async Task<List<Testimonial>> GetTestimonialsAsync()
+    {
+        var testimonials = new List<Testimonial>();
+        var snapshot = await _firestoreDb.Collection("testimonials").GetSnapshotAsync();
+        foreach (var doc in snapshot.Documents)
+        {
+            testimonials.Add(doc.ConvertTo<Testimonial>());
+        }
+        return testimonials.OrderByDescending(t => t.SubmittedAt).ToList();
+    }
 }
 

@@ -49,11 +49,11 @@ namespace BumbleBeeWebApp.Controllers.Admin
 
             return View("~/Views/Admin/AdminManager.cshtml", users);
         }
-
+        /*
         public async Task<IActionResult> DeleteAdmin(string id)
         {
             return null;
-        }
+        }*/
 
     }
 }

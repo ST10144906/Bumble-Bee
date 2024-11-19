@@ -42,3 +42,10 @@
         </div>
     </div>
 </div>
+
+@if (TempData["Message"] != null)
+{
+    <script>
+        alert('@TempData["Message"]');
+    </script>
+}

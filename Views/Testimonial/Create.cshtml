@@ -1,0 +1,30 @@
+﻿@model BumbleBeeWebApp.Models.Testimonial
+
+@{
+    ViewData["Title"] = "Submit a Testimonial";
+}
+
+<link rel="stylesheet" type="text/css" href="~/css/landing.css" />
+
+<div id="testimonials" class="my-5 text-center py-4">
+    <div class="jumbotron">
+        <h2>Submit a Testimonial</h2>
+        <form asp-action="Create" method="post" class="testimonial-form">
+            <div class="form-group">
+                <input asp-for="Content" class="form-control" required placeholder="Enter your testimonial here"/>
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-light btn-lg button_submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        alert('@TempData["SuccessMessage"]');
+    </script>
+}
+
