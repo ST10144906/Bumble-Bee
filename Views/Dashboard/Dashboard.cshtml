@@ -60,10 +60,10 @@
                 {
                     @foreach (var project in Model)
                     {
-                        <div class="project-card">
-                            <h4>@project.ProjectName</h4>
-                            <p>@project.Description</p>
-                            <p><strong>Date Created:</strong> @project.DateCreated.ToString("yyyy-MM-dd")</p>
+                        <div class="project-card2">
+                            <h5>@project.ProjectName</h5>
+                            <p2>@project.Description</p2>
+                            <p2><strong>Date Created:</strong> @project.DateCreated.ToString("yyyy-MM-dd")</p2>
                             <a class="btn" asp-controller="Dashboard" asp-action="ProjectDetails" asp-route-projectId="@project.Id">View Details</a>
                         </div>
                     }
