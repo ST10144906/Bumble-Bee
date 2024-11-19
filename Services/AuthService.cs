@@ -1,3 +1,4 @@
+using BumbleBeeWebApp.Services;
 using FirebaseAdmin.Auth;
 using Google.Cloud.Firestore;
 using System.Text.RegularExpressions;
@@ -128,14 +129,27 @@ public class AuthService
 
     public async Task<string> LoginUserAsync(string email, string password)
     {
-        var userRecord = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(email);
+        var firebaseClient = new FirebaseRestService("AIzaSyCGItelKihS1fQC0C7Tj8v-5s0KoRc_IuM");
 
-        if (userRecord != null)
+        try 
         {
-            return userRecord.Uid;
+            var response = await firebaseClient.LoginUserAsync(email, password);
+
+            return response.LocalId;
+        }
+        catch(Exception ex) 
+        {
+            throw new Exception($"Login failed: {ex.Message}");
         }
 
-        throw new Exception("Login failed. Invalid email or password.");
+        //var userRecord = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(email);
+
+        //if (userRecord != null)
+        //{
+        //    return userRecord.Uid;
+        //}
+
+        //throw new Exception("Login failed. Invalid email or password.");
     }
 
     public async Task<DocumentSnapshot> GetUserDocumentAsync(string userId)
