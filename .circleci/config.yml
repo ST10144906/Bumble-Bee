@@ -1,0 +1,46 @@
+version: 2.1
+
+jobs:
+  sonarqube:
+    docker:
+      - image: sonarsource/sonar-scanner-cli
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Install .NET SDK
+          command: |
+            apt-get update
+            apt-get install -y dotnet-sdk-6.0 # Adjust the version to match your project
+      - run:
+          name: Restore Dependencies
+          command: |
+            dotnet restore
+      - run:
+          name: Build Project
+          command: |
+            dotnet build --configuration Release
+      - run:
+          name: Run Tests
+          command: |
+            dotnet test --logger:trx
+      - run:
+          name: SonarQube Analysis
+          command: |
+            SONAR_BRANCH="${CIRCLE_BRANCH:-master}"
+            echo "Sonar branch value is: " $SONAR_BRANCH
+            echo "Sonar org value is : "$SONAR_ORG
+            sonar-scanner \
+            -Dsonar.projectKey="$SONAR_PROJECT_KEY" \
+            -Dsonar.organization="$SONAR_ORG" \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login="$SONAR_TOKEN" \
+            -Dsonar.branch.name="$SONAR_BRANCH" \
+            -Dsonar.sources="." \
+            -Dsonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
+
+workflows:
+  version: 2
+  sonar_workflow:
+    jobs:
+      - sonarqube
