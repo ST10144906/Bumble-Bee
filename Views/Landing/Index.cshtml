@@ -1,4 +1,6 @@
-﻿@{
+﻿@model BumbleBeeWebApp.Models.Testimonial
+
+@{
     ViewBag.Title = "Bumblebee Foundation - Welcome";
 }
 
@@ -79,7 +81,48 @@
     </div>
 </section>
 
-@Html.Partial("TestimonialSection")
+<!-- Testimonial Section -->
+<section id="testimonials" class="my-5 py-4">
+    <h2 class="text-center">Our Testimonial</h2>
+
+    @if (Model != null)
+    {
+        <div class="row">
+            <!-- Testimonial Content -->
+            <div class="col-md-6">
+                <div class="testimonial-content-container">
+                    <div class="testimonial-header mb-3">
+                        <div class="row">
+                        </div>
+                    </div>
+
+                    <!-- Testimonial Content -->
+                    <p class="testimonial-content mb-3">@Model.Content.ToString()</p>
+
+                    <!-- Testimonial Footer -->
+                    <div class="testimonial-footer text-right">
+                        <small class="text-muted">@Model.Type.ToString(): @Model.Email.ToString()</small><br/>
+                        <small class="text-muted">Submitted on: @Model.SubmittedAt.ToString("dd MMM yyyy, hh:mm tt")</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial Image (Right) -->
+            <div class="col-md-6">
+                <img src="https://via.placeholder.com/600x400" class="img-fluid rounded" alt="Testimonial Image" />
+            </div>
+        </div>
+    }
+    else
+    {
+        <p class="text-center">No testimonial found.</p>
+    }
+
+    <form asp-action="TestimonailCreatePage" asp-controller="Landing" method="post" class="text-center">
+        <button type="submit" class="btn btn-light btn-lg">Add Testimonial</button>
+    </form>
+</section>
+
 
 <!-- Donate Section -->
 <section id="donate" class="my-5 text-center py-4">

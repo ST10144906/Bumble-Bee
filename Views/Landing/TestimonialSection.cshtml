@@ -1,23 +1,20 @@
-﻿@model List<BumbleBeeWebApp.Models.Testimonial>
+﻿@model BumbleBeeWebApp.Models.Testimonial
 
 <link rel="stylesheet" type="text/css" href="~/css/landing.css" />
 
 <section id="testimonials" class="my-5 text-center py-4">
-    <h2>Our Testimonials</h2>
-    @if (Model != null && Model.Count > 0)
+    <h2>Our Testimonial</h2>
+    @if (Model != null)
     {
-        @foreach (var testimonial in Model)
-        {
-            <div class="testimonial border rounded p-3 mb-3">
-                <h5>@testimonial.Email</h5>
-                <p>@testimonial.Content</p>
-                <small>Submitted at: @testimonial.SubmittedAt.ToString("dd MMM yyyy, hh:mm tt")</small>
-            </div>
-        }
+        <div class="testimonial border rounded p-3 mb-3">
+            <h5>@Model.Email</h5>
+            <p>@Model.Content</p>
+            <small>Submitted at: @Model.SubmittedAt.ToString("dd MMM yyyy, hh:mm tt")</small>
+        </div>
     }
     else
     {
-        <p>No testimonials found.</p>
+        <p>No testimonial found.</p>
     }
 
     <form asp-action="TestimonailCreatePage" asp-controller="Landing" method="post">

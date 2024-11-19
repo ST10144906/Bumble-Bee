@@ -71,15 +71,48 @@ public class FirestoreService
         }
     }
 
+    // Fetch testimonials from Firestore
     public async Task<List<Testimonial>> GetTestimonialsAsync()
     {
         var testimonials = new List<Testimonial>();
-        var snapshot = await _firestoreDb.Collection("testimonials").GetSnapshotAsync();
-        foreach (var doc in snapshot.Documents)
+
+        try
         {
-            testimonials.Add(doc.ConvertTo<Testimonial>());
+            var testimonialsRef = _firestoreDb.Collection("testimonial");
+            var snapshot = await testimonialsRef.GetSnapshotAsync();
+
+            foreach (var document in snapshot.Documents)
+            {
+                // Safely map Firestore document fields to your model
+                var testimonial = new Testimonial
+                {
+                    UID = document.Id,  // Assuming UID is the Firestore document ID
+                    Email = document.ContainsField("Email") ? document.GetValue<string>("Email") : "No email provided", // Default value if missing
+                    Content = document.ContainsField("Content") ? document.GetValue<string>("Content") : "No content available", // Default value if missing
+                    Type = document.ContainsField("Type") ? document.GetValue<string>("Type") : "General", // Default value if missing
+                    SubmittedAt = document.ContainsField("SubmittedAt") ? document.GetValue<DateTime>("SubmittedAt") : DateTime.UtcNow // Default value if missing
+                };
+
+                testimonials.Add(testimonial);
+            }
         }
-        return testimonials.OrderByDescending(t => t.SubmittedAt).ToList();
+        catch (Exception ex)
+        {
+            // Handle any errors that occur during the Firestore operation
+            Console.WriteLine($"Error fetching testimonials: {ex.Message}");
+        }
+
+        return testimonials;
+    }
+
+    // Fetch a random testimonial
+    public async Task<Testimonial> GetRandomTestimonialAsync()
+    {
+        var testimonials = await GetTestimonialsAsync();
+        var random = new Random();
+
+        // Return a random testimonial if available
+        return testimonials.Count > 0 ? testimonials[random.Next(testimonials.Count)] : null;
     }
 }
 

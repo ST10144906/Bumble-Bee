@@ -6,36 +6,24 @@ namespace BumbleBeeWebApp.Controllers
 {
     public class LandingController : Controller
     {
+        private readonly FirestoreService _firestoreService;
         private readonly FirestoreDb _firestoreDb;
 
-        public LandingController(FirestoreDb firestoreDb)
+        public LandingController(FirestoreDb firestoreDb, FirestoreService firestoreService)
         {
             _firestoreDb = firestoreDb;
+            _firestoreService = firestoreService;
         }
 
         public async Task<IActionResult> Index()
         {
-            List<Testimonial> testimonials = new List<Testimonial>();
+            // Fetch a random testimonial
+            var randomTestimonial = await _firestoreService.GetRandomTestimonialAsync();
 
-            try
-            {
-                QuerySnapshot snapshot = await _firestoreDb.Collection("testimonial").GetSnapshotAsync();
-                foreach (DocumentSnapshot document in snapshot.Documents)
-                {
-                    if (document.Exists)
-                    {
-                        var testimonial = document.ConvertTo<Testimonial>();
-                        testimonials.Add(testimonial);
-                    }
-                }
-            }
-            catch
-            {
-                ViewBag.TestimonialError = "Unable to load testimonials at this time.";
-            }
-
-            return View(testimonials);
+            // Pass the testimonial to the view
+            return View(randomTestimonial);
         }
+
 
         public IActionResult AboutUs()
         {
