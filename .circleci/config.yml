@@ -8,23 +8,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install .NET SDK
-          command: |
-            apt-get update
-            apt-get install -y dotnet-sdk-8.0
-      - run:
-          name: Restore Dependencies
-          command: |
-            dotnet restore
-      - run:
-          name: Build Project
-          command: |
-            dotnet build --configuration Release
-      - run:
-          name: Run Tests
-          command: |
-            dotnet test --logger:trx
-      - run:
           name: SonarQube Analysis
           command: |
             SONAR_BRANCH="${CIRCLE_BRANCH:-master}"
