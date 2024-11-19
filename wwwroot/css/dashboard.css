@@ -12,12 +12,12 @@
 }
 
 body {
-    background-color: var(--background); /* Use the very light green from root */
+    background-color: var(--background); 
 }
 
 .dashboard-header {
-    background-color: var(--color-pastel-green); /* Light green for header background */
-    color: var(--text); /* Black text */
+    background-color: var(--color-pastel-green); 
+    color: var(--text); 
     border-radius: 10px;
     padding: 20px;
     text-align: center;
@@ -30,7 +30,7 @@ body {
 
 
 .dashboard-overview, .recent-activities, .user-profile {
-    background-color: var(--color-pastel-green); /* Pastel green for section backgrounds */
+    background-color: var(--color-pastel-green); 
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
@@ -64,13 +64,13 @@ body {
 .dashboard-footer {
     text-align: center;
     padding: 20px;
-    background-color: var(--color-light-green); /* Light green for footer */
+    background-color: var(--color-light-green);
     color: var(--text);
 }
 
 .btn {
-    background-color: var(--color-very-light-green); /* Very light green for buttons */
-    border-color: var(--color-light-green); /* Light green border */
+    background-color: var(--color-very-light-green); 
+    border-color: var(--color-light-green); 
     color: var(--text);
     padding: 15px 20px;
     border-radius: 5px;
@@ -80,8 +80,8 @@ body {
 }
 
     .btn:hover {
-        background-color: var(--color-light-yellow); /* Light yellow on hover */
-        border-color: var(--color-medium-green); /* Use medium green for border on hover */
+        background-color: var(--color-light-yellow); 
+        border-color: var(--color-medium-green); 
     }
 
 .h3 {
@@ -94,42 +94,64 @@ body {
 
 .projects-container {
     display: flex;
-    flex-wrap: nowrap; /* Prevent wrapping */
-    overflow-x: auto; /* Enable horizontal scrolling */
+    flex-wrap: nowrap;
+    overflow-x: auto; 
     padding: 10px;
-    gap: 20px; /* Space between items */
+    gap: 20px;
     background-color: var(--color-very-light-green);
     border-radius: 10px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
     .projects-container::-webkit-scrollbar {
-        height: 10px; /* Adjust scrollbar height */
+        height: 10px; 
     }
 
     .projects-container::-webkit-scrollbar-thumb {
-        background: var(--color-light-green); /* Style scrollbar thumb */
+        background: var(--color-light-green); 
         border-radius: 10px;
     }
 
 .company-card {
-    min-width: 300px; /* Set minimum width for cards */
-    flex: 0 0 auto; /* Prevent shrinking or growing */
+    min-width: 300px; 
+    flex: 0 0 auto;
     background-color: var(--color-pastel-green);
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.project-details-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr; 
+    gap: 20px; 
+}
+
+.project-details {
+    background-color: var(--color-pastel-green);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    width:auto;
+}
+
+.company-details {
+    background-color: var(--color-light-green);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
 .projects-list {
     display: flex;
-    flex-wrap: nowrap; /* Prevent wrapping within a company */
-    gap: 10px; /* Space between project cards */
+    flex-wrap: nowrap; 
+    gap: 10px; 
 }
 
 .project-card {
-    min-width: 250px; /* Set minimum width for individual project cards */
-    flex: 0 0 auto; /* Prevent shrinking or growing */
+    min-width: 250px; 
+    flex: 0 0 auto; 
     background-color: var(--color-light-yellow);
     padding: 10px;
     border-radius: 5px;

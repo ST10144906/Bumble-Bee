@@ -20,7 +20,7 @@ public class DonorProjectController : Controller
     // GET: DonorProject/ViewAllProjects
     public async Task<IActionResult> ViewAllProjects()
     {
-        List<(string CompanyName, Project Project)> allProjects = new List<(string, Project)>();
+        List<Project> allProjects = new List<Project>();
 
         try
         {
@@ -32,8 +32,6 @@ public class DonorProjectController : Controller
             {
                 if (companyDoc.Exists)
                 {
-                    string companyName = companyDoc.ContainsField("Name") ? companyDoc.GetValue<string>("Name") : "Unknown Company";
-
                     // Get the "projects" subcollection for each company
                     CollectionReference projectsCollection = companyDoc.Reference.Collection("projects");
                     QuerySnapshot projectsSnapshot = await projectsCollection.GetSnapshotAsync();
@@ -51,13 +49,14 @@ public class DonorProjectController : Controller
                                 {
                                     var project = new Project
                                     {
+                                        Id = projectDoc.Id,
                                         ProjectName = projectDoc.ContainsField("ProjectName") ? projectDoc.GetValue<string>("ProjectName") : "Unknown Project",
                                         Description = projectDoc.ContainsField("Description") ? projectDoc.GetValue<string>("Description") : "No Description",
                                         DateCreated = projectDoc.ContainsField("DateCreated") ? projectDoc.GetValue<DateTime>("DateCreated") : DateTime.MinValue,
                                         MiscellaneousDocumentsUrl = projectDoc.ContainsField("MiscellaneousDocumentsUrl") ? projectDoc.GetValue<string>("MiscellaneousDocumentsUrl") : null
                                     };
 
-                                    allProjects.Add((companyName, project));
+                                    allProjects.Add((project));
                                 }
                             }
                             catch (Exception innerEx)
