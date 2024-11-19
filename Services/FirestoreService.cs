@@ -114,5 +114,12 @@ public class FirestoreService
         // Return a random testimonial if available
         return testimonials.Count > 0 ? testimonials[random.Next(testimonials.Count)] : null;
     }
+
+    // Delete admin user from firestore database
+    public async Task DeleteUserFromFirestoreAsync(string userId)
+    {
+        var userDoc = _firestoreDb.Collection("users").Document(userId);
+        await userDoc.DeleteAsync();
+    }
 }
 

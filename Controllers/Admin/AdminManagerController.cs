@@ -1,7 +1,10 @@
 ﻿using BumbleBeeWebApp.Models;
+using FirebaseAdmin.Auth;
 using Google.Cloud.Firestore;
+using Google.Cloud.Firestore.V1;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace BumbleBeeWebApp.Controllers.Admin
 {
@@ -34,6 +37,7 @@ namespace BumbleBeeWebApp.Controllers.Admin
                     Dictionary<string, object> userData = document.ToDictionary();
                     User user = new User
                     {
+                        UID = document.Id,
                         FullName = userData.ContainsKey("FullName") ? userData["FullName"]?.ToString() : string.Empty,
                         Email = userData.ContainsKey("Email") ? userData["Email"]?.ToString() : string.Empty,
                         Role = userData.ContainsKey("Type") ? userData["Type"]?.ToString() : string.Empty
@@ -49,11 +53,34 @@ namespace BumbleBeeWebApp.Controllers.Admin
 
             return View("~/Views/Admin/AdminManager.cshtml", users);
         }
-        /*
-        public async Task<IActionResult> DeleteAdmin(string id)
-        {
-            return null;
-        }*/
 
+        public async Task<IActionResult> Delete(string id)
+        {
+            var userRecord = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(id);
+            
+            var deleteUid = userRecord.Uid;
+            Console.WriteLine(id);
+            Console.WriteLine(deleteUid);
+            try
+            {
+                // Step 1: Delete the user from Firestore
+                await _firestoreService.DeleteUserFromFirestoreAsync(id);
+
+                // Step 2: Delete the user from Firebase Authentication
+                await _authService.DeleteUserFromAuthAsync(deleteUid);
+
+                TempData["SuccessMessage"] = "User successfully deleted.";
+            }
+            catch (FirebaseAuthException ex)
+            {
+                TempData["ErrorMessage"] = $"Error deleting user from FirebaseAuth: {ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error deleting user: {ex.Message}";
+            }
+
+            return await LoadUsers(); // Redirect to your user listing page
+        }
     }
 }

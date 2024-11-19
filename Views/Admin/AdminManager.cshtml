@@ -33,7 +33,9 @@
                         <td>@user.Email</td>
                         <td>@user.Role</td>
                         <td>
-                            <a href="/AdminManager/DeleteAdmin/@user.UID" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                            <form asp-action="Delete" asp-route-id="@user.UID" asp-controller="AdminManager" method="post" class="text-center">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
+                            </form>
                         </td>
                     </tr>
                 }
@@ -44,4 +46,15 @@
 else
 {
     <p>No users found.</p>
+}
+
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
 }

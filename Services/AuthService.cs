@@ -161,12 +161,12 @@ public class AuthService
 
         return null;
     }
-
-
-
-
-
-
+    
+    // Delete function for removing admin from firebase Auth
+    public async Task DeleteUserFromAuthAsync(string userId)
+    {
+        await FirebaseAuth.DefaultInstance.DeleteUserAsync(userId);
+    }
 
     //---   Old function that will not be in use later on (Still used for example in Home Controller)
     public async Task<string> CreateUserAsync(string email, string password)
