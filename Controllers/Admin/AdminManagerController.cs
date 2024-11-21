@@ -54,22 +54,42 @@ namespace BumbleBeeWebApp.Controllers.Admin
             return View("~/Views/Admin/AdminManager.cshtml", users);
         }
 
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(string documentUid, string deleteEmail)
         {
-            var userRecord = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(id);
-            
-            var deleteUid = userRecord.Uid;
-            Console.WriteLine(id);
-            Console.WriteLine(deleteUid);
             try
             {
-                // Step 1: Delete the user from Firestore
-                await _firestoreService.DeleteUserFromFirestoreAsync(id);
+                // Fetch user data from Firestore to get the email
+                DocumentSnapshot documentSnapshot = await _firestoreService.GetDocumentAsync("users", documentUid);
+                var userRecord = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(deleteEmail);
 
-                // Step 2: Delete the user from Firebase Authentication
-                await _authService.DeleteUserFromAuthAsync(deleteUid);
+                var authId = userRecord.Uid;
+                Console.WriteLine(documentUid);
+                Console.WriteLine(authId);
 
-                TempData["SuccessMessage"] = "User successfully deleted.";
+                if (documentSnapshot.Exists)
+                {
+                    // Get email from the Firestore document
+                    Dictionary<string, object> userData = documentSnapshot.ToDictionary();
+                    string email = userData.ContainsKey("Email") ? userData["Email"]?.ToString() : null;
+
+                    if (string.IsNullOrEmpty(email))
+                    {
+                        TempData["ErrorMessage"] = "User email not found.";
+                        return await LoadUsers();
+                    }
+
+                    // Step 1: Delete the user from Firestore
+                    await _firestoreService.DeleteUserFromFirestoreAsync(documentUid);
+
+                    // Step 2: Delete the user from Firebase Authentication
+                    await FirebaseAuth.DefaultInstance.DeleteUserAsync(authId);
+
+                    TempData["SuccessMessage"] = "User successfully deleted.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "User not found in Firestore.";
+                }
             }
             catch (FirebaseAuthException ex)
             {
