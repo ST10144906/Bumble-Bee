@@ -135,20 +135,28 @@ h2 {
 
 .testimonial-content {
     font-size: 1rem;
-    line-height: 1.6;
+    line-height: 1.2;
 }
 
 .testimonial-footer {
     font-size: 0.9rem;
     color: #6c757d;
+    margin-top: 0; 
+    padding: 0; 
 }
 
     .testimonial-footer small {
-        display: block;
+        display: block; 
+        margin-bottom: 2px; 
+        line-height: 1.2; 
+        color: #6c757d; 
     }
 
+
+
+
 .testimonial-email {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #495057;
 }
 

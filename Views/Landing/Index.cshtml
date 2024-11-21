@@ -89,23 +89,23 @@
     {
         <div class="row">
             <!-- Testimonial Content -->
-            <div class="col-md-6">
-                <div class="testimonial-content-container">
-
+            <div class="col-md-6 d-flex align-items-center justify-content-center">
+                <div class="testimonial-content-container text-center">
                     <!-- Testimonial Content -->
                     <p class="testimonial-content mb-3">@Model.Content.ToString()</p>
-
-                    <!-- Testimonial Footer -->
-                    <div class="testimonial-footer text-right">
-                        <small class="text-muted">@Model.Type.ToString(): @Model.Email.ToString()</small>
-                        <small class="text-muted">Submitted on: @Model.SubmittedAt.ToString("dd MMM yyyy, hh:mm tt")</small>
-                    </div>
                 </div>
             </div>
-
-            <!-- Testimonial Image (Right) -->
-            <div class="col-md-6">
+            <!-- Testimonial Image and Donor Details -->
+            <div class="col-md-6 position-relative">
+                <!-- Testimonial Image -->
                 <img src="https://via.placeholder.com/600x400" class="img-fluid rounded" alt="Testimonial Image" />
+
+                <!-- Donor Details -->
+                <div class="testimonial-footer position-absolute" style="bottom: 50px; left: -180px; width: 140px;">
+                    <small class="text-muted"><strong>@Model.Type.ToString()</strong></small>
+                    <small class="text-muted">@Model.Email.ToString()</small>
+                    <small class="text-muted">Submitted on: @Model.SubmittedAt.ToString("dd MMM yyyy, hh:mm tt")</small>
+                </div>
             </div>
         </div>
     }
@@ -118,6 +118,7 @@
         <button type="submit" class="btn btn-light btn-lg">Add Testimonial</button>
     </form>
 </section>
+
 
 
 <!-- Donate Section -->
