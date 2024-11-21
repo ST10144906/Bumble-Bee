@@ -2,6 +2,7 @@
 {
     public class Company
     {
+        public string CompanyID { get; set; }
         public string UID { get; set; }
         public string Name { get; set; }
         public string ReferenceNumber { get; set; }

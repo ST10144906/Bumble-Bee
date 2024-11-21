@@ -137,11 +137,20 @@ namespace BumbleBeeWebApp.Controllers
             var company = await LoadCompanyByProjectId(projectId);
             if (company != null)
             {
-                ViewData["CompanyName"] = company.Name;
-                ViewData["ReferenceNumber"] = company.ReferenceNumber;
-                ViewData["TaxNumber"] = company.TaxNumber;
-                ViewData["Email"] = company.Email;
-                ViewData["PhoneNumber"] = company.PhoneNumber;
+                ViewData["CompanyName"] = company.Name ?? "Unknown Company";
+                ViewData["ReferenceNumber"] = company.ReferenceNumber ?? "N/A";
+                ViewData["TaxNumber"] = company.TaxNumber ?? "N/A";
+                ViewData["Email"] = company.Email ?? "N/A";
+                ViewData["PhoneNumber"] = company.PhoneNumber ?? "N/A";
+            }
+            else
+            {
+                _logger.LogWarning($"Company for project ID {projectId} not found.");
+                ViewData["CompanyName"] = "Company information not available.";
+                ViewData["ReferenceNumber"] = "N/A";
+                ViewData["TaxNumber"] = "N/A";
+                ViewData["Email"] = "N/A";
+                ViewData["PhoneNumber"] = "N/A";
             }
 
             return View(project);
@@ -196,21 +205,48 @@ namespace BumbleBeeWebApp.Controllers
                 CollectionReference companiesCollection = _firestoreDb.Collection("companies");
                 QuerySnapshot companiesSnapshot = await companiesCollection.GetSnapshotAsync();
 
+                _logger.LogInformation("Retrieved {CompanyCount} companies from Firestore.", companiesSnapshot.Documents.Count);
+
                 foreach (DocumentSnapshot companyDoc in companiesSnapshot.Documents)
                 {
                     if (companyDoc.Exists)
                     {
+                        _logger.LogInformation("Checking company with ID: {CompanyId}", companyDoc.Id);
+
                         // Check if the company has the project in its "projects" subcollection
                         CollectionReference projectsCollection = companyDoc.Reference.Collection("projects");
-                        QuerySnapshot projectsSnapshot = await projectsCollection.GetSnapshotAsync();
+                        DocumentSnapshot projectDoc = await projectsCollection.Document(projectId).GetSnapshotAsync();
 
-                        foreach (DocumentSnapshot projectDoc in projectsSnapshot.Documents)
+                        if (projectDoc.Exists)
                         {
-                            if (projectDoc.Exists && projectDoc.Id == projectId)
+                            _logger.LogInformation("Project with ID {ProjectId} found under company ID: {CompanyId}", projectId, companyDoc.Id);
+
+                            // Convert Firestore document to the Company model
+                            var company = new Models.Company
                             {
-                                return companyDoc.ConvertTo<Models.Company>();
-                            }
+                                CompanyID = companyDoc.Id,
+                                UID = companyDoc.ContainsField("UID") ? companyDoc.GetValue<string>("UID") : null,
+                                Name = companyDoc.ContainsField("Name") ? companyDoc.GetValue<string>("Name") : null,
+                                ReferenceNumber = companyDoc.ContainsField("ReferenceNumber") ? companyDoc.GetValue<string>("ReferenceNumber") : null,
+                                TaxNumber = companyDoc.ContainsField("TaxNumber") ? companyDoc.GetValue<string>("TaxNumber") : null,
+                                Description = companyDoc.ContainsField("Description") ? companyDoc.GetValue<string>("Description") : null,
+                                Email = companyDoc.ContainsField("Email") ? companyDoc.GetValue<string>("Email") : null,
+                                PhoneNumber = companyDoc.ContainsField("PhoneNumber") ? companyDoc.GetValue<string>("PhoneNumber") : null
+                            };
+
+                            _logger.LogInformation("Retrieved company fields: UID={UID}, Name={Name}, ReferenceNumber={ReferenceNumber}, TaxNumber={TaxNumber}, Email={Email}, PhoneNumber={PhoneNumber}",
+    company.UID, company.Name, company.ReferenceNumber, company.TaxNumber, company.Email, company.PhoneNumber);
+
+                            return company;
                         }
+                        else
+                        {
+                            _logger.LogInformation("Project with ID {ProjectId} not found under company ID: {CompanyId}", projectId, companyDoc.Id);
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Company document with ID {CompanyId} does not exist.", companyDoc.Id);
                     }
                 }
             }
@@ -219,7 +255,10 @@ namespace BumbleBeeWebApp.Controllers
                 _logger.LogError(ex, "Error retrieving company details from Firestore.");
             }
 
+            _logger.LogWarning("No matching company found for project ID: {ProjectId}", projectId);
             return null;
         }
+
+
     }
 }
