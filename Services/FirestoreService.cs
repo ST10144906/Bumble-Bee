@@ -115,11 +115,25 @@ public class FirestoreService
         return testimonials.Count > 0 ? testimonials[random.Next(testimonials.Count)] : null;
     }
 
-    // Delete admin user from firestore database
+    // Delete user from firestore database
     public async Task DeleteUserFromFirestoreAsync(string userId)
     {
         var userDoc = _firestoreDb.Collection("users").Document(userId);
         await userDoc.DeleteAsync();
+    }
+
+    // Delete document from friestore databsae
+    public async Task DeleteDocumentAsync(string collectionName, string documentId)
+    {
+        if (string.IsNullOrEmpty(collectionName) || string.IsNullOrEmpty(documentId))
+        {
+            throw new ArgumentException("Collection name and document ID cannot be null or empty.");
+        }
+
+        DocumentReference docRef = _firestoreDb.Collection(collectionName).Document(documentId);
+
+        // Delete the document
+        await docRef.DeleteAsync();
     }
 }
 
