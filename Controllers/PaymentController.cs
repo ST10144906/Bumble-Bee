@@ -6,6 +6,10 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Google.Cloud.Firestore;
+using Google.Cloud.Firestore.V1;
+using Google.Apis.Auth.OAuth2;
+using BumbleBeeWebApp.Models;
 
 namespace BumbleBeeWebApp.Controllers
 {
@@ -13,52 +17,153 @@ namespace BumbleBeeWebApp.Controllers
     {
         private readonly string _publicKey;
         private readonly string _secretKey;
+        private readonly FirestoreDb _firestoreDb;
 
         public PaymentController()
         {
             var keys = JsonConvert.DeserializeObject<PaymentKeys>(System.IO.File.ReadAllText("Secrets/paymentKeys.json"));
             _publicKey = keys.public_key;
             _secretKey = keys.sk_test; // --- Use sk_live for production
+
+            // Initialize Firestore
+            var googleCredential = GoogleCredential.FromFile("Secrets/bumble-bee-foundation-firebase-adminsdk.json");
+
+            var builder = new FirestoreClientBuilder
+            {
+                Credential = googleCredential
+            };
+            var firestoreClient = builder.Build();
+
+            _firestoreDb = FirestoreDb.Create("bumble-bee-foundation", firestoreClient);
+
         }
 
         // --- GET: Payment page
-        public ActionResult Index()
+        public async Task<IActionResult> Index(string selectedProject = null)
         {
+            var projectNames = new List<string>();
+
+            try
+            {
+                // Fetch all project names from Firestore
+                var companiesCollection = _firestoreDb.Collection("companies");
+                var companiesSnapshot = await companiesCollection.GetSnapshotAsync();
+
+                foreach (var companyDoc in companiesSnapshot.Documents)
+                {
+                    var projectsCollection = companiesCollection.Document(companyDoc.Id).Collection("projects");
+                    var projectsSnapshot = await projectsCollection.GetSnapshotAsync();
+
+                    foreach (var projectDoc in projectsSnapshot.Documents)
+                    {
+                        if (projectDoc.TryGetValue("ProjectName", out string projectName) &&
+                            projectDoc.TryGetValue("Status", out string status) &&
+                            status == "Funding Approved")
+                        {
+                            projectNames.Add(projectName);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching projects: {ex.Message}");
+            }
+
+
             var model = new PaymentViewModel
             {
                 Email = "customer@example.com",
-                Amount = 5000,
+                Amount = 0,
                 Name = "Customer Name",
-                PublicKey = _publicKey
+                PublicKey = _publicKey,
+                ProjectNames = projectNames,
+                SelectedProject = selectedProject
             };
+
             return View("Payment", model);
         }
 
         // --- Process payment request (One-time or Recurring)
         [HttpPost]
-        public async Task<IActionResult> ProcessPayment(PaymentViewModel model)
+        public async Task<IActionResult> ProcessPayment([FromBody] PaymentViewModel model)
         {
-            if (model.PaymentType == "recurring")
+            // Log received data for debugging
+            Console.WriteLine($"Received Data:");
+            Console.WriteLine($" - Email: {model.Email}");
+            Console.WriteLine($" - Amount: {model.Amount}");
+            Console.WriteLine($" - Name: {model.Name}");
+            Console.WriteLine($" - Selected Project: {model.SelectedProject}");
+            Console.WriteLine($" - Payment Type: {model.PaymentType}");
+            Console.WriteLine($" - Interval: {model.Interval}");
+
+            if (HttpContext.Session.GetString("UserType") == null)
             {
-                return await HandleRecurringPayment(model);
+                TempData["Message"] = "You need to log in to create a donation.";
+                return RedirectToAction("Login", "Account");
             }
-            else
+
+            // Validate required fields
+            if (string.IsNullOrEmpty(model.Email))
             {
-                return await HandleOneTimePayment(model);
+                Console.WriteLine("Error: Email is required.");
+                return Json(new { error = "Email is required for payment." });
+            }
+            
+            if(model.Email.ToString() == "customer@example.com")
+            {
+                Console.WriteLine("Error: Email is required.");
+                return Json(new { error = "Email is required for payment." });
+            }
+            
+
+            if (string.IsNullOrEmpty(model.Name))
+            {
+                Console.WriteLine("Error: Full Name is required.");
+                return Json(new { error = "Full Name is required for payment." });
+            }
+
+            if (model.Name.ToString() == "Customer Name")
+            {
+                Console.WriteLine("Error: Full Name is required.");
+                return Json(new { error = "Full Name is required for payment." });
+            }
+
+            if (model.Amount <= 0)
+            {
+                Console.WriteLine("Error: Amount must be greater than zero.");
+                return Json(new { error = "Amount must be greater than zero." });
+            }
+
+            if (string.IsNullOrEmpty(model.SelectedProject))
+            {
+                Console.WriteLine("Error: A project must be selected.");
+                return Json(new { error = "Please select a project to donate to." });
+            }
+
+            // Route to appropriate payment handler
+            try
+            {
+                if (model.PaymentType?.ToLower() == "recurring")
+                {
+                    return await HandleRecurringPayment(model);
+                }
+                else
+                {
+                    return await HandleOneTimePayment(model);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during payment processing: {ex.Message}");
+                return Json(new { error = "An unexpected error occurred while processing the payment. Please try again." });
             }
         }
 
         // --- Handle One-Time Payment
         private async Task<IActionResult> HandleOneTimePayment(PaymentViewModel model)
         {
-            if (string.IsNullOrEmpty(model.Email))
-            {
-                return Json(new { error = "Email is required for payment." });
-            }
-            if (model.Amount <= 0)
-            {
-                return Json(new { error = "Amount must be greater than zero." });
-            }
+            
 
             using (var client = new HttpClient())
             {
@@ -69,7 +174,7 @@ namespace BumbleBeeWebApp.Controllers
                     new KeyValuePair<string, string>("email", model.Email),
                     new KeyValuePair<string, string>("amount", (model.Amount * 100).ToString()), // --- amount in kobo
                     new KeyValuePair<string, string>("currency", "ZAR"),
-                    new KeyValuePair<string, string>("callback_url", "https://yourdomain.com/callback"),
+                    new KeyValuePair<string, string>("callback_url", "https://yourdomain.com/callback"), //will have to change to http://localhost:1234
                     new KeyValuePair<string, string>("reference", Guid.NewGuid().ToString())
                 });
 
@@ -100,6 +205,7 @@ namespace BumbleBeeWebApp.Controllers
         // --- Handle Recurring Payment by creating a subscription plan
         private async Task<IActionResult> HandleRecurringPayment(PaymentViewModel model)
         {
+
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _secretKey);
@@ -127,7 +233,7 @@ namespace BumbleBeeWebApp.Controllers
                         new KeyValuePair<string, string>("amount", (model.Amount * 100).ToString()),
                         new KeyValuePair<string, string>("currency", "ZAR"),
                         new KeyValuePair<string, string>("plan", planCode),
-                        new KeyValuePair<string, string>("callback_url", "https://yourdomain.com/callback"),
+                        new KeyValuePair<string, string>("callback_url", "https://yourdomain.com/callback"), //will have to change to http://localhost:1234
                         new KeyValuePair<string, string>("reference", Guid.NewGuid().ToString())
                     });
 
@@ -147,7 +253,7 @@ namespace BumbleBeeWebApp.Controllers
             }
         }
 
-        
+
 
         // --- Cancel a recurring payment subscription
         [HttpPost]
@@ -187,7 +293,7 @@ namespace BumbleBeeWebApp.Controllers
 
         // --- Verify the payment after Paystack callback
         [HttpGet]
-        public async Task<IActionResult> VerifyPayment(string reference)
+        public async Task<IActionResult> VerifyPayment(string reference, string selectedProject, string fullName, string userEmail, string PaymentType, string Interval)
         {
             using (var client = new HttpClient())
             {
@@ -200,34 +306,64 @@ namespace BumbleBeeWebApp.Controllers
                     var result = JsonConvert.DeserializeObject<PaymentVerificationResponse>(jsonString);
                     if (result.Data.Status == "success")
                     {
-                        return Content("Payment verification successful");
+                        double amount = (double)(result.Data.Amount / 100m);
+
+                        var donationData = new Dictionary<string, object>
+                        {
+                            { "ProjectName", selectedProject },
+                            { "FullName", fullName },
+                            { "UserEmail", userEmail },
+                            { "Amount", amount },
+                            { "Timestamp", DateTime.UtcNow },
+                            { "PaymentType", PaymentType}, 
+                            { "PaymentInterval", Interval}
+                        };
+
+                        try
+                        {
+                            var donationsCollection = _firestoreDb.Collection("donations");
+                            await donationsCollection.AddAsync(donationData);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error inserting into Firestore: {ex.Message}");
+                            return Content("Payment verification successful, but failed to log donation.");
+                        }
+
+                        return Content("Payment verification successful and donation logged.");
                     }
                 }
                 return Content("Payment verification failed");
             }
         }
     }
-
     // --- Model classes for deserializing JSON responses
     public class PaymentViewModel
     {
         [JsonProperty("Email")]
         public string Email { get; set; }
-        
+
         [JsonProperty("Amount")]
         public decimal Amount { get; set; }
-        
+
         [JsonProperty("Name")]
         public string Name { get; set; }
-        
+
         [JsonProperty("PublicKey")]
         public string PublicKey { get; set; }
-        
+
         [JsonProperty("PaymentType")]
         public string PaymentType { get; set; }
-        
+
         [JsonProperty("Interval")]
         public string Interval { get; set; }
+
+        
+        [JsonProperty("ProjectNames")]
+        public List<string> ProjectNames { get; set; }
+
+        [JsonProperty("SelectedProject")]
+        public string SelectedProject { get; set; }
     }
 
     public class PaymentVerificationResponse
@@ -266,7 +402,7 @@ namespace BumbleBeeWebApp.Controllers
 
     public class PlanData
     {
-        [JsonProperty("plan_code")] 
+        [JsonProperty("plan_code")]
         public string PlanCode { get; set; }
     }
 

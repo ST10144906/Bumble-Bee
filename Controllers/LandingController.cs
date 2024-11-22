@@ -62,9 +62,50 @@ namespace BumbleBeeWebApp.Controllers
         }
 
         // --- Payment Page
-        public IActionResult DonateNow()
+        public async Task<IActionResult> DonateNow()
         {
-            return RedirectToAction("Index", "Payment");
+            if (HttpContext.Session.GetString("UserType") == null)
+            {
+                TempData["Message"] = "You need to log in to create a donation.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            // Query Firestore to get the first project name with "Funding Approved" status
+            string selectedProjectName = null;
+            try
+            {
+                var companiesCollection = _firestoreDb.Collection("companies");
+                var companiesSnapshot = await companiesCollection.GetSnapshotAsync();
+
+                foreach (var companyDoc in companiesSnapshot.Documents)
+                {
+                    var projectsCollection = companiesCollection.Document(companyDoc.Id).Collection("projects");
+                    var projectsSnapshot = await projectsCollection.GetSnapshotAsync();
+
+                    foreach (var projectDoc in projectsSnapshot.Documents)
+                    {
+                        if (projectDoc.TryGetValue("ProjectName", out string projectName) &&
+                            projectDoc.TryGetValue("Status", out string status) &&
+                            status == "Funding Approved")
+                        {
+                            selectedProjectName = projectName;
+                            break; // Stop after finding the first project
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(selectedProjectName))
+                        break; // Stop iterating through companies if a project is found
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching projects: {ex.Message}");
+                TempData["Message"] = "Error fetching projects. Please try again later.";
+                return RedirectToAction("Index", "Landing");
+            }
+
+            // Pass the project name to the Payment page
+            return RedirectToAction("Index", "Payment", new { selectedProject = selectedProjectName });
         }
     }
 }

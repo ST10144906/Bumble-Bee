@@ -4,28 +4,44 @@
 
 <div class="container">
     <div class="payment-header text-center">
-        <h2>Make a Payment</h2>
+        <h2>Make a Donation</h2>
     </div>
 
     <div class="payment-container">
         <!-- Form for processing payment, either one-time or recurring -->
         <form id="paymentForm">
             <div class="form-group">
+                <label for="ProjectName">Select a Project:</label>
+                <select name="SelectedProject" id="ProjectName" class="form-control">
+                    @foreach (var project in Model.ProjectNames)
+                    {
+                        if (project == Model.SelectedProject)
+                        {
+                            <option value="@project" selected="selected">@project</option>
+                        }
+                        else
+                        {
+                            <option value="@project">@project</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
                 <label for="email-address">Email</label>
-                <input type="email" id="email-address" class="form-control" value="@Model.Email" required />
+                <input type="email" name="Email" id="email-address" class="form-control" value="@Model.Email" required />
             </div>
 
             <div class="form-group">
                 <label for="amount">Amount</label>
-                <input type="number" id="amount" class="form-control" value="@Model.Amount" required />
+                <input type="number" name="Amount" id="amount" class="form-control" value="@Model.Amount" required />
             </div>
 
             <div class="form-group">
                 <label for="first-name">Name</label>
-                <input type="text" id="first-name" class="form-control" value="@Model.Name" required />
+                <input type="text" name="Name" id="first-name" class="form-control" value="@Model.Name" required />
             </div>
 
-            <!-- Payment type selection: One-Time or Recurring -->
             <div class="form-group">
                 <label>Payment Type</label>
                 <div>
@@ -36,7 +52,6 @@
                 </div>
             </div>
 
-            <!-- Recurring payment details: only shown when recurring is selected -->
             <div id="recurring-options" style="display: none;">
                 <div class="form-group">
                     <label for="interval">Billing Period</label>
@@ -65,44 +80,47 @@
     document.getElementById('paymentForm').addEventListener('submit', async function (e) {
         e.preventDefault();
 
+        const selectedProject = document.getElementById('ProjectName').value;
         const email = document.getElementById('email-address').value;
         const amount = document.getElementById('amount').value;
-        const name = document.getElementById('first-name').value;
+        const fullName = document.getElementById('first-name').value;
         const paymentType = document.querySelector('input[name="PaymentType"]:checked').value;
         const interval = paymentType === 'recurring' ? document.getElementById('interval').value : null;
 
-        if (!email || !amount || amount <= 0) {
-            alert("Please provide a valid email and amount.");
+        if (!email || !amount || amount <= 0 || !fullName) {
+            alert("Please provide all required fields.");
             return;
         }
 
-        const data = new FormData();
-        data.append("Email", email);
-        data.append("Amount", amount);
-        data.append("Name", name);
-        data.append("PaymentType", paymentType);
-        if (interval) {
-            data.append("Interval", interval);
-        }
+        const data = {
+            SelectedProject: selectedProject,
+            Email: email,
+            Amount: amount,
+            Name: fullName,
+            PaymentType: paymentType,
+            Interval: interval
+        };
 
         try {
             const response = await fetch('/Payment/ProcessPayment', {
                 method: 'POST',
-                body: data
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
             });
+
             const result = await response.json();
 
             if (result.authorizationUrl) {
                 const handler = PaystackPop.setup({
                     key: '@Model.PublicKey',
                     email: email,
-                    amount: amount * 100, 
+                    amount: amount * 100,
                     currency: 'ZAR',
                     ref: result.reference,
-                    callback: function(response) {
-                        window.location.href = '/Payment/VerifyPayment?reference=' + response.reference;
+                    callback: function (response) {
+                        window.location.href = `/Payment/VerifyPayment?reference=${result.reference}&selectedProject=${encodeURIComponent(selectedProject)}&fullName=${encodeURIComponent(fullName)}&userEmail=${encodeURIComponent(email)}&PaymentType=${encodeURIComponent(paymentType)}&Interval=${encodeURIComponent(interval)}`;
                     },
-                    onClose: function() {
+                    onClose: function () {
                         alert('Transaction was not completed, window closed.');
                     }
                 });

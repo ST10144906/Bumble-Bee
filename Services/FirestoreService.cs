@@ -135,5 +135,7 @@ public class FirestoreService
         // Delete the document
         await docRef.DeleteAsync();
     }
+
+    
 }
 
