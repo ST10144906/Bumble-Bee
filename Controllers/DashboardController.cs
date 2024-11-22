@@ -92,7 +92,7 @@ namespace BumbleBeeWebApp.Controllers
 
                                         allProjects.Add(project);
                                     }
-                                    if (HttpContext.Session.GetString("UserType") == "Donor" && status == "Pending Approval")
+                                    if (HttpContext.Session.GetString("UserType") == "Donor" && status == "Funding Approved")
                                     {
                                         var project = new Project
                                         {
