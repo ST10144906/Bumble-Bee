@@ -103,6 +103,12 @@ namespace BumbleBeeWebApp.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
+            if (HttpContext.Session.GetString("UserType") != "Donor")
+            {
+                TempData["Message"] = "You need to login as a Donor to create a donation.";
+                return RedirectToAction("Login", "Account");
+            }
+
             // Validate required fields
             if (string.IsNullOrEmpty(model.Email))
             {

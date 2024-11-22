@@ -273,6 +273,67 @@ namespace BumbleBeeWebApp.Controllers
             return null;
         }
 
+        public async Task<IActionResult> DonateToProject(string selectedProjectName) 
+        {
+            Console.WriteLine($"Selected Project Name: {selectedProjectName}");
+            if (HttpContext.Session.GetString("UserType") == null)
+            {
+                TempData["Message"] = "You need to log in to create a donation.";
+                return RedirectToAction("Login", "Account");
+            }
 
+            if (HttpContext.Session.GetString("UserType") != "Donor")
+            {
+                TempData["Message"] = "You need to login as a Donor to create a donation.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            // If a project name is already provided, skip the lookup
+            if (string.IsNullOrEmpty(selectedProjectName))
+            {
+                try
+                {
+                    // Query Firestore to find the first project with "Funding Approved" status
+                    var companiesCollection = _firestoreDb.Collection("companies");
+                    var companiesSnapshot = await companiesCollection.GetSnapshotAsync();
+
+                    foreach (var companyDoc in companiesSnapshot.Documents)
+                    {
+                        var projectsCollection = companiesCollection.Document(companyDoc.Id).Collection("projects");
+                        var projectsSnapshot = await projectsCollection.GetSnapshotAsync();
+
+                        foreach (var projectDoc in projectsSnapshot.Documents)
+                        {
+                            if (projectDoc.TryGetValue("ProjectName", out string projectName) &&
+                                projectDoc.TryGetValue("Status", out string status) &&
+                                status == "Funding Approved")
+                            {
+                                selectedProjectName = projectName;
+                                break; // Exit loop once a valid project is found
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(selectedProjectName))
+                            break; // Stop iterating through companies if a project is found
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error fetching projects: {ex.Message}");
+                    TempData["Message"] = "Error fetching projects. Please try again later.";
+                    return RedirectToAction("Index", "Landing");
+                }
+            }
+
+            if (string.IsNullOrEmpty(selectedProjectName))
+            {
+                TempData["Message"] = "No available projects with 'Funding Approved' status.";
+                return RedirectToAction("Index", "Landing");
+            }
+
+            // Redirect to the Payment page with the selected project name
+            return RedirectToAction("Index", "Payment", new { selectedProject = selectedProjectName });
+        }
     }
 }
+

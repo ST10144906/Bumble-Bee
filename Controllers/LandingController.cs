@@ -70,6 +70,12 @@ namespace BumbleBeeWebApp.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
+            if (HttpContext.Session.GetString("UserType") != "Donor")
+            {
+                TempData["Message"] = "You need to login as a Donor to create a donation.";
+                return RedirectToAction("Login", "Account");
+            }
+
             // Query Firestore to get the first project name with "Funding Approved" status
             string selectedProjectName = null;
             try
