@@ -182,3 +182,8 @@ body {
     .project-card p {
         margin: 5px 0;
     }
+
+/* Ensure the block sizes stay consistent */
+.row .col-md-3 {
+    padding: 5px;
+}

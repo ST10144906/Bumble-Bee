@@ -79,7 +79,20 @@ namespace BumbleBeeWebApp.Controllers
                                 {
                                     string status = projectDoc.ContainsField("Status") ? projectDoc.GetValue<string>("Status") : null;
 
-                                    if (status == "Funding Approved")
+                                    if (HttpContext.Session.GetString("UserType") == "Admin" && status == "Funding Approved")
+                                    {
+                                        var project = new Project
+                                        {
+                                            Id = projectDoc.Id,  // Store Firestore document ID
+                                            ProjectName = projectDoc.ContainsField("ProjectName") ? projectDoc.GetValue<string>("ProjectName") : "Unknown Project",
+                                            Description = projectDoc.ContainsField("Description") ? projectDoc.GetValue<string>("Description") : "No Description",
+                                            DateCreated = projectDoc.ContainsField("DateCreated") ? projectDoc.GetValue<DateTime>("DateCreated") : DateTime.MinValue,
+                                            MiscellaneousDocumentsUrl = projectDoc.ContainsField("MiscellaneousDocumentsUrl") ? projectDoc.GetValue<string>("MiscellaneousDocumentsUrl") : null
+                                        };
+
+                                        allProjects.Add(project);
+                                    }
+                                    if (HttpContext.Session.GetString("UserType") == "Donor" && status == "Pending Approval")
                                     {
                                         var project = new Project
                                         {
