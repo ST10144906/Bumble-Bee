@@ -10,6 +10,13 @@ using Google.Cloud.Firestore;
 using Google.Cloud.Firestore.V1;
 using Google.Apis.Auth.OAuth2;
 using BumbleBeeWebApp.Models;
+using Microsoft.CodeAnalysis;
+using PdfSharp.Pdf;
+using PdfSharp.Drawing;
+
+using System.IO;
+
+
 
 namespace BumbleBeeWebApp.Controllers
 {
@@ -336,13 +343,145 @@ namespace BumbleBeeWebApp.Controllers
                             return Content("Payment verification successful, but failed to log donation.");
                         }
 
-                        return Content("Payment verification successful and donation logged.");
+                        //return Content("Payment verification successful and donation logged.");
+                        return RedirectToAction("CreateInvoice", new
+                        {
+                            projectName = selectedProject,
+                            fullName = fullName,
+                            email = userEmail,
+                            amount = amount,
+                            time = DateTime.UtcNow,
+                            paymentType = PaymentType,
+                            interval = Interval
+                        });
                     }
                 }
                 return Content("Payment verification failed");
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> CreateInvoice(
+            string projectName,
+            string fullName,
+            string email,
+            double amount,
+            DateTime time,
+            string paymentType,
+            string interval)
+        {
+            try
+            {
+                // Query Firestore to find user information by email
+                var usersCollection = _firestoreDb.Collection("users");
+                var query = usersCollection.WhereEqualTo("Email", email);
+                var querySnapshot = await query.GetSnapshotAsync();
+
+                if (!querySnapshot.Documents.Any())
+                {
+                    return Content("No user found with the specified email.");
+                }
+
+                // Extract user information
+                var userDocument = querySnapshot.Documents.First();
+                var userData = userDocument.ToDictionary();
+
+                string userEmail = userData["Email"].ToString();
+                string userFullName = userData["FullName"].ToString();
+                string idNumber = userData.ContainsKey("IdNumber") ? userData["IdNumber"].ToString() : "N/A";
+                string phoneNumber = userData.ContainsKey("PhoneNumber") ? userData["PhoneNumber"].ToString() : "N/A";
+                string taxNumber = userData.ContainsKey("TaxNumber") ? userData["TaxNumber"].ToString() : "N/A";
+                string userType = userData.ContainsKey("Type") ? userData["Type"].ToString() : "N/A";
+                string uid = userData["Uid"].ToString();
+
+                // Generate PDF invoice
+                var pdfBytes = GenerateInvoicePdf(
+                    projectName, fullName, email, amount, time, paymentType, interval,
+                    userEmail, userFullName, idNumber, phoneNumber, taxNumber, userType, uid
+                );
+
+                // Return the PDF as a downloadable file
+                return File(pdfBytes, "application/pdf", "Invoice.pdf");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating invoice: {ex.Message}");
+                return Content("An error occurred while creating the invoice.");
+            }
+        }
+
+        private byte[] GenerateInvoicePdf(
+            string projectName,
+            string fullName,
+            string email,
+            double amount,
+            DateTime time,
+            string paymentType,
+            string interval,
+            string userEmail,
+            string userFullName,
+            string idNumber,
+            string phoneNumber,
+            string taxNumber,
+            string userType,
+            string uid)
+        {
+            try
+            {
+                Console.WriteLine("Creating PDF document...");
+                
+                // Create a new PDF document
+                PdfDocument document = new PdfDocument();
+                document.Info.Title = "Invoice";
+
+                // Add a page to the document
+                PdfPage page = document.AddPage();
+                XGraphics gfx = XGraphics.FromPdfPage(page);
+
+                // Define fonts
+                XFont headerFont = new XFont("Times New Roman", 16);
+                XFont regularFont = new XFont("Times New Roman", 12);
+
+                // Draw header
+                gfx.DrawString("Invoice", headerFont, XBrushes.Black, new XRect(0, 0, page.Width, page.Height), XStringFormats.TopCenter);
+
+                // Draw invoice details
+                gfx.DrawString($"Date: {time:yyyy-MM-dd HH:mm:ss}", regularFont, XBrushes.Black, new XPoint(40, 100));
+                gfx.DrawString($"Project Name: {projectName}", regularFont, XBrushes.Black, new XPoint(40, 130));
+                gfx.DrawString($"Amount: {amount:C}", regularFont, XBrushes.Black, new XPoint(40, 160));
+                gfx.DrawString($"Payment Type: {paymentType}", regularFont, XBrushes.Black, new XPoint(40, 190));
+                gfx.DrawString($"Payment Interval: {interval ?? "N/A"}", regularFont, XBrushes.Black, new XPoint(40, 220));
+
+                // Draw user details
+                gfx.DrawString("User Details", headerFont, XBrushes.Black, new XPoint(40, 260));
+                gfx.DrawString($"Full Name: {userFullName}", regularFont, XBrushes.Black, new XPoint(40, 290));
+                gfx.DrawString($"Email: {userEmail}", regularFont, XBrushes.Black, new XPoint(40, 320));
+                gfx.DrawString($"ID Number: {idNumber}", regularFont, XBrushes.Black, new XPoint(40, 350));
+                gfx.DrawString($"Phone Number: {phoneNumber}", regularFont, XBrushes.Black, new XPoint(40, 380));
+                gfx.DrawString($"Tax Number: {taxNumber}", regularFont, XBrushes.Black, new XPoint(40, 410));
+                gfx.DrawString($"User Type: {userType}", regularFont, XBrushes.Black, new XPoint(40, 440));
+                gfx.DrawString($"UID: {uid}", regularFont, XBrushes.Black, new XPoint(40, 470));
+
+                // Save to MemoryStream
+                Console.WriteLine("Saving PDF to MemoryStream...");
+                using (var memoryStream = new MemoryStream())
+                {
+                    document.Save(memoryStream, false); // Save without closing the stream
+                    Console.WriteLine("PDF saved successfully.");
+
+                    return memoryStream.ToArray();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error generating PDF: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
+                return Array.Empty<byte>();
+            }
+        }
+
     }
+
+    
     // --- Model classes for deserializing JSON responses
     public class PaymentViewModel
     {
