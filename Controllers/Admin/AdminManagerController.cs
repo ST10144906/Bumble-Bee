@@ -240,5 +240,39 @@ namespace BumbleBeeWebApp.Controllers.Admin
             }
             return await LoadTestimonials();
         }
+
+        public async Task<IActionResult> LoadCompanies()
+        {
+            List<Models.Company> companies = new List<Models.Company>();
+
+            // Get the collection of companies from Firestore
+            QuerySnapshot companiesQuerySnapshot = await _firestoreService.GetCollectionAsync("companies");
+
+            foreach (DocumentSnapshot document in companiesQuerySnapshot.Documents)
+            {
+                if (document.Exists)
+                {
+                    Dictionary<string, object> companyData = document.ToDictionary();
+
+                    // Map Firestore data to the Company model
+                    Models.Company company = new Models.Company
+                    {
+                        CompanyID = document.Id, // Setting the Firestore document ID as CompanyID
+                        UID = companyData.ContainsKey("UID") ? companyData["UID"]?.ToString() : string.Empty,
+                        Name = companyData.ContainsKey("Name") ? companyData["Name"]?.ToString() : string.Empty,
+                        ReferenceNumber = companyData.ContainsKey("ReferenceNumber") ? companyData["ReferenceNumber"]?.ToString() : string.Empty,
+                        TaxNumber = companyData.ContainsKey("TaxNumber") ? companyData["TaxNumber"]?.ToString() : string.Empty,
+                        Email = companyData.ContainsKey("Email") ? companyData["Email"]?.ToString() : string.Empty,
+                        PhoneNumber = companyData.ContainsKey("PhoneNumber") ? companyData["PhoneNumber"]?.ToString() : string.Empty
+                    };
+
+                    companies.Add(company);
+                }
+            }
+
+            return View("~/Views/Admin/CompanyManager.cshtml", companies);
+        }
+
+
     }
 }
