@@ -21,16 +21,14 @@ namespace BumbleBeeWebApp.Controllers.DonorHistory
         {
             _logger.LogInformation("Navigating to Donor History View.");
 
-            string userEmail = "ryan@dunnix.co.za";
-
-            //string userEmail = HttpContext.Session.GetString("UserEmail");
+            string userEmail = HttpContext.Session.GetString("UserEmail");
             if (string.IsNullOrEmpty(userEmail))
             {
                 _logger.LogWarning("User is not logged in. Redirecting to login page.");
                 return RedirectToAction("Login", "Account");
             }
 
-            // Looks in collection for donations made with users email
+            // Retrieve donations for the user
             var donations = new List<Dictionary<string, object>>();
             try
             {
@@ -47,6 +45,12 @@ namespace BumbleBeeWebApp.Controllers.DonorHistory
                 _logger.LogError(ex, "Error retrieving donations for user: {UserEmail}", userEmail);
                 TempData["ErrorMessage"] = "An error occurred while retrieving your donation history. Please try again later.";
                 return View("~/Views/Dashboard/DonationHistory.cshtml", new List<Dictionary<string, object>>());
+            }
+
+            // Check if there are no donations
+            if (!donations.Any())
+            {
+                TempData["NoHistoryMessage"] = "No donation history available.";
             }
 
             // Pass donations to the view
