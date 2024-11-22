@@ -13,7 +13,9 @@
                 <div class="card-body p-4">
                     <div class="row no-gutters align-items-center">
                         <div class="col-md-6">
-                            <img src="/images/login.jpg" class="card-img rounded-left" alt="Login Image" style="object-fit: cover;">
+                            <!-- Increased border-radius for more rounded corners -->
+                            <img src="/images/canva2.jpg" class="card-img" alt="Login Image"
+                                 style="object-fit: cover; border-radius: 30px;">
                         </div>
                         <div class="col-md-6">
                             <div class="card-body">
@@ -30,9 +32,12 @@
                                         <button type="submit" class="btn btn-light btn-lg" title="Click here to Sign In">Sign In</button>
                                     </div>
                                 </form>
-
                                 <div class="text-center my-4">
-                                    <a href="/Account/Register" class="text">Don't have an account?</a>
+                                    <form action="/Account/Register" method="get">
+                                        <button type="submit" class="btn btn-light">
+                                            Don't have an account?
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -42,6 +47,8 @@
         </div>
     </div>
 </div>
+
+
 
 @if (TempData["Message"] != null)
 {

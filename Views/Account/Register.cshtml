@@ -13,7 +13,7 @@
                 <div class="card-body p-4">
                     <div class="row no-gutters align-items-center">
                         <div class="col-md-6">
-                            <img src="https://via.placeholder.com/600x1000" class="card-img rounded-left" alt="Registration Image" style="object-fit: cover;">
+                            <img src="/images/canva2.jpg" class="card-img rounded-left" alt="Registration Image" style="object-fit: cover; border-radius: 30px;">
                         </div>
                         <div class="col-md-6">
                             <div class="card-body text-center">
@@ -23,8 +23,12 @@
                                     <a class="btn btn-light btn-lg mb-3" asp-area="" asp-controller="Account" asp-action="RegisterDonor" title="Click here to donate">Register as a Donor</a>
                                     <a class="btn btn-light btn-lg" asp-area="" asp-controller="Account" asp-action="RegisterCompany" title="Click here to recieve donations">Register as a Organisation</a>
                                 </div>
-                                <div class="my-4">
-                                    <a href="/Account/Login" class="text">I already have an account</a>
+                                <div class="text-center my-4">
+                                    <form action="/Account/Login" method="get">
+                                        <button type="submit" class="btn btn-light">
+                                            I already have an account
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
