@@ -33,9 +33,11 @@
                             }
                             else if (Context.Session.GetString("UserType") == "Donor")
                             {
-                                <form asp-action="Donate" asp-controller="Dashboard" method="get">
-                                    <button type="submit" class="btn btn-light btn-lg mx-2">Donate</button>
+                                <form asp-action="DonateToProject" method="get">
+                                    <input type="hidden" name="selectedProjectName" value="@Model.ProjectName" />
+                                    <button type="submit" class="bbtn btn-light btn-lg mx-2">Donate to Project</button>
                                 </form>
+
                             }
                         }
                         else
