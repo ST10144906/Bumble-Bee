@@ -136,13 +136,13 @@ namespace BumbleBeeWebApp.Controllers
                 return View();
             }
 
-            if (!IsNumeric(southAfricaId))
+            if (!IsNumeric(southAfricaId) && IsValidIdNumber(southAfricaId))
             {
                 ViewBag.ErrorMessage = "South Africa ID must be numeric.";
                 return View();
             }
 
-            if (!IsNumeric(taxNumber))
+            if (!IsNumeric(taxNumber) && IsValidTaxNumber(taxNumber))
             {
                 ViewBag.ErrorMessage = "Tax number must be numeric.";
                 return View();
@@ -325,6 +325,18 @@ namespace BumbleBeeWebApp.Controllers
         private bool IsValidName(string name)
         {
             return !string.IsNullOrEmpty(name) && Regex.IsMatch(name, @"^[a-zA-Z\s]+$");
+        }
+
+        private bool IsValidIdNumber(string idNumber)
+        {
+            // Example: South African ID number validation (13 digits, numeric)
+            return !string.IsNullOrEmpty(idNumber) && Regex.IsMatch(idNumber, @"^\d{13}$");
+        }
+
+        private bool IsValidTaxNumber(string taxNumber)
+        {
+            // Example: South African Tax Number validation (10 digits, numeric)
+            return !string.IsNullOrEmpty(taxNumber) && Regex.IsMatch(taxNumber, @"^\d{10}$");
         }
 
         [HttpGet]
