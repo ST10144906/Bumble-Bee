@@ -50,8 +50,11 @@ namespace BumbleBeeWebApp.Controllers.Company
             }
 
             company.UID = uid;
+            company.ApprovalStatus = "Pending Approval";
 
             ModelState.Remove("UID");
+            ModelState.Remove("CompanyID");
+            ModelState.Remove("ApprovalStatus");
 
             if (ModelState.IsValid)
             {
@@ -66,11 +69,12 @@ namespace BumbleBeeWebApp.Controllers.Company
                         company.TaxNumber,
                         company.Description,
                         company.Email,
-                        company.PhoneNumber
+                        company.PhoneNumber,
+                        company.ApprovalStatus
                     });
 
                     _logger.LogInformation("Company data saved to Firestore with Document ID: {DocumentId}", companyDocRef.Id);
-                    TempData["SuccessMessage"] = "Company created successfully! You can add projects later.";
+                    TempData["SuccessMessage"] = "Company created successfully! It is now pending approval.";
                     return RedirectToAction("Dashboard", "Dashboard");
                 }
                 catch (Exception ex)
