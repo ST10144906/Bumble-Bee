@@ -190,7 +190,7 @@ namespace BumbleBeeWebApp.Controllers
                 return View();
             }
 
-            if (IsValidUserRole(userRole))
+            if (!IsValidUserRole(userRole))
             {
                 ViewBag.ErrorMessage = "No user role is selected.";
                 return View();
