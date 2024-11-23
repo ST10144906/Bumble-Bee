@@ -1,22 +1,26 @@
 ﻿:root {
-    --color-very-light-green: #F1F7EE;
+    --color-very-light-green: #F1F7EE; /* Very light green */
+    --color-pastel-green: #E0EDC5; /* Pastel green */
     --color-light-green: #B0BEA9;
     --color-medium-green: #92AA83;
-    --color-pastel-green: #E0EDC5;
-    --color-light-yellow: #E7F59E;
+    --color-light-yellow: #E7F59E; /* Light yellow accent */
     --primary: var(--color-medium-green);
     --accent: var(--color-light-yellow);
     --background: var(--color-very-light-green);
     --text: #000000;
 }
 
+/* General Page Background */
 body {
-    background-color: #E0EDC5;
+    background-color: var(--background); /* Very light green */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
 /* Payment Form Header */
 .payment-header {
-    background-color: #B0BEA9;
+    background-color: var(--color-pastel-green); /* Pastel green */
     color: #333;
     padding: 20px;
     text-align: center;
@@ -26,13 +30,12 @@ body {
 }
 
     .payment-header h2 {
-        color: white; 
+        color: var(--text); /* Ensure readability */
     }
-
 
 /* Payment Form Container */
 .payment-container {
-    background-color: #B0BEA9;
+    background-color: var(--color-pastel-green); /* Pastel green */
     padding: 30px;
     border-radius: 5px;
     max-width: 500px;
@@ -65,19 +68,14 @@ body {
         .payment-container input[type="email"]:focus,
         .payment-container input[type="number"]:focus {
             outline: none;
-            border-color: #f0a500;
+            border-color: var(--color-light-yellow);
             background-color: #fff;
         }
 
-    /* Payment Type Options */
-    .payment-container .form-group input[type="radio"] {
-        margin-right: 10px;
-    }
-
     .payment-container button[type="submit"] {
-        background-color: #E0EDC5;
-        border-color: #ddd;
-        color: #333;
+        background-color: var(--primary); /* Medium green */
+        border-color: var(--primary); /* Medium green */
+        color: #fff; /* White text for better contrast */
         padding: 15px 20px;
         border-radius: 5px;
         text-decoration: none;
@@ -88,31 +86,27 @@ body {
     }
 
         .payment-container button[type="submit"]:hover {
-            background-color: var(--background);
-            border-color: #ccc;
+            background-color: var(--color-light-green); /* Lighter green for hover */
+            border-color: var(--color-light-green);
         }
-
-    .payment-container .form-group {
-        margin-bottom: 20px;
-    }
 
 /* Modal Styling */
 .modal-header {
-    background-color: var(--background);
-    color: white;
+    background-color: var(--color-pastel-green); /* Pastel green */
+    color: #333;
     padding: 15px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }
 
 .modal-body {
-    background-color: var(--background);
+    background-color: var(--background); /* Very light green */
     padding: 20px;
     color: #333;
 }
 
 .modal-footer {
-    background-color: var(--background);
+    background-color: var(--background); /* Very light green */
     padding: 15px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
@@ -120,7 +114,7 @@ body {
 }
 
     .modal-footer button {
-        background-color: var(--background);
+        background-color: var(--background); /* Very light green */
         border-color: #ddd;
         color: #333;
         padding: 10px 20px;
@@ -128,14 +122,14 @@ body {
     }
 
         .modal-footer button:hover {
-            background-color: var(--background);
+            background-color: var(--color-light-yellow); /* Light yellow accent */
             border-color: #ccc;
         }
 
 /* Error and Success Messages */
 .success-message {
     color: #28a745;
-    background-color: var(--background);
+    background-color: var(--background); /* Very light green */
     border-color: #c3e6cb;
     padding: 10px;
     margin-bottom: 20px;
@@ -144,7 +138,7 @@ body {
 
 .error-message {
     color: #dc3545;
-    background-color: var(--background);
+    background-color: var(--background); /* Very light green */
     border-color: #f5c6cb;
     padding: 10px;
     margin-bottom: 20px;
@@ -153,7 +147,7 @@ body {
 
 /* General Button Styling */
 .btn {
-    background-color: var(--background);
+    background-color: var(--background); /* Very light green */
     border-color: #ddd;
     color: #333;
     padding: 15px 20px;
@@ -165,6 +159,6 @@ body {
 }
 
     .btn:hover {
-        background-color: var(--background);
+        background-color: var(--color-light-yellow); /* Light yellow accent */
         border-color: #ccc;
     }
