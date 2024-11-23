@@ -44,7 +44,7 @@ namespace BumbleBeeWebApp.Controllers.Admin
                     };
 
                     // Filter users with the role "Admin"
-                    if (user.Role == "Admin")
+                    if (user.Role == "Admin" || user.Role == "Auditor")
                     {
                         users.Add(user);
                     }

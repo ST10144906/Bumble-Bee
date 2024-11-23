@@ -17,11 +17,11 @@
         <div class="col-md-8">
             <div class="card border-0 rounded shadow mb-4">
                 <div class="card-body p-5">
-                    <h1 class="text-center mb-5">Register new admin</h1>
+                    <h1 class="text-center mb-5">Register Administrator</h1>
                     <form method="post" action="/Account/RegisterAdmin">
 
                         <!-- Admin Details Section -->
-                        <h3 class="text-center mb-4">Admin Details</h3>
+                        <h3 class="text-center mb-4">Administrator Details</h3>
                         <div class="form-group mb-4">
                             <input type="email" id="userEmail" name="UserEmail" class="form-control mb-4" placeholder="Email" required>
                         </div>
@@ -35,8 +35,17 @@
                             <input type="text" id="fullName" name="FullName" class="form-control mb-4" placeholder="Full Name" required>
                         </div>
 
+                        <div class="form-group mb-4">
+                            <label for="userRole" class="form-label">Select Role</label>
+                            <select id="userRole" name="UserRole" class="form-control mb-4" required>
+                                <option value="" disabled selected>Select a role</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Auditor">Auditor</option>
+                            </select>
+                        </div>
+
                         <div class="text-center mb-5">
-                            <button type="submit" class="btn btn-light btn-lg">Add Admin</button>
+                            <button type="submit" class="btn btn-light btn-lg">Add</button>
                         </div>
                     </form>
                 </div>

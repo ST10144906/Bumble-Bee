@@ -73,15 +73,15 @@ public class AuthService
         return userId;
     }
 
-    public async Task<string> RegisterAdminAsync(string email, string password, string fullName)
+    public async Task<string> RegisterAdministratorAsync(string email, string password, string fullName, string userRole)
     {
-        var userId = await RegisterUserAsync(email, password, "Admin");
+        var userId = await RegisterUserAsync(email, password, userRole);
 
         var adminInfor = new
         {
             Email = email,
             FullName = fullName,
-            Type = "Admin",
+            Type = userRole,
             Uid = userId
         };
 
@@ -91,7 +91,6 @@ public class AuthService
 
         return userId;
     }
-
 
     public async Task<string> RegisterCompanyAsync(string email, string password, string fullName, string description, string phoneNumber)
     {

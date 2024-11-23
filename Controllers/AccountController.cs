@@ -175,18 +175,24 @@ namespace BumbleBeeWebApp.Controllers
 
         // GET: Register Admin
         [HttpGet]
-        public IActionResult RegisterAdmin()
+        public IActionResult RegisterAdministrator()
         {
             return View();
         }
 
         // POST: Register Admin
         [HttpPost]
-        public async Task<IActionResult> RegisterAdmin(string userEmail, string password, string confirmPassword, string fullName) 
+        public async Task<IActionResult> RegisterAdministrator(string userEmail, string password, string confirmPassword, string fullName, string userRole) 
         {
             if (password != confirmPassword)
             {
                 ViewBag.ErrorMessage = "Passwords do not match.";
+                return View();
+            }
+
+            if (IsValidUserRole(userRole))
+            {
+                ViewBag.ErrorMessage = "No user role is selected.";
                 return View();
             }
 
@@ -210,7 +216,7 @@ namespace BumbleBeeWebApp.Controllers
 
             try
             {
-                var userId = await _authService.RegisterAdminAsync(userEmail, password, fullName);
+                var userId = await _authService.RegisterAdministratorAsync(userEmail, password, fullName, userRole);
                 return View("RegisterSuccess");
             }
             catch (Exception ex)
@@ -320,6 +326,11 @@ namespace BumbleBeeWebApp.Controllers
         private bool IsValidPhoneNumber(string phoneNumber)
         {
             return !string.IsNullOrEmpty(phoneNumber) && Regex.IsMatch(phoneNumber, @"^\+?[1-9]\d{1,14}$");
+        }
+
+        private bool IsValidUserRole(string userRole)
+        {
+            return !string.IsNullOrEmpty(userRole);
         }
 
         private bool IsValidName(string name)
