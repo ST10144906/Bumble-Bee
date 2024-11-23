@@ -64,3 +64,36 @@
     padding: 5px;
 }
 
+.dropdown-enhanced {
+    background-color: var(--background);
+    color: var(--text); /* Text color variable */
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 18px;
+    text-align: center;
+    text-align-last: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: box-shadow 0.3s ease-in-out; /* Smooth hover effect */
+    appearance: none;
+}
+
+    .dropdown-enhanced:hover,
+    .dropdown-enhanced:focus {
+        box-shadow: 0 0 8px var(--primary);
+        outline: none; /* Remove default outline */
+    }
+
+    .dropdown-enhanced option {
+        background-color: var(--background);
+        color: var(--text);
+        padding: 10px; /* Padding inside options */
+    }
+
+        .dropdown-enhanced option:disabled {
+            color: var(--accent); /* Highlight disabled option with accent color */
+        }
+
+.centered-option {
+    text-align: center; /* Ensures "Admin Features" is centered */
+}
