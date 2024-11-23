@@ -263,7 +263,9 @@ namespace BumbleBeeWebApp.Controllers.Admin
                         ReferenceNumber = companyData.ContainsKey("ReferenceNumber") ? companyData["ReferenceNumber"]?.ToString() : string.Empty,
                         TaxNumber = companyData.ContainsKey("TaxNumber") ? companyData["TaxNumber"]?.ToString() : string.Empty,
                         Email = companyData.ContainsKey("Email") ? companyData["Email"]?.ToString() : string.Empty,
-                        PhoneNumber = companyData.ContainsKey("PhoneNumber") ? companyData["PhoneNumber"]?.ToString() : string.Empty
+                        PhoneNumber = companyData.ContainsKey("PhoneNumber") ? companyData["PhoneNumber"]?.ToString() : string.Empty,
+                        ApprovalStatus = companyData.ContainsKey("ApprovalStatus") ? companyData["ApprovalStatus"]?.ToString() : string.Empty,
+                        DocumentUrl = companyData.ContainsKey("DocumentUrl") ? companyData["DocumentUrl"]?.ToString() : string.Empty
                     };
 
                     companies.Add(company);
@@ -272,6 +274,12 @@ namespace BumbleBeeWebApp.Controllers.Admin
 
             return View("~/Views/Admin/CompanyManager.cshtml", companies);
         }
+
+        public async Task<IActionResult> UpdateApproval(string companyId, string email)
+        {
+            return View(); // TODO needs to be built 
+        }
+
 
 
     }
