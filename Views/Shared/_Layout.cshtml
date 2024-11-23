@@ -22,7 +22,7 @@
         <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3 curved-navbar">
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -72,9 +72,11 @@
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <!-- Action Links -->
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Profile">View Profile</a></li>
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Settings">Settings</a></li>
-                                    <li><hr class="dropdown-divider"></li>
+                                    @if (Context.Session.GetString("UserType") == "Donor" || Context.Session.GetString("UserType") == "Company")
+                                    {
+                                        <li><a class="dropdown-item" asp-area="" asp-controller="Landing" asp-action="ViewProfile">View Profile</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    }
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
                                 </ul>
                             </li>

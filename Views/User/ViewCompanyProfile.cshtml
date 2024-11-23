@@ -1,0 +1,27 @@
+﻿@model BumbleBeeWebApp.Models.UserAndCompanyViewModel
+
+@{
+    ViewData["Title"] = "User and Company Details";
+}
+
+<h1>User and Company Details</h1>
+
+<section>
+    <h2>User Details</h2>
+    <ul>
+        <li><strong>Email:</strong> @Model.UserEmail</li>
+        <li><strong>Full Name:</strong> @Model.UserFullName</li>
+        <li><strong>Job Role:</strong> @Model.UserJobRole</li>
+        <li><strong>Phone Number:</strong> @Model.UserPhoneNumber</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Company Details</h2>
+    <ul>
+        <li><strong>Company Name:</strong> @Model.CompanyName</li>
+        <li><strong>Reference Number:</strong> @Model.CompanyReferenceNumber</li>
+        <li><strong>Tax Number:</strong> @Model.CompanyTaxNumber</li>
+        <li><strong>Email:</strong> @Model.CompanyEmail</li>
+    </ul>
+</section>

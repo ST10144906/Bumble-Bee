@@ -24,12 +24,6 @@ namespace BumbleBeeWebApp.Controllers
             return View(randomTestimonial);
         }
 
-
-        public IActionResult AboutUs()
-        {
-            return View();
-        }
-
         // Navbar Methods
         public IActionResult LoginPage()
         {
@@ -112,6 +106,11 @@ namespace BumbleBeeWebApp.Controllers
 
             // Pass the project name to the Payment page
             return RedirectToAction("Index", "Payment", new { selectedProject = selectedProjectName });
+        }
+
+        public IActionResult ViewProfile()
+        {
+            return RedirectToAction("Index", "User");
         }
     }
 }

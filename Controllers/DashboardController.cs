@@ -79,7 +79,7 @@ namespace BumbleBeeWebApp.Controllers
                                 {
                                     string status = projectDoc.ContainsField("Status") ? projectDoc.GetValue<string>("Status") : null;
 
-                                    if (HttpContext.Session.GetString("UserType") == "Admin" && status == "Funding Approved")
+                                    if (HttpContext.Session.GetString("UserType") == "Admin" && status == "Pending Approval")
                                     {
                                         var project = new Project
                                         {
@@ -195,7 +195,7 @@ namespace BumbleBeeWebApp.Controllers
                                     ProjectName = projectDoc.ContainsField("ProjectName") ? projectDoc.GetValue<string>("ProjectName") : "Unknown Project",
                                     Description = projectDoc.ContainsField("Description") ? projectDoc.GetValue<string>("Description") : "No Description",
                                     DateCreated = projectDoc.ContainsField("DateCreated") ? projectDoc.GetValue<DateTime>("DateCreated") : DateTime.MinValue,
-                                    Status = "Funding Approved",
+                                    Status = projectDoc.ContainsField("Status") ? projectDoc.GetValue<string>("Status") : "No Description",
                                     MiscellaneousDocumentsUrl = projectDoc.ContainsField("MiscellaneousDocumentsUrl") ? projectDoc.GetValue<string>("MiscellaneousDocumentsUrl") : null
                                 };
                             }
