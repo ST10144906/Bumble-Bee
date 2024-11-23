@@ -13,7 +13,8 @@
 </div>
 
 <div class="container dashboard-main">
-    <form asp-action="Create" method="post">
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="CompanyID" />
         <div class="form-group">
             <label for="Name">Organisation Name</label>
             <input asp-for="Name" class="form-control" required />
@@ -50,8 +51,18 @@
             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
         </div>
 
+        <div class="form-group">
+            <label for="Document">Upload Supporting Document</label>
+            <input type="file" name="document" class="form-control" />
+            <small class="form-text text-muted">Accepted formats: PDF, DOCX, etc.</small>
+            @if (!string.IsNullOrEmpty(Model.DocumentUrl))
+            {
+                <p>Current Document: <a href="@Model.DocumentUrl" target="_blank">View Document</a></p>
+            }
+        </div>
+
         <div class="text-center">
-            <button type="submit" class="btn">Submit Organization Details</button>
+            <button type="submit" class="btn">Save Organisation Details</button>
         </div>
     </form>
 </div>
