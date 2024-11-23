@@ -27,9 +27,13 @@
                                     <button type="submit" class="btn btn-light btn-lg mx-2">Download Document</button>
                                 </form>
 
-                                <form asp-action="ApproveFunding" asp-controller="Dashboard" method="get">
+                                <form asp-action="ApproveFunding" asp-controller="Dashboard" method="post">
+                                    <input type="hidden" name="companyId" value="@ViewData["CompanyID"]" />
+                                    <input type="hidden" name="projectId" value="@Model.Id" />
                                     <button type="submit" class="btn btn-light btn-lg mx-2">Approve Funding</button>
                                 </form>
+
+
                             }
                             else if (Context.Session.GetString("UserType") == "Donor")
                             {

@@ -150,6 +150,7 @@ namespace BumbleBeeWebApp.Controllers
             var company = await LoadCompanyByProjectId(projectId);
             if (company != null)
             {
+                ViewData["CompanyId"] = company.CompanyID?? "Unknown CompanyId";
                 ViewData["CompanyName"] = company.Name ?? "Unknown Company";
                 ViewData["ReferenceNumber"] = company.ReferenceNumber ?? "N/A";
                 ViewData["TaxNumber"] = company.TaxNumber ?? "N/A";
@@ -334,6 +335,61 @@ namespace BumbleBeeWebApp.Controllers
             // Redirect to the Payment page with the selected project name
             return RedirectToAction("Index", "Payment", new { selectedProject = selectedProjectName });
         }
+
+        // Method to Approve FUnding of the Projects
+        [HttpPost]
+        public async Task<IActionResult> ApproveFunding(string companyId, string projectId)
+        {
+            try
+            {
+                _logger.LogInformation("Entering ApproveFunding action for Company ID: {CompanyId}, Project ID: {ProjectId}", companyId, projectId);
+
+                // Reference to the project document
+                DocumentReference projectDocRef = _firestoreDb
+                    .Collection("companies")
+                    .Document(companyId)
+                    .Collection("projects")
+                    .Document(projectId);
+
+                // Fetch the project data
+                DocumentSnapshot projectSnapshot = await projectDocRef.GetSnapshotAsync();
+
+                if (projectSnapshot.Exists)
+                {
+                    var projectData = projectSnapshot.ToDictionary();
+                    if (projectData.TryGetValue("Status", out var currentStatus) && currentStatus.ToString() == "Pending Approval")
+                    {
+                        // Update the project status
+                        var updates = new Dictionary<string, object>
+                {
+                    { "Status", "Approved Funding" }
+                };
+
+                        await projectDocRef.UpdateAsync(updates);
+                        _logger.LogInformation("Project status updated to Approved Funding for Project ID: {ProjectId}", projectId);
+                        TempData["Success"] = "Project funding approved successfully.";
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Project status is not Pending Approval for Project ID: {ProjectId}", projectId);
+                        TempData["Error"] = "Project is not in Pending Approval status.";
+                    }
+                }
+                else
+                {
+                    _logger.LogError("Project not found with ID: {ProjectId}", projectId);
+                    TempData["Error"] = "Project not found.";
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while approving project funding for Company ID: {CompanyId}, Project ID: {ProjectId}", companyId, projectId);
+                TempData["Error"] = "An error occurred while approving the project funding.";
+            }
+
+            return RedirectToAction("Dashboard", "Dashboard");
+        }
+
     }
 }
 
