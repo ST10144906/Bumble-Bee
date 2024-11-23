@@ -50,6 +50,13 @@ namespace BumbleBeeWebApp.Controllers.Company
                         return View("~/Views/CompanyServices/CreateProject.cshtml", project);
                     }
 
+                    // Check if the project name already exists
+                    if (await IsProjectNameValid(companyId, project.ProjectName))
+                    {
+                        ModelState.AddModelError(string.Empty, "A project with this name already exists. Please choose a different name.");
+                        return View("~/Views/CompanyServices/CreateProject.cshtml", project);
+                    }
+
                     DocumentReference projectDocRef = _firestoreDb.Collection("companies").Document(companyId).Collection("projects").Document();
                     await projectDocRef.SetAsync(new
                     {
@@ -110,6 +117,23 @@ namespace BumbleBeeWebApp.Controllers.Company
             }
 
             return View("~/Views/CompanyServices/CreateProject.cshtml", project);
+        }
+
+        private async Task<bool> IsProjectNameValid(string companyId, string projectName)
+        {
+            _logger.LogInformation("Validating project name: {ProjectName} for company ID: {CompanyId}", projectName, companyId);
+
+            var projectsRef = _firestoreDb.Collection("companies").Document(companyId).Collection("projects");
+            var query = projectsRef.WhereEqualTo("ProjectName", projectName);
+            var querySnapshot = await query.GetSnapshotAsync();
+
+            if (querySnapshot.Documents.Any())
+            {
+                _logger.LogWarning("Project name: {ProjectName} already exists for company ID: {CompanyId}", projectName, companyId);
+                return true;
+            }
+
+            return false;
         }
     }
 }
