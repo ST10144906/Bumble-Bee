@@ -9,7 +9,6 @@
 
 <div class="container dashboard-main">
     <div class="row">
-        <!-- You can add any additional content here if needed -->
     </div>
 
     <!-- Personalized Section Based on User Role -->
@@ -76,6 +75,56 @@
                         </div>
                     }                
                 }
+            </div>
+        }
+        @if (@Context.Session.GetString("UserType") == "Company")
+        {
+            <h2 class="section-title">Your Projects</h2>
+
+            <div class="projects-container">
+                <div class="projects-column">
+                    <h3>Pending Approval Projects</h3>
+                    <div class="projects-list2">
+                        @foreach (var project in Model.Where(p => p.Status == "Pending Approval"))
+                        {
+                            <div class="project-card2">
+                                <div>
+                                    <h5>@project.ProjectName</h5>
+                                    <p>@project.Description</p>
+                                    <p><strong>Date Created:</strong> @project.DateCreated.ToString("yyyy-MM-dd")</p>
+                                </div>
+                                <a class="btn"
+                                   asp-controller="Dashboard"
+                                   asp-action="ProjectDetails"
+                                   asp-route-projectId="@project.Id">
+                                    View Details
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="projects-column">
+                    <h3>Approved Projects</h3>
+                    <div class="projects-list2">
+                        @foreach (var project in Model.Where(p => p.Status == "Funding Approved"))
+                        {
+                            <div class="project-card2">
+                                <div>
+                                    <h5>@project.ProjectName</h5>
+                                    <p>@project.Description</p>
+                                    <p><strong>Date Created:</strong> @project.DateCreated.ToString("yyyy-MM-dd")</p>
+                                </div>
+                                <a class="btn"
+                                   asp-controller="Dashboard"
+                                   asp-action="ProjectDetails"
+                                   asp-route-projectId="@project.Id">
+                                    View Details
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
         }
 

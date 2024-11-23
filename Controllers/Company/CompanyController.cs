@@ -127,6 +127,8 @@ namespace BumbleBeeWebApp.Controllers.Company
             return View("~/Views/CompanyServices/CreateCompany.cshtml", company);
         }
 
+        // Howsit, theres a button in the CreateCompany view that views the document, it says access denied
+        // I dont really know much about viewing the doc so i cant point you directly to code
         private async Task<Models.Company> GetCompanyByUserIdAsync(string uid)
         {
             var companiesCollection = _firestoreDb.Collection("companies");

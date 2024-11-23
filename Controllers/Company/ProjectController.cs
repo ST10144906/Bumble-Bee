@@ -37,6 +37,7 @@ namespace BumbleBeeWebApp.Controllers.Company
             project.MiscellaneousDocumentsUrl = string.Empty;
             project.Status = "Pending Approval";
             project.DateCreated = DateTime.UtcNow;
+            ModelState.Remove("Id");
             if (ModelState.IsValid)
             {
                 try

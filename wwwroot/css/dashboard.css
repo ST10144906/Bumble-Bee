@@ -94,6 +94,7 @@ body {
 
 .projects-container {
     display: flex;
+    justify-content: space-between;
     flex-wrap: nowrap;
     overflow-x: auto;
     padding: 10px;
@@ -111,6 +112,20 @@ body {
         background: var(--color-light-green); 
         border-radius: 10px;
     }
+
+.projects-column {
+    flex: 0 0 50%; 
+    padding: 10px;
+    overflow: hidden;
+}
+
+.projects-list2 {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow-y: auto;
+    max-height: 400px;
+}
 
 .company-card {
     min-width: 300px;
@@ -155,6 +170,7 @@ body {
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    flex: 0 0 auto;
 }
 
     .project-card h5 {
