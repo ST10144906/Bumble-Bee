@@ -3,13 +3,13 @@
 @{
     ViewData["Title"] = "Donor Profile";
 }
-
-<h1>Donor Profile</h1>
+<link rel="stylesheet" type="text/css" href="~/css/accounts.css" />
+<h1 class="mb-4 text-black">Donor Profile</h1>
 
 @if (Model != null)
 {
-    <div class="card shadow p-4">
-        <h2 class="text-primary">@Model.DonorName</h2>
+    <div class="card shadow p-4 mb-4">
+        <h2 class="text-black">@Model.DonorName</h2>
         <p><strong>South Africa ID:</strong> @Model.SouthAfricaId</p>
         <p><strong>Tax Number:</strong> @Model.TaxNumber</p>
         <p><strong>Email:</strong> @Model.Email</p>
@@ -22,3 +22,4 @@ else
         No donor information found.
     </div>
 }
+
