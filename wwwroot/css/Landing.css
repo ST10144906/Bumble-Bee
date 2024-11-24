@@ -193,3 +193,12 @@ h2 {
     }
 }
 
+.logo-container {
+    text-align: center; /* Center the logo horizontally */
+    margin-top: 1px; /* Adjust the top margin to add spacing */
+}
+
+.logo-small {
+    max-width: 100px; /* Adjust to the desired size */
+    height: auto; /* Maintains aspect ratio */
+}

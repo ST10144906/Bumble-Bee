@@ -483,6 +483,18 @@ namespace BumbleBeeWebApp.Controllers
                 PdfPage page = document.AddPage();
                 XGraphics gfx = XGraphics.FromPdfPage(page);
 
+                string logoPath = "wwwroot/images/logo.png"; 
+
+                XImage logo = XImage.FromFile(logoPath);
+
+                
+                double logoWidth = 100; 
+                double logoHeight = logo.PixelHeight * logoWidth / logo.PixelWidth; 
+                double logoX = (page.Width - logoWidth) / 2; 
+                double logoY = 20; 
+
+                // Draw the logo
+                gfx.DrawImage(logo, logoX, logoY, logoWidth, logoHeight);
                 // Define fonts
                 XFont titleFont = new XFont("Times New Roman", 18, XFontStyleEx.Bold);
                 XFont boldFont = new XFont("Times New Roman", 12, XFontStyleEx.Bold);
@@ -491,11 +503,11 @@ namespace BumbleBeeWebApp.Controllers
 
                 // Draw the heading at the top center
                 gfx.DrawString("Invoice", titleFont, XBrushes.Black, 
-                    new XRect(0, 20, page.Width, 40), XStringFormats.TopCenter);
+                    new XRect(0, 100, page.Width, 40), XStringFormats.TopCenter);
 
                 // Draw a box around the details
                 double tableStartX = 40;
-                double tableStartY = 80;
+                double tableStartY = 130;
                 double tableWidth = page.Width - 80;
                 double tableRowHeight = 25;
                 gfx.DrawRectangle(XPens.Black, tableStartX, tableStartY, tableWidth, tableRowHeight * 7);

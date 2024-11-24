@@ -1,29 +1,44 @@
-﻿@model BumbleBeeWebApp.Models.UserAndCompanyViewModel
-
-@{
+﻿@{
     ViewData["Title"] = "User and Company Details";
 }
 <link rel="stylesheet" type="text/css" href="~/css/accounts.css" />
 
-<h1 class="mb-4 text-black">User and Company Details</h1>
+<div class="text-center">
+    <h1 class="mb-4 text-black">Company Details</h1>
 
-<section class="card shadow p-4 mb-4">
-    <h2 class="text-black">User Details</h2>
-    <ul style="list-style-type: none; padding-left: 0;">
-        <li><strong>Email:</strong> @Model.UserEmail</li>
-        <li><strong>Full Name:</strong> @Model.UserFullName</li>
-        <li><strong>Job Role:</strong> @Model.UserJobRole</li>
-        <li><strong>Phone Number:</strong> @Model.UserPhoneNumber</li>
-    </ul>
-</section>
+    <section class="card shadow p-4 mb-4 mx-auto">
+        <h2 class="text-black">Company User Details</h2>
+        <ul style="list-style-type: none; padding-left: 0; text-align: left;">
+            <li><strong>Email:</strong> @Model.UserEmail</li>
+            <li><strong>Full Name:</strong> @Model.UserFullName</li>
+            <li><strong>Job Role:</strong> @Model.UserJobRole</li>
+            <li><strong>Phone Number:</strong> @Model.UserPhoneNumber</li>
+        </ul>
+    </section>
 
-<section class="card shadow p-4 mb-4">
-    <h2 class="text-black">Company Details</h2>
-    <ul style="list-style-type: none; padding-left: 0;">
-        <li><strong>Company Name:</strong> @Model.CompanyName</li>
-        <li><strong>Reference Number:</strong> @Model.CompanyReferenceNumber</li>
-        <li><strong>Tax Number:</strong> @Model.CompanyTaxNumber</li>
-        <li><strong>Email:</strong> @Model.CompanyEmail</li>
-    </ul>
-</section>
+    <section class="card shadow p-4 mb-4 mx-auto">
+        <h2 class="text-black">Company Details</h2>
+        <ul style="list-style-type: none; padding-left: 0; text-align: left;">
+            <li><strong>Company Name:</strong> @Model.CompanyName</li>
+            <li><strong>Reference Number:</strong> @Model.CompanyReferenceNumber</li>
+            <li><strong>Tax Number:</strong> @Model.CompanyTaxNumber</li>
+            <li><strong>Email:</strong> @Model.CompanyEmail</li>
+        </ul>
+    </section>
+</div>
 
+<style>
+    .text-center {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        text-align: center;
+    }
+
+    .card {
+        width: 50%; /* Adjust as needed */
+        text-align: center;
+    }
+</style>
