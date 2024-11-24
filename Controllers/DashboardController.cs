@@ -198,7 +198,6 @@ namespace BumbleBeeWebApp.Controllers
             return View(project);
         }
 
-        // Method to get the received funding amount for a project
         private async Task<decimal> GetReceivedFundingAmount(string projectName)
         {
             decimal receivedAmount = 0;
@@ -206,19 +205,38 @@ namespace BumbleBeeWebApp.Controllers
 
             try
             {
+                // Log before querying the Firestore collection
+                _logger.LogInformation("Querying the 'donations' collection for ProjectName: {ProjectName}", projectName);
+
                 var donationsCollection = _firestoreDb.Collection("donations");
-                var query = donationsCollection.WhereEqualTo("projectname", projectName);
+                var query = donationsCollection.WhereEqualTo("ProjectName", projectName);
+                _logger.LogInformation("Executing Firestore query...");
+
                 var snapshot = await query.GetSnapshotAsync();
 
+                if (snapshot.Documents.Count == 0)
+                {
+                    _logger.LogWarning("No documents found in 'donations' collection for project: {ProjectName}", projectName);
+                }
+
+                // Loop through the documents and sum the "Amount" fields
                 foreach (var document in snapshot.Documents)
                 {
                     if (document.Exists)
                     {
-                        receivedAmount += document.GetValue<decimal>("Amount");
+                        // Fetch as double and convert to decimal
+                        var amount = document.GetValue<double>("Amount");
+                        _logger.LogInformation("Document found. Adding amount: {Amount}", amount);
+                        receivedAmount += (decimal)amount; // Explicit cast to decimal
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Document exists but is missing expected data: {DocumentId}", document.Id);
                     }
                 }
 
-                _logger.LogInformation("Received funding for project {ProjectName}: {ReceivedAmount}", projectName, receivedAmount);
+                // Log the total received funding
+                _logger.LogInformation("Total received funding for project {ProjectName}: {ReceivedAmount}", projectName, receivedAmount);
             }
             catch (Exception ex)
             {
@@ -227,7 +245,6 @@ namespace BumbleBeeWebApp.Controllers
 
             return receivedAmount;
         }
-
 
         // View project details
         private async Task<Project> LoadProjectById(string projectId)

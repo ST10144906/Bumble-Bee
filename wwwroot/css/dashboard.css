@@ -107,13 +107,24 @@ body {
     .projects-container::-webkit-scrollbar {
         display: block;
         height: 6px;
-        background: #ccc; 
+        background: #adadad;
     }
 
     .projects-container::-webkit-scrollbar-thumb {
-        background: var(--color-light-green); 
+        background: var(--color-very-light-green); 
         border-radius: 10px;
     }
+
+.projects-container2 {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    padding: 10px;
+    gap: 20px;
+    background-color: var(--color-light-green);
+    border-radius: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
 
 .projects-column {
     flex: 0 0 50%; 
@@ -127,6 +138,17 @@ body {
     gap: 15px;
     overflow-y: auto;
     max-height: 400px;
+}
+
+    .projects-list2::-webkit-scrollbar {
+        display: block;
+        width: 6px;
+        background: #adadad;
+    }
+
+.projects-list2::-webkit-scrollbar-thumb {
+    background: var(--color-very-light-green);
+    border-radius: 10px;
 }
 
 .company-card {

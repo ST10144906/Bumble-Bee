@@ -11,6 +11,6 @@
         public IFormFile MiscellaneousDocuments { get; set; }
         public string MiscellaneousDocumentsUrl { get; set; } = string.Empty;
         public DateTime DateCreated { get; set; } = DateTime.UtcNow;
-        public int FundingAmount { get; set; }
+        public double FundingAmount { get; set; }
     }
 }
