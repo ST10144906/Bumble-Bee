@@ -25,6 +25,7 @@
                             @if (Context.Session.GetString("UserType") == "Admin")
                             {
                                 <form asp-action="DownloadDocument" asp-controller="Dashboard" method="get">
+                                    <input type="hidden" name="documentUrl" value="@Model.MiscellaneousDocumentsUrl" />
                                     <button type="submit" class="btn btn-light btn-lg mx-2">Download Document</button>
                                 </form>
 

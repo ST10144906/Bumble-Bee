@@ -13,11 +13,13 @@ namespace BumbleBeeWebApp.Controllers
         private readonly FirestoreDb _firestoreDb;
         private readonly FirestoreService _firestoreService;
         private readonly ILogger<DashboardController> _logger;
+        private readonly StorageService _storageService;
 
-        public DashboardController(FirestoreService firestoreService, FirestoreDb firestoreDb, ILogger<DashboardController> logger)
+        public DashboardController(FirestoreService firestoreService, StorageService storageService, FirestoreDb firestoreDb, ILogger<DashboardController> logger)
         {
             _authService = new AuthService(firestoreService);
             _firestoreService = firestoreService;
+            _storageService = storageService;
             _firestoreDb = firestoreDb;
             _logger = logger;
         }
@@ -525,6 +527,47 @@ namespace BumbleBeeWebApp.Controllers
             }
 
             return RedirectToAction("Dashboard", "Dashboard");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DownloadDocument(string documentUrl)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(documentUrl))
+                {
+                    Console.WriteLine("Document URL is null or empty.");
+                    return BadRequest("The document URL is required.");
+                }
+
+                Console.WriteLine($"Document URL: {documentUrl}");
+
+                // Extract the object name from the URL
+                var uri = new Uri(documentUrl);
+                var objectName = uri.AbsolutePath.TrimStart('/');
+                Console.WriteLine($"Extracted Object Name: {objectName}");
+
+                // Download the file using the extracted object name
+                var fileBytes = await _storageService.DownloadFileAsync(objectName);
+
+                // Get the file name from the URL
+                var fileName = Path.GetFileName(uri.LocalPath);
+                Console.WriteLine($"File Name for Download: {fileName}");
+
+                // Return the file as a downloadable response
+                return File(fileBytes, "application/octet-stream", fileName);
+            }
+            catch (FileNotFoundException ex)
+            {
+                Console.WriteLine($"File not found: {ex.Message}");
+                return NotFound("The requested document could not be found.");
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return a meaningful error message
+                Console.WriteLine($"Error downloading document: {ex.Message}");
+                return StatusCode(500, "An error occurred while downloading the document.");
+            }
         }
 
     }
