@@ -4,6 +4,7 @@ using Google.Cloud.Firestore;
 using Google.Cloud.Firestore.V1;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace BumbleBeeWebApp.Controllers.Admin
@@ -12,12 +13,14 @@ namespace BumbleBeeWebApp.Controllers.Admin
     {
         private readonly AuthService _authService;
         private readonly FirestoreService _firestoreService;
+        private readonly FirestoreDb _firestoreDb;
         private readonly ILogger<DashboardController> _logger;
 
-        public AdminManagerController(FirestoreService firestoreService, ILogger<DashboardController> logger)
+        public AdminManagerController(FirestoreService firestoreService, FirestoreDb firestoreDb, ILogger<DashboardController> logger)
         {
             _authService = new AuthService(firestoreService);
             _firestoreService = firestoreService;
+            _firestoreDb = firestoreDb;
             _logger = logger;
         }
 
@@ -275,12 +278,66 @@ namespace BumbleBeeWebApp.Controllers.Admin
             return View("~/Views/Admin/CompanyManager.cshtml", companies);
         }
 
-        public async Task<IActionResult> UpdateApproval(string companyId, string email)
+        public async Task<IActionResult> UpdateApproval(string companyId)
         {
-            return View(); // TODO needs to be built 
+            Console.WriteLine("Company Id: " + companyId);
+
+            try
+            {
+                // Reference the company document in Firestore
+                DocumentReference companyDocRef = _firestoreDb.Collection("companies").Document(companyId);
+
+                // Get the company snapshot
+                DocumentSnapshot companySnapshot = await companyDocRef.GetSnapshotAsync();
+
+                if (!companySnapshot.Exists)
+                {
+                    _logger.LogWarning("Company document does not exist for Company ID: {CompanyId}", companyId);
+                    TempData["Error"] = "Company does not exist.";
+                    return await LoadCompanies();
+                }
+
+                // Convert the snapshot to a dictionary
+                var companyData = companySnapshot.ToDictionary();
+
+                // Check if the ApprovalStatus field exists
+                if (!companyData.TryGetValue("ApprovalStatus", out var currentStatus))
+                {
+                    _logger.LogWarning("ApprovalStatus field is missing for Company ID: {CompanyId}", companyId);
+                    TempData["Error"] = "Approval status is missing for the company.";
+                    return await LoadCompanies();
+                }
+
+                // Update the ApprovalStatus based on its current value
+                string updatedStatus;
+
+                if (currentStatus.ToString() == "Pending Approval")
+                {
+                    updatedStatus = "Approved";
+                    TempData["Success"] = "Company funding approved successfully.";
+                    _logger.LogInformation("Company status updated to Approved for Company ID: {CompanyId}", companyId);
+                }
+                else
+                {
+                    updatedStatus = "Pending Approval";
+                    TempData["Success"] = "Company status set to Pending Approval.";
+                    _logger.LogInformation("Company status updated to Pending Approval for Company ID: {CompanyId}", companyId);
+                }
+
+                // Perform the update in Firestore
+                var updates = new Dictionary<string, object>
+        {
+            { "ApprovalStatus", updatedStatus }
+        };
+                await companyDocRef.UpdateAsync(updates);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while updating approval for Company ID: {CompanyId}", companyId);
+                TempData["Error"] = "An error occurred while updating the company approval.";
+            }
+
+            return await LoadCompanies(); // Placeholder for redirection or reloading
         }
-
-
-
     }
 }
