@@ -38,8 +38,7 @@ namespace BumbleBeeWebApp.Controllers
         // Button Actions
         public IActionResult LearnMore()
         {
-            // Redirects to the mission section on the landing page
-            return RedirectToAction("Index", "Landing", new { section = "mission" });
+            return View("LearnMore");
         }
 
         public IActionResult TestimonailCreatePage()
