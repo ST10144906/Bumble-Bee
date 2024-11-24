@@ -1,0 +1,41 @@
+﻿@model List<Dictionary<string, object>>
+<link rel="stylesheet" type="text/css" href="~/css/dashboard.css" />
+
+<div class="dashboard-header">
+    <h1>Audit Transactions</h1>
+    <p>Select a donation to audit.</p>
+</div>
+
+<div class="donations-container">
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <p>No donations available for auditing.</p>
+    }
+    else
+    {
+        @foreach (var donation in Model)
+        {
+            <div class="donation-card">
+                <h5>Project Name: @donation["ProjectName"]</h5>
+                <p><strong>Amount:</strong> @((double)donation["Amount"])</p>
+                <p><strong>Payment Type:</strong> @donation["PaymentType"]</p>
+                <p><strong>Date:</strong> @(((Google.Cloud.Firestore.Timestamp)donation["Timestamp"]).ToDateTime().ToString("yyyy-MM-dd"))</p>
+
+                <form asp-controller="Audit" asp-action="AuditTransaction" method="post">
+                    <input type="hidden" name="donationId" value="@donation["DonationId"]" />
+                    <button type="submit" class="btn btn-info">Audit Transaction</button>
+                </form>
+            </div>
+        }
+    }
+</div>
+

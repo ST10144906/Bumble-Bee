@@ -1,0 +1,28 @@
+﻿@model List<BumbleBeeWebApp.Models.AuditLog>
+
+<h2>Audit Results</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Project Name</th>
+            <th>Amount</th>
+            <th>Payment Type</th>
+            <th>Audited At</th>
+            <th>Auditor User ID</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var log in Model)
+        {
+            <tr>
+                <td>@log.ProjectName</td>
+                <td>@log.Amount.ToString("C")</td>
+                <td>@log.PaymentType</td>
+                <td>@log.AuditedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                <td>@log.UserId</td>
+                <td>@log.Notes</td>
+            </tr>
+        }
+    </tbody>
+</table>

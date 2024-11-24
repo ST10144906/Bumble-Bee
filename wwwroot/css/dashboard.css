@@ -232,3 +232,43 @@ body {
         margin: 3px 0;
         color: #666;
     }
+
+.donations-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between cards */
+    margin: 20px;
+    padding: 10px;
+    overflow-y: auto; /* Enable vertical scrolling only if content overflows */
+    max-height: 10000px; /* Adjust height dynamically relative to the viewport */
+}
+
+.donation-card {
+    background-color: #f0f8ff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+    .donation-card h5 {
+        color: #f0a500;
+        margin-bottom: 10px;
+    }
+
+    .donation-card p {
+        margin: 5px 0;
+    }
+
+.btn-info {
+    background-color: #5bc0de;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+    .btn-info:hover {
+        background-color: #31b0d5;
+    }
