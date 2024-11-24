@@ -207,7 +207,7 @@ body {
     }
 
 .project-card {
-    min-width: 100%;
+    min-width: 45%;
     background-color: var(--color-pastel-green);
     padding: 10px;
     border-radius: 5px;
