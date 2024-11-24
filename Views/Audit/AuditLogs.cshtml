@@ -3,25 +3,8 @@
 
 <div class="dashboard-header">
     <h1>Audit Logs</h1>
-    <p>Search and view audit logs below.</p>
+    <p>Review the logs or select specific ones to generate a report.</p>
 </div>
-
-@* <div class="search-container">
-    <form method="get" asp-action="SearchAuditLogs" asp-controller="Audit">
-        <div class="form-group">
-            <label for="searchType">Search By:</label>
-            <select name="searchType" id="searchType" class="form-control">
-                <option value="ProjectName">Project Name</option>
-                <option value="PaymentType">Payment Type</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="searchTerm">Search Term:</label>
-            <input type="text" name="searchTerm" id="searchTerm" class="form-control" />
-        </div>
-        <button type="submit" class="btn btn-primary mt-2">Search</button>
-    </form>
-</div> *@
 
 <div class="search-container mb-4">
     <form asp-controller="Audit" asp-action="SearchAuditLogs" method="get" class="d-flex align-items-center">
@@ -30,48 +13,45 @@
             <option value="PaymentType">Payment Type</option>
         </select>
         <input type="text" name="searchTerm" class="form-control me-2" placeholder="Enter search term" />
-        <button type="submit" class="btn btn-info">Search</button>
+        <button type="submit" class="btn btn">Search</button>
     </form>
 </div>
 
-<div class="audit-logs-container">
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-    }
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-    }
-
-    @if (Model == null || !Model.Any())
-    {
-        <p>No audit logs available.</p>
-    }
-    else
-    {
-        <form asp-controller="Audit" asp-action="GenerateSelectedReports" method="post">
+<form asp-controller="Audit" asp-action="GenerateSelectedReports" method="post">
+    <div class="donations-container" style="background-color: var(--color-light-green);">
+        @if (Model == null || !Model.Any())
+        {
+            <p>No audit logs available.</p>
+        }
+        else
+        {
             @foreach (var log in Model)
             {
-                <div class="donation-card">
-                    <h5>Project Name: @log.ProjectName</h5>
-                    <p><strong>Amount:</strong> @log.Amount</p>
+                <div class="project-card">
+                    <h4>@log.ProjectName</h4>
+                    <p><strong>Amount:</strong> @log.Amount.ToString("C")</p>
                     <p><strong>Payment Type:</strong> @log.PaymentType</p>
-                    <p><strong>Date:</strong> @log.AuditedAt.ToString("yyyy-MM-dd")</p>
+                    <p><strong>Audited At:</strong> @log.AuditedAt.ToString("yyyy-MM-dd HH:mm")</p>
                     <p><strong>Notes:</strong> @log.Notes</p>
 
                     <div class="form-check">
-                        <input type="checkbox" name="selectedAuditLogIds" value="@log.AuditLogId" class="form-check-input" id="@log.AuditLogId" />
-                        <label class="form-check-label" for="@log.AuditLogId">Select this log</label>
+                        <input type="checkbox" name="selectedAuditLogIds" value="@log.AuditLogId" class="form-check-input" id="log-@log.AuditLogId" />
+                        <label for="log-@log.AuditLogId" class="form-check-label">Select for Report</label>
                     </div>
                 </div>
             }
+        }
+        
+    </div>
+    <button type="submit" class="btn btn">Generate Selected Report</button>
+</form>
 
-            <button type="submit" class="btn btn-info">Generate Selected Report</button>
-        </form>
 
-        <form asp-controller="Audit" asp-action="GenerateAuditReports" method="post" style="margin-top: 20px;">
-            <button type="submit" class="btn btn-warning">Generate Report for All Logs</button>
-        </form>
-    }
-</div>
+    
+    <form asp-controller="Audit" asp-action="GenerateAuditReports" method="post">
+        <button type="submit" class="btn btn">Generate Report for All Audits</button>
+    </form>
+
+
+
+
