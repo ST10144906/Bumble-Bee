@@ -3,7 +3,35 @@
 
 <div class="dashboard-header">
     <h1>Audit Logs</h1>
-    <p>Select logs to generate a report, or generate a report for all logs.</p>
+    <p>Search and view audit logs below.</p>
+</div>
+
+@* <div class="search-container">
+    <form method="get" asp-action="SearchAuditLogs" asp-controller="Audit">
+        <div class="form-group">
+            <label for="searchType">Search By:</label>
+            <select name="searchType" id="searchType" class="form-control">
+                <option value="ProjectName">Project Name</option>
+                <option value="PaymentType">Payment Type</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="searchTerm">Search Term:</label>
+            <input type="text" name="searchTerm" id="searchTerm" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Search</button>
+    </form>
+</div> *@
+
+<div class="search-container mb-4">
+    <form asp-controller="Audit" asp-action="SearchAuditLogs" method="get" class="d-flex align-items-center">
+        <select name="searchType" class="form-select me-2" style="width: 150px;">
+            <option value="ProjectName">Project Name</option>
+            <option value="PaymentType">Payment Type</option>
+        </select>
+        <input type="text" name="searchTerm" class="form-control me-2" placeholder="Enter search term" />
+        <button type="submit" class="btn btn-info">Search</button>
+    </form>
 </div>
 
 <div class="audit-logs-container">

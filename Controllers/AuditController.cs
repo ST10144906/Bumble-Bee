@@ -404,6 +404,69 @@ public class AuditController : Controller
 
         return View("AuditTransactions", donations); // Reuse the same view
     }
+
+    [HttpGet]
+    public async Task<IActionResult> SearchAuditLogs(string searchType, string searchTerm)
+    {
+        var auditLogs = new List<AuditLog>();
+
+        try
+        {
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                TempData["ErrorMessage"] = "Please enter a search term.";
+                return RedirectToAction("AuditLogsView");
+            }
+
+            // Convert the search term to lowercase for case-insensitive matching
+            searchTerm = searchTerm.ToLower();
+
+            // Query Firestore for all AuditLogs
+            Query auditLogsQuery = _firestoreDb.Collection("auditLogs");
+            QuerySnapshot auditLogsSnapshot = await auditLogsQuery.GetSnapshotAsync();
+
+            foreach (var document in auditLogsSnapshot.Documents)
+            {
+                var data = document.ToDictionary();
+
+                // Convert the document to an AuditLog model
+                var auditLog = new AuditLog
+                {
+                    AuditLogId = document.Id,
+                    ProjectName = data.ContainsKey("ProjectName") ? data["ProjectName"].ToString() : string.Empty,
+                    Amount = data.ContainsKey("Amount") ? Convert.ToDouble(data["Amount"]) : 0,
+                    PaymentType = data.ContainsKey("PaymentType") ? data["PaymentType"].ToString() : string.Empty,
+                    AuditedAt = data.ContainsKey("AuditedAt") ? ((Google.Cloud.Firestore.Timestamp)data["AuditedAt"]).ToDateTime() : DateTime.MinValue,
+                    Notes = data.ContainsKey("Notes") ? data["Notes"].ToString() : string.Empty
+                };
+
+                // Check if the field matches the search term
+                if (searchType == "ProjectName" && auditLog.ProjectName.ToLower().Contains(searchTerm))
+                {
+                    auditLogs.Add(auditLog);
+                }
+                else if (searchType == "PaymentType" && auditLog.PaymentType.ToLower().Contains(searchTerm))
+                {
+                    auditLogs.Add(auditLog);
+                }
+            }
+
+            if (!auditLogs.Any())
+            {
+                TempData["ErrorMessage"] = "No audit logs matched your search.";
+                return RedirectToAction("AuditLogsView");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error searching audit logs: {ex.Message}");
+            TempData["ErrorMessage"] = "An error occurred while searching audit logs.";
+            return RedirectToAction("AuditLogsView");
+        }
+
+        // Return the filtered AuditLogs to the view
+        return View("AuditLogs", auditLogs);
+    }
 }
 
 public static class StringExtensions
