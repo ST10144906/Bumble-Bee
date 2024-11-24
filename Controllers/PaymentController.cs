@@ -427,7 +427,7 @@ namespace BumbleBeeWebApp.Controllers
             try
             {
                 Console.WriteLine("Creating PDF document...");
-                
+
                 // Create a new PDF document
                 PdfDocument document = new PdfDocument();
                 document.Info.Title = "Invoice";
@@ -437,28 +437,78 @@ namespace BumbleBeeWebApp.Controllers
                 XGraphics gfx = XGraphics.FromPdfPage(page);
 
                 // Define fonts
-                XFont headerFont = new XFont("Times New Roman", 16);
+                XFont titleFont = new XFont("Times New Roman", 18, XFontStyleEx.Bold);
+                XFont boldFont = new XFont("Times New Roman", 12, XFontStyleEx.Bold);
                 XFont regularFont = new XFont("Times New Roman", 12);
+                XFont footerFont = new XFont("Times New Roman", 10, XFontStyleEx.Italic);
 
-                // Draw header
-                gfx.DrawString("Invoice", headerFont, XBrushes.Black, new XRect(0, 0, page.Width, page.Height), XStringFormats.TopCenter);
+                // Draw the heading at the top center
+                gfx.DrawString("Invoice", titleFont, XBrushes.Black, 
+                    new XRect(0, 20, page.Width, 40), XStringFormats.TopCenter);
 
-                // Draw invoice details
-                gfx.DrawString($"Date: {time:yyyy-MM-dd HH:mm:ss}", regularFont, XBrushes.Black, new XPoint(40, 100));
-                gfx.DrawString($"Project Name: {projectName}", regularFont, XBrushes.Black, new XPoint(40, 130));
-                gfx.DrawString($"Amount: {amount:C}", regularFont, XBrushes.Black, new XPoint(40, 160));
-                gfx.DrawString($"Payment Type: {paymentType}", regularFont, XBrushes.Black, new XPoint(40, 190));
-                gfx.DrawString($"Payment Interval: {interval ?? "N/A"}", regularFont, XBrushes.Black, new XPoint(40, 220));
+                // Draw a box around the details
+                double tableStartX = 40;
+                double tableStartY = 80;
+                double tableWidth = page.Width - 80;
+                double tableRowHeight = 25;
+                gfx.DrawRectangle(XPens.Black, tableStartX, tableStartY, tableWidth, tableRowHeight * 7);
 
-                // Draw user details
-                gfx.DrawString("User Details", headerFont, XBrushes.Black, new XPoint(40, 260));
-                gfx.DrawString($"Full Name: {userFullName}", regularFont, XBrushes.Black, new XPoint(40, 290));
-                gfx.DrawString($"Email: {userEmail}", regularFont, XBrushes.Black, new XPoint(40, 320));
-                gfx.DrawString($"ID Number: {idNumber}", regularFont, XBrushes.Black, new XPoint(40, 350));
-                gfx.DrawString($"Phone Number: {phoneNumber}", regularFont, XBrushes.Black, new XPoint(40, 380));
-                gfx.DrawString($"Tax Number: {taxNumber}", regularFont, XBrushes.Black, new XPoint(40, 410));
-                gfx.DrawString($"User Type: {userType}", regularFont, XBrushes.Black, new XPoint(40, 440));
-                gfx.DrawString($"UID: {uid}", regularFont, XBrushes.Black, new XPoint(40, 470));
+                // Define details for the table
+                string[,] details = new string[,]
+                {
+                    { "Donor Name [Individual]", userFullName },
+                    { "South African ID Number", idNumber },
+                    { "Tax Number", taxNumber },
+                    { "Donor E-mail", userEmail },
+                    { "Donor Phone", phoneNumber },
+                    { "Date of Donation", time.ToString("yyyy-MM-dd") },
+                    { "Nature of Donation", paymentType },
+                    { "Donation Amount", $"{amount:C}" }
+                };
+
+                // Draw the table rows
+                double currentY = tableStartY;
+                for (int i = 0; i < details.GetLength(0); i++)
+                {
+                    gfx.DrawString(details[i, 0], regularFont, XBrushes.Black, new XPoint(tableStartX + 5, currentY + 15));
+                    gfx.DrawString(details[i, 1], regularFont, XBrushes.Black, new XPoint(tableStartX + 200, currentY + 15));
+                    currentY += tableRowHeight;
+                    gfx.DrawLine(XPens.Black, tableStartX, currentY, tableStartX + tableWidth, currentY);
+                }
+
+                // Footer section
+                currentY += 70;
+
+                // Add confirmation text
+                gfx.DrawString("I confirm that the above was received by Bumble Bee Foundation.",
+                    regularFont, XBrushes.Black,
+                    new XRect(40, currentY, page.Width - 80, 20), XStringFormats.Center);
+
+                // Add a gap after the confirmation text
+                currentY += 70;
+
+                // Define common vertical position for alignment
+                double sectionY = currentY;
+
+                // Add the Official section
+                gfx.DrawString(userFullName, boldFont, XBrushes.Black, 
+                    new XRect(20, sectionY - 15, 200, 20), XStringFormats.TopCenter); // Bold and above the line
+                gfx.DrawString("_____________________________", footerFont, XBrushes.Black, 
+                    new XPoint(50, sectionY)); // Line
+                gfx.DrawString("Official", footerFont, XBrushes.Black, 
+                    new XRect(20, sectionY + 15, 200, 20), XStringFormats.TopCenter); // Normal text below the line
+
+                // Add the Date of Issue section
+                double dateXPosition = page.Width - 220; // Ensure alignment with the "Official" section
+                gfx.DrawString(time.ToString("yyyy-MM-dd"), boldFont, XBrushes.Black, 
+                    new XRect(dateXPosition, sectionY - 15, 200, 20), XStringFormats.TopCenter); // Bold and above the line
+                gfx.DrawString("_____________________________", footerFont, XBrushes.Black, 
+                    new XPoint(dateXPosition, sectionY)); // Line
+                gfx.DrawString("Date of Issue", footerFont, XBrushes.Black, 
+                    new XRect(dateXPosition, sectionY + 15, 200, 20), XStringFormats.TopCenter); // Normal text below the line
+
+                // Adjust currentY for next section (if needed)
+                currentY = sectionY + 50;
 
                 // Save to MemoryStream
                 Console.WriteLine("Saving PDF to MemoryStream...");
