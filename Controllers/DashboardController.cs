@@ -167,7 +167,15 @@ namespace BumbleBeeWebApp.Controllers
                 return NotFound();
             }
 
-            _logger.LogInformation("Project with ID {ProjectId} details found.", projectId);
+            // Fetch the requested funding amount
+            decimal requestedAmount = await GetRequestedFundingAmount(projectId);
+
+            // Fetch the received donations amount
+            decimal receivedAmount = await GetReceivedFundingAmount(project.ProjectName);
+
+            // Pass the funding amounts to the view
+            ViewData["RequestedAmount"] = requestedAmount;
+            ViewData["ReceivedAmount"] = receivedAmount;
 
             // Fetch company details for the project
             var company = await LoadCompanyByProjectId(projectId);
@@ -193,6 +201,64 @@ namespace BumbleBeeWebApp.Controllers
 
             return View(project);
         }
+
+        // Method to get the requested funding amount for a project
+        private async Task<decimal> GetRequestedFundingAmount(string projectId)
+        {
+            decimal requestedAmount = 0;
+
+            try
+            {
+                var fundingRequestsCollection = _firestoreDb.Collection("companies")
+                    .Document("companyId") 
+                    .Collection("fundingRequests");
+
+                var query = fundingRequestsCollection.WhereEqualTo("projectId", projectId);
+                var snapshot = await query.GetSnapshotAsync();
+
+                foreach (var document in snapshot.Documents)
+                {
+                    if (document.Exists)
+                    {
+                        requestedAmount += document.GetValue<decimal>("Amount");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching requested funding for project with ID: {ProjectId}", projectId);
+            }
+
+            return requestedAmount;
+        }
+
+        // Method to get the received funding amount for a project
+        private async Task<decimal> GetReceivedFundingAmount(string projectName)
+        {
+            decimal receivedAmount = 0;
+
+            try
+            {
+                var donationsCollection = _firestoreDb.Collection("donations");
+                var query = donationsCollection.WhereEqualTo("projectname", projectName);
+                var snapshot = await query.GetSnapshotAsync();
+
+                foreach (var document in snapshot.Documents)
+                {
+                    if (document.Exists)
+                    {
+                        receivedAmount += document.GetValue<decimal>("Amount");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching received donations for project with name: {ProjectName}", projectName);
+            }
+
+            return receivedAmount;
+        }
+
 
         private async Task<Project> LoadProjectById(string projectId)
         {
