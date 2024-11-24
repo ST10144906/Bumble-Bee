@@ -6,22 +6,21 @@
     <p>Showing donation history for @Context.Session.GetString("UserFullName")</p>
 </div>
 
-<div class="donations-container">
-    <h2 class="section-title">Your Donations</h2>
-    @if (Model == null || !Model.Any())
-    {
-        <p>No donations found for this account.</p>
-    }
-    else
-    {
+@if (Model == null || !Model.Any())
+{
+    <p>No donations found for this account.</p>
+}
+else
+{
+    <div class="project-container">
         @foreach (var donation in Model)
         {
-            <div class="donation-card">
+            <div class="project-card">
                 <h5>Project Name: @donation["ProjectName"]</h5>
                 <p><strong>Amount:</strong> @((double)donation["Amount"])</p>
                 <p><strong>Payment Type:</strong> @donation["PaymentType"]</p>
                 <p><strong>Date:</strong> @(((Google.Cloud.Firestore.Timestamp)donation["Timestamp"]).ToDateTime().ToString("yyyy-MM-dd"))</p>
             </div>
         }
-    }
-</div>
+    </div>
+}
