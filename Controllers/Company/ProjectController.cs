@@ -38,6 +38,7 @@ namespace BumbleBeeWebApp.Controllers.Company
             project.Status = "Pending Approval";
             project.DateCreated = DateTime.UtcNow;
             ModelState.Remove("Id");
+
             if (ModelState.IsValid)
             {
                 try
@@ -65,6 +66,7 @@ namespace BumbleBeeWebApp.Controllers.Company
                         project.Description,
                         project.Status,
                         project.DateCreated,
+                        project.FundingAmount,
                         CompanyId = companyId
                     });
 

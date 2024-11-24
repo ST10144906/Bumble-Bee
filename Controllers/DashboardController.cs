@@ -167,14 +167,10 @@ namespace BumbleBeeWebApp.Controllers
                 return NotFound();
             }
 
-            // Fetch the requested funding amount
-            decimal requestedAmount = await GetRequestedFundingAmount(projectId);
-
             // Fetch the received donations amount
             decimal receivedAmount = await GetReceivedFundingAmount(project.ProjectName);
 
-            // Pass the funding amounts to the view
-            ViewData["RequestedAmount"] = requestedAmount;
+            // Pass the funding amount to the view
             ViewData["ReceivedAmount"] = receivedAmount;
 
             // Fetch company details for the project
@@ -202,40 +198,11 @@ namespace BumbleBeeWebApp.Controllers
             return View(project);
         }
 
-        // Method to get the requested funding amount for a project
-        private async Task<decimal> GetRequestedFundingAmount(string projectId)
-        {
-            decimal requestedAmount = 0;
-
-            try
-            {
-                var fundingRequestsCollection = _firestoreDb.Collection("companies")
-                    .Document("companyId") 
-                    .Collection("fundingRequests");
-
-                var query = fundingRequestsCollection.WhereEqualTo("projectId", projectId);
-                var snapshot = await query.GetSnapshotAsync();
-
-                foreach (var document in snapshot.Documents)
-                {
-                    if (document.Exists)
-                    {
-                        requestedAmount += document.GetValue<decimal>("Amount");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error fetching requested funding for project with ID: {ProjectId}", projectId);
-            }
-
-            return requestedAmount;
-        }
-
         // Method to get the received funding amount for a project
         private async Task<decimal> GetReceivedFundingAmount(string projectName)
         {
             decimal receivedAmount = 0;
+            _logger.LogInformation("Starting to get received funding amount for project: {ProjectName}", projectName);
 
             try
             {
@@ -250,6 +217,8 @@ namespace BumbleBeeWebApp.Controllers
                         receivedAmount += document.GetValue<decimal>("Amount");
                     }
                 }
+
+                _logger.LogInformation("Received funding for project {ProjectName}: {ReceivedAmount}", projectName, receivedAmount);
             }
             catch (Exception ex)
             {
@@ -260,6 +229,7 @@ namespace BumbleBeeWebApp.Controllers
         }
 
 
+        // View project details
         private async Task<Project> LoadProjectById(string projectId)
         {
             try
@@ -290,6 +260,7 @@ namespace BumbleBeeWebApp.Controllers
                                     Description = projectDoc.ContainsField("Description") ? projectDoc.GetValue<string>("Description") : "No Description",
                                     DateCreated = projectDoc.ContainsField("DateCreated") ? projectDoc.GetValue<DateTime>("DateCreated") : DateTime.MinValue,
                                     Status = projectDoc.ContainsField("Status") ? projectDoc.GetValue<string>("Status") : "No Description",
+                                    FundingAmount = projectDoc.ContainsField("FundingAmount") ? projectDoc.GetValue<int>("FundingAmount") : 0,
                                     MiscellaneousDocumentsUrl = projectDoc.ContainsField("MiscellaneousDocumentsUrl") ? projectDoc.GetValue<string>("MiscellaneousDocumentsUrl") : null
                                 };
                             }
@@ -369,6 +340,7 @@ namespace BumbleBeeWebApp.Controllers
             return null;
         }
 
+        // Company dashboard projects list
         private async Task<List<Project>> LoadProjectsByStatus(string companyId, string status)
         {
             List<Project> projects = new List<Project>();

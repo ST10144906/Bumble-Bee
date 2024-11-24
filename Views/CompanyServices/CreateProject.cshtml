@@ -27,6 +27,12 @@
         </div>
 
         <div class="form-group">
+            <label for="FundingAmount">Funding Amount</label>
+            <input asp-for="FundingAmount" class="form-control" type="number" step="0.01" required />
+            <span asp-validation-for="FundingAmount" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
             <label for="MiscellaneousDocuments">Upload Miscellaneous Documents</label>
             <input type="file" id="MiscellaneousDocuments" name="MiscellaneousDocuments" class="form-control" />
         </div>
