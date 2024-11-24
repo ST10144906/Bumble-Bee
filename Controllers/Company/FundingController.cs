@@ -27,7 +27,7 @@ namespace BumbleBeeWebApp.Controllers.Company
 
             var projectsSnapshot = await _firestoreDb.Collection("companies")
                 .Document(companyId).Collection("projects")
-                .WhereEqualTo("Status", "Project Approved")
+                .WhereEqualTo("Status", "Funding Approved")
                 .GetSnapshotAsync();
 
             var projects = projectsSnapshot.Documents

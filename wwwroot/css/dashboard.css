@@ -105,7 +105,9 @@ body {
 }
 
     .projects-container::-webkit-scrollbar {
-        height: 10px; 
+        display: block;
+        height: 6px;
+        background: #ccc; 
     }
 
     .projects-container::-webkit-scrollbar-thumb {

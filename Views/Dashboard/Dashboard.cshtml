@@ -1,4 +1,4 @@
-﻿@model List<BumbleBeeWebApp.Models.Project>
+﻿@model BumbleBeeWebApp.Models.DashboardViewModel
 
 <link rel="stylesheet" type="text/css" href="~/css/dashboard.css" />
 
@@ -24,7 +24,7 @@
                 break;
             case "Auditor":
                 <div>
-                    <h3 class ="row justify-content-center">Auditor Dashboard</h3>
+                    <h3 class="row justify-content-center">Auditor Dashboard</h3>
                     <h6 class="row justify-content-center">Welcome, @Context.Session.GetString("UserFullName")</h6>
                 </div>
                 @Html.Partial("AuditDashboard")
@@ -47,59 +47,35 @@
                 <p>Invalid account. Please contact support.</p>
                 break;
         }
-        @if (@Context.Session.GetString("UserType") == "Admin" || @Context.Session.GetString("UserType") == "Donor")
-        {
-            <h2 class="section-title">Projects</h2>
-            <div class="projects-container">
-                @if (Model == null || !Model.Any())
-                {
-                    <p>No projects available at the moment.</p>
-                }
-                else
-                {
-                    @foreach (var project in Model)
-                    {
-                        <div class="project-card2" style="display: flex; flex-direction: column; justify-content: space-between; height: 300px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
-                            <div>
-                                <h5>@project.ProjectName</h5>
-                                <p>@project.Description</p>
-                                <p><strong>Date Created:</strong> @project.DateCreated.ToString("yyyy-MM-dd")</p>
-                            </div>
-                            <a class="btn"
-                               asp-controller="Dashboard"
-                               asp-action="ProjectDetails"
-                               asp-route-projectId="@project.Id"
-                               style="padding: 10px 20px; font-size: 16px; border-radius: 5px; text-decoration: none; margin-top: auto;">
-                                View Details
-                            </a>
-                        </div>
-                    }                
-                }
-            </div>
-        }
-        @if (@Context.Session.GetString("UserType") == "Company")
+
+    <section class="user-profile">
+        @if (Model.UserType == "Company")
         {
             <h2 class="section-title">Your Projects</h2>
-
             <div class="projects-container">
                 <div class="projects-column">
                     <h3>Pending Approval Projects</h3>
                     <div class="projects-list2">
-                        @foreach (var project in Model.Where(p => p.Status == "Pending Approval"))
+                        @if (!Model.PendingApprovalProjects.Any())
                         {
-                            <div class="project-card2">
-                                <div>
+                            <p>No pending approval projects.</p>
+                        }
+                        else
+                        {
+                            @foreach (var project in Model.PendingApprovalProjects)
+                            {
+                                <div class="project-card2">
                                     <h5>@project.ProjectName</h5>
                                     <p>@project.Description</p>
                                     <p><strong>Date Created:</strong> @project.DateCreated.ToString("yyyy-MM-dd")</p>
+                                    <a class="btn"
+                                       asp-controller="Dashboard"
+                                       asp-action="ProjectDetails"
+                                       asp-route-projectId="@project.Id">
+                                        View Details
+                                    </a>
                                 </div>
-                                <a class="btn"
-                                   asp-controller="Dashboard"
-                                   asp-action="ProjectDetails"
-                                   asp-route-projectId="@project.Id">
-                                    View Details
-                                </a>
-                            </div>
+                            }
                         }
                     </div>
                 </div>
@@ -107,30 +83,60 @@
                 <div class="projects-column">
                     <h3>Approved Projects</h3>
                     <div class="projects-list2">
-                        @foreach (var project in Model.Where(p => p.Status == "Funding Approved"))
+                        @if (!Model.FundingApprovedProjects.Any())
                         {
-                            <div class="project-card2">
-                                <div>
+                            <p>No approved projects.</p>
+                        }
+                        else
+                        {
+                            @foreach (var project in Model.FundingApprovedProjects)
+                            {
+                                <div class="project-card2">
                                     <h5>@project.ProjectName</h5>
                                     <p>@project.Description</p>
                                     <p><strong>Date Created:</strong> @project.DateCreated.ToString("yyyy-MM-dd")</p>
+                                    <a class="btn"
+                                       asp-controller="Dashboard"
+                                       asp-action="ProjectDetails"
+                                       asp-route-projectId="@project.Id">
+                                        View Details
+                                    </a>
                                 </div>
-                                <a class="btn"
-                                   asp-controller="Dashboard"
-                                   asp-action="ProjectDetails"
-                                   asp-route-projectId="@project.Id">
-                                    View Details
-                                </a>
-                            </div>
+                            }
                         }
                     </div>
                 </div>
             </div>
         }
-
+        else
+        {
+            <h2 class="section-title">Projects</h2>
+            <div class="projects-container">
+                @if (!Model.Projects.Any())
+                {
+                    <p>No projects available at the moment.</p>
+                }
+                else
+                {
+                    @foreach (var project in Model.Projects)
+                    {
+                        <div class="project-card2">
+                            <h5>@project.ProjectName</h5>
+                            <p>@project.Description</p>
+                            <p><strong>Date Created:</strong> @project.DateCreated.ToString("yyyy-MM-dd")</p>
+                            <a class="btn"
+                               asp-controller="Dashboard"
+                               asp-action="ProjectDetails"
+                               asp-route-projectId="@project.Id">
+                                View Details
+                            </a>
+                        </div>
+                    }
+                }
+            </div>
+        }
     </section>
 </div>
-
 
 @if (TempData["Success"] != null)
 {

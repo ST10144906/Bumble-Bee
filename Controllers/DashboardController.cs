@@ -28,45 +28,39 @@ namespace BumbleBeeWebApp.Controllers
             string userId = HttpContext.Session.GetString("UserId");
             _logger.LogInformation("Dashboard requested for UserId: {UserId}", userId);
 
-            bool isPartOfCompany = false;
-            string companyId = null;
+            var userType = HttpContext.Session.GetString("UserType");
+            var viewModel = new DashboardViewModel { UserType = userType };
 
-            var companyDocument = await _authService.GetCompanyDocumentByUserIdAsync(userId);
-            if (companyDocument != null)
+            if (userType == "Company")
             {
-                isPartOfCompany = true;
-                companyId = companyDocument.Id;
-                HttpContext.Session.SetString("CompanyId", companyId);
-                _logger.LogInformation("User {UserId} is part of company with CompanyId: {CompanyId}", userId, companyId);
-            }
-            else
-            {
-                _logger.LogInformation("User {UserId} is not part of any company", userId);
-            }
+                string companyId = HttpContext.Session.GetString("CompanyId");
+                if (companyId == null)
+                {
+                    var companyDocument = await _authService.GetCompanyDocumentByUserIdAsync(userId);
+                    if (companyDocument != null)
+                    {
+                        companyId = companyDocument.Id;
+                        HttpContext.Session.SetString("CompanyId", companyId);
+                        _logger.LogInformation("User {UserId} is part of company with CompanyId: {CompanyId}", userId, companyId);
+                    }
+                }
 
-            var userDocument = await _authService.GetUserDocumentAsync(userId);
-            var userData = userDocument.ConvertTo<Dictionary<string, object>>();
-            _logger.LogInformation("User data retrieved for {UserId}", userId);
-
-            List<Project> projects = new List<Project>();
-
-            // Load projects based on user type
-            if (HttpContext.Session.GetString("UserType") == "Company" && isPartOfCompany)
-            {
-                _logger.LogInformation("Loading projects for Company with ID: {CompanyId}", companyId);
-                projects = await LoadCompanyProjects(companyId);
+                if (companyId != null)
+                {
+                    _logger.LogInformation("Loading projects for Company with ID: {CompanyId}", companyId);
+                    viewModel.FundingApprovedProjects = await LoadProjectsByStatus(companyId, "Funding Approved");
+                    viewModel.PendingApprovalProjects = await LoadProjectsByStatus(companyId, "Pending Approval");
+                }
             }
             else
             {
                 _logger.LogInformation("Loading all projects for Admin/Donor.");
-                projects = await LoadAllProjects();
+                viewModel.Projects = await LoadAllProjects();
             }
 
-            // Pass userData and projects to the view
-            ViewBag.UserData = userData;
-            _logger.LogInformation("Dashboard view populated with {ProjectCount} projects", projects.Count);
-            return View(projects);
+            return View(viewModel);
         }
+
 
         private async Task<List<Project>> LoadAllProjects()
         {
@@ -309,69 +303,58 @@ namespace BumbleBeeWebApp.Controllers
             return null;
         }
 
-        private async Task<List<Project>> LoadCompanyProjects(string companyId)
+        private async Task<List<Project>> LoadProjectsByStatus(string companyId, string status)
         {
-            List<Project> companyProjects = new List<Project>();
+            List<Project> projects = new List<Project>();
 
             try
             {
-                _logger.LogInformation("Loading projects for company ID: {CompanyId}", companyId);
+                _logger.LogInformation("Starting to load projects with status: {Status} for Company ID: {CompanyId}", status, companyId);
 
-                // Retrieve the company document using the companyId from the session
-                var companyDoc = await _firestoreDb.Collection("companies").Document(companyId).GetSnapshotAsync();
-                if (!companyDoc.Exists)
+                CollectionReference companiesCollection = _firestoreDb.Collection("companies");
+                QuerySnapshot companiesSnapshot = await companiesCollection.GetSnapshotAsync();
+
+                foreach (DocumentSnapshot companyDoc in companiesSnapshot.Documents)
                 {
-                    _logger.LogWarning($"Company document with ID {companyId} does not exist.");
-                    TempData["Error"] = "No company found. Please check the company ID or contact support.";
-                    return companyProjects;
-                }
+                    if (companyId != null && companyDoc.Id != companyId)
+                        continue;
 
-                // Get the "projects" subcollection for the company
-                CollectionReference projectsCollection = companyDoc.Reference.Collection("projects");
-                QuerySnapshot projectsSnapshot = await projectsCollection.GetSnapshotAsync();
+                    _logger.LogDebug("Processing company document with ID: {CompanyDocId}", companyDoc.Id);
 
-                if (!projectsSnapshot.Documents.Any())
-                {
-                    _logger.LogInformation($"No projects found for company ID: {companyId}");
-                    TempData["Message"] = "This company has no projects.";
-                }
+                    var projectsCollection = companyDoc.Reference.Collection("projects");
+                    var projectsSnapshot = await projectsCollection.GetSnapshotAsync();
 
-                foreach (DocumentSnapshot projectDoc in projectsSnapshot.Documents)
-                {
-                    if (projectDoc.Exists)
+                    foreach (var projectDoc in projectsSnapshot.Documents)
                     {
-                        try
+                        if (projectDoc.Exists && projectDoc.ContainsField("Status") &&
+                            projectDoc.GetValue<string>("Status") == status)
                         {
-                            string status = projectDoc.ContainsField("Status") ? projectDoc.GetValue<string>("Status") : null;
-                            if (status == "Pending Approval" || status == "Funding Approved")
+                            var project = new Project
                             {
-                                var project = new Project
-                                {
-                                    Id = projectDoc.Id,
-                                    ProjectName = projectDoc.ContainsField("ProjectName") ? projectDoc.GetValue<string>("ProjectName") : "Unknown Project",
-                                    Description = projectDoc.ContainsField("Description") ? projectDoc.GetValue<string>("Description") : "No Description",
-                                    DateCreated = projectDoc.ContainsField("DateCreated") ? projectDoc.GetValue<DateTime>("DateCreated") : DateTime.MinValue,
-                                    MiscellaneousDocumentsUrl = projectDoc.ContainsField("MiscellaneousDocumentsUrl") ? projectDoc.GetValue<string>("MiscellaneousDocumentsUrl") : null
-                                };
+                                Id = projectDoc.Id,
+                                ProjectName = projectDoc.ContainsField("ProjectName") ? projectDoc.GetValue<string>("ProjectName") : "Unknown Project",
+                                Description = projectDoc.ContainsField("Description") ? projectDoc.GetValue<string>("Description") : "No Description",
+                                DateCreated = projectDoc.ContainsField("DateCreated") ? projectDoc.GetValue<DateTime>("DateCreated") : DateTime.MinValue,
+                                MiscellaneousDocumentsUrl = projectDoc.ContainsField("MiscellaneousDocumentsUrl") ? projectDoc.GetValue<string>("MiscellaneousDocumentsUrl") : null
+                            };
 
-                                companyProjects.Add(project);
-                                _logger.LogInformation("Added project {ProjectId} for company ID: {CompanyId}", project.Id, companyId);
-                            }
-                        }
-                        catch (Exception innerEx)
-                        {
-                            _logger.LogError(innerEx, $"Error processing project document ID: {projectDoc.Id}");
+                            projects.Add(project);
+
+                            _logger.LogDebug("Added project: {ProjectName} (ID: {ProjectId}, Status: {Status}, Created: {DateCreated})",
+                                project.ProjectName, project.Id, status, project.DateCreated);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving company projects from Firestore.");
+                _logger.LogError(ex, "Error retrieving projects with status {Status} from Firestore.", status);
             }
 
-            return companyProjects;
+            _logger.LogInformation("Completed loading projects with status: {Status}. Total projects found: {Count}", status, projects.Count);
+            return projects.OrderByDescending(p => p.DateCreated).ToList();
         }
+
 
         public async Task<IActionResult> DonateToProject(string selectedProjectName) 
         {
