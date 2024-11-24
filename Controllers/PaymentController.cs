@@ -14,6 +14,7 @@ using Microsoft.CodeAnalysis;
 using PdfSharp.Pdf;
 using PdfSharp.Drawing;
 using System.IO;
+using Google.Cloud.Storage.V1;
 
 
 
@@ -24,6 +25,8 @@ namespace BumbleBeeWebApp.Controllers
         private readonly string _publicKey;
         private readonly string _secretKey;
         private readonly FirestoreDb _firestoreDb;
+        private readonly StorageClient _storageClient;
+        private readonly string _bucketName;
 
         public PaymentController()
         {
@@ -33,14 +36,20 @@ namespace BumbleBeeWebApp.Controllers
 
             // Initialize Firestore
             var googleCredential = GoogleCredential.FromFile("Secrets/bumble-bee-foundation-firebase-adminsdk.json");
-
-            var builder = new FirestoreClientBuilder
+            var firestoreBuilder = new FirestoreClientBuilder
             {
                 Credential = googleCredential
             };
-            var firestoreClient = builder.Build();
-
+            var firestoreClient = firestoreBuilder.Build();
             _firestoreDb = FirestoreDb.Create("bumble-bee-foundation", firestoreClient);
+
+            // Initialize Storage
+            if (googleCredential.IsCreateScopedRequired)
+            {
+                googleCredential = googleCredential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+            _storageClient = StorageClient.Create(googleCredential);
+            _bucketName = "bumble-bee-foundation.appspot.com";
 
         }
 
@@ -370,6 +379,9 @@ namespace BumbleBeeWebApp.Controllers
         {
             try
             {
+                Console.WriteLine("Starting CreateInvoice method...");
+                Console.WriteLine($"Parameters: projectName={projectName}, fullName={fullName}, email={email}, amount={amount}, time={time}, paymentType={paymentType}, interval={interval}");
+
                 // Query Firestore to find user information by email
                 var usersCollection = _firestoreDb.Collection("users");
                 var query = usersCollection.WhereEqualTo("Email", email);
@@ -397,13 +409,48 @@ namespace BumbleBeeWebApp.Controllers
                     projectName, fullName, email, amount, time, paymentType, interval,
                     userEmail, userFullName, idNumber, phoneNumber, taxNumber, userType, uid
                 );
+                
+                // Convert time to UTC
+                var utcTime = time.ToUniversalTime();
+                Console.WriteLine("PDF invoice generated successfully.");
+
+                // Upload PDF to Firebase Storage
+                Console.WriteLine("Uploading PDF to Firebase Storage...");
+                string uniqueFileName = $"invoices/{Guid.NewGuid()}.pdf";
+                string storageLink;
+
+                // Use the pre-initialized _storageClient
+                using (var memoryStream = new MemoryStream(pdfBytes))
+                {
+                    await _storageClient.UploadObjectAsync(_bucketName, uniqueFileName, "application/pdf", memoryStream);
+                    storageLink = $"https://storage.googleapis.com/{_bucketName}/{uniqueFileName}";
+                    Console.WriteLine($"PDF uploaded successfully to: {storageLink}");
+                }
+
+                // Save metadata to Firestore
+                Console.WriteLine("Saving invoice metadata to Firestore...");
+                var invoiceData = new Dictionary<string, object>
+                {
+                    { "ProjectName", projectName },
+                    { "FullName", fullName },
+                    { "Email", email },
+                    { "Amount", amount },
+                    { "Date", utcTime }, // Use UTC time here
+                    { "PaymentType", paymentType },
+                    { "Interval", interval },
+                    { "PDFLink", storageLink }
+                };
+
+                await _firestoreDb.Collection("invoices").AddAsync(invoiceData);
+                Console.WriteLine("Invoice metadata saved successfully to Firestore.");
 
                 // Return the PDF as a downloadable file
                 return File(pdfBytes, "application/pdf", "Invoice.pdf");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error creating invoice: {ex.Message}");
+                Console.WriteLine($"Error in CreateInvoice: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
                 return Content("An error occurred while creating the invoice.");
             }
         }
