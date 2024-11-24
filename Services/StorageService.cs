@@ -21,7 +21,17 @@ public class StorageService
         return fileUrl;
     }
 
+    public async Task<byte[]> DownloadFileAsync(string objectName)
+ {
+     var bucketName = "bumble-bee-foundation.appspot.com";
 
-    //--- Additional methods for storage operations to be added later.
+     using (var memoryStream = new MemoryStream())
+     {
+         await _storageClient.DownloadObjectAsync(bucketName, objectName, memoryStream);
+         Console.WriteLine($"Downloaded {objectName}.");
+         return memoryStream.ToArray();
+     }
+ }
+
 }
 

@@ -14,13 +14,15 @@ namespace BumbleBeeWebApp.Controllers.Admin
         private readonly AuthService _authService;
         private readonly FirestoreService _firestoreService;
         private readonly FirestoreDb _firestoreDb;
+        private readonly StorageService _storageService;
         private readonly ILogger<DashboardController> _logger;
 
-        public AdminManagerController(FirestoreService firestoreService, FirestoreDb firestoreDb, ILogger<DashboardController> logger)
+        public AdminManagerController(FirestoreService firestoreService, StorageService storageService, FirestoreDb firestoreDb, ILogger<DashboardController> logger)
         {
             _authService = new AuthService(firestoreService);
             _firestoreService = firestoreService;
             _firestoreDb = firestoreDb;
+            _storageService = storageService;
             _logger = logger;
         }
 
@@ -327,7 +329,7 @@ namespace BumbleBeeWebApp.Controllers.Admin
                 // Perform the update in Firestore
                 var updates = new Dictionary<string, object>
         {
-            { "ApprovalStatus", updatedStatus }
+            { "ApprovalStatus", updatedStatus } 
         };
                 await companyDocRef.UpdateAsync(updates);
             }
@@ -338,6 +340,35 @@ namespace BumbleBeeWebApp.Controllers.Admin
             }
 
             return await LoadCompanies(); // Placeholder for redirection or reloading
+        }
+
+        public async Task<IActionResult> DownloadDocument(string documentUrl)
+        {
+            Console.WriteLine(documentUrl);
+            try
+            {
+                // Extract the object name from the URL
+                var uri = new Uri(documentUrl);
+                var objectName = uri.AbsolutePath.TrimStart('/');
+                Console.WriteLine($"Object Name: {objectName}");
+
+
+
+                // Download the file
+                var fileBytes = await _storageService.DownloadFileAsync(objectName);
+
+                // Get the file name from the URL
+                var fileName = Path.GetFileName(uri.LocalPath);
+
+                // Return the file as a download
+                return File(fileBytes, "application/octet-stream", fileName);
+            }
+            catch (Exception ex)
+            {
+                // Handle errors
+                Console.WriteLine($"Error downloading document: {ex.Message}");
+                return BadRequest("Error downloading the document.");
+            }
         }
     }
 }

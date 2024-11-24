@@ -13,11 +13,11 @@
             <option value="DonorEmail">Donor Email</option>
         </select>
         <input type="text" name="searchTerm" class="form-control me-2" placeholder="Enter search term" />
-        <button type="submit" class="btn btn">Search</button>
+        <button type="submit" class="btn btn-primary">Search</button>
     </form>
 </div>
 
-<div class="donations-container" style="background-color: var(--color-light-green);">
+<div class="donations-container" style="background-color: var(--color-light-green); padding: 20px; border-radius: 10px;">
     @if (TempData["ErrorMessage"] != null)
     {
         <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
@@ -35,17 +35,23 @@
     {
         @foreach (var donation in Model)
         {
-            <div class="project-card">
-                <h4>@donation["ProjectName"].ToString()</h4>
-                <p><strong>Amount:</strong> @((double)donation["Amount"])</p>
-                <p><strong>Payment Type:</strong> @donation["PaymentType"]</p>
-                <p><strong>Date:</strong> @(((Google.Cloud.Firestore.Timestamp)donation["Timestamp"]).ToDateTime().ToString("yyyy-MM-dd"))</p>
+            <div class="project-card" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+                <h4 style="color: #333;">@Convert.ToString(donation["ProjectName"])</h4>
+                <p><strong>Amount:</strong> R @Convert.ToDouble(donation["Amount"]).ToString("N2")</p>
+                <p><strong>Payment Type:</strong> @Convert.ToString(donation["PaymentType"])</p>
+                <p><strong>Date:</strong> 
+                    @(
+                        donation.ContainsKey("Timestamp") && donation["Timestamp"] != null 
+                        ? ((Google.Cloud.Firestore.Timestamp)donation["Timestamp"]).ToDateTime().ToString("yyyy-MM-dd")
+                        : "N/A"
+                    )
+                </p>
 
                 <form asp-controller="Audit" asp-action="AuditTransaction" method="post" style="margin-top: 10px;">
-                    <input type="hidden" name="donationId" value="@donation["DonationId"]" />
-                    <button type="submit" class="btn btn" @* style="background-color: var(--color-light-green) *@; color: white;">Audit Transaction</button>
+                    <input type="hidden" name="donationId" value="@Convert.ToString(donation["DonationId"])" />
+                    <button type="submit" class="btn btn-primary" style="color: white;">Audit Transaction</button>
                 </form>
-            </div>
-        }
-    }
-</div>
+            </div> <!-- Close project-card -->
+        } <!-- Close foreach -->
+    } <!-- Close else -->
+</div> <!-- Close donations-container -->
