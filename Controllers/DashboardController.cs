@@ -548,7 +548,7 @@ namespace BumbleBeeWebApp.Controllers
                 Console.WriteLine($"Extracted Object Name: {objectName}");
 
                 // Download the file using the extracted object name
-                var fileBytes = await _storageService.DownloadFileAsync(objectName);
+                var fileBytes = await _storageService.DownloadFileAsync_x(objectName);
 
                 // Get the file name from the URL
                 var fileName = Path.GetFileName(uri.LocalPath);
