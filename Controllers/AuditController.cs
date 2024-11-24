@@ -128,7 +128,94 @@ public class AuditController : Controller
             return RedirectToAction("Dashboard", "Dashboard");
         }
 
-        return View("AuditTransactions", donations); // Pass the filtered donations to the view
+        // Pass the filtered donations to the view
+        return View("AuditTransactions", donations); 
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> AuditLogsView()
+    {
+        var auditLogs = new List<AuditLog>();
+
+        try
+        {
+            Query auditLogsQuery = _firestoreDb.Collection("auditLogs");
+            QuerySnapshot auditLogsSnapshot = await auditLogsQuery.GetSnapshotAsync();
+
+            foreach (var document in auditLogsSnapshot.Documents)
+            {
+                var data = document.ToDictionary();
+
+                var auditLog = new AuditLog
+                {
+                    AuditLogId = document.Id,
+                    ProjectName = data.ContainsKey("ProjectName") ? data["ProjectName"].ToString() : "Unknown",
+                    Amount = data.ContainsKey("Amount") ? Convert.ToDouble(data["Amount"]) : 0,
+                    PaymentType = data.ContainsKey("PaymentType") ? data["PaymentType"].ToString() : "N/A",
+                    AuditedAt = data.ContainsKey("AuditedAt") ? ((Google.Cloud.Firestore.Timestamp)data["AuditedAt"]).ToDateTime() : DateTime.MinValue,
+                    Notes = data.ContainsKey("Notes") ? data["Notes"].ToString() : "No notes"
+                };
+
+                auditLogs.Add(auditLog);
+            }
+
+            if (!auditLogs.Any())
+            {
+                TempData["ErrorMessage"] = "No audit logs found.";
+                return RedirectToAction("Dashboard", "Dashboard");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error retrieving audit logs: {ex.Message}");
+            TempData["ErrorMessage"] = "An error occurred while retrieving audit logs.";
+            return RedirectToAction("Dashboard", "Dashboard");
+        }
+
+        return View("AuditLogs", auditLogs);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> GenerateSelectedReports(List<string> selectedAuditLogIds)
+    {
+        var selectedAuditLogs = new List<AuditLog>();
+
+        try
+        {
+            foreach (var logId in selectedAuditLogIds)
+            {
+                DocumentSnapshot auditLogSnapshot = await _firestoreDb.Collection("auditLogs").Document(logId).GetSnapshotAsync();
+
+                if (auditLogSnapshot.Exists)
+                {
+                    var data = auditLogSnapshot.ToDictionary();
+
+                    var auditLog = new AuditLog
+                    {
+                        AuditLogId = auditLogSnapshot.Id,
+                        ProjectName = data.ContainsKey("ProjectName") ? data["ProjectName"].ToString() : "Unknown",
+                        Amount = data.ContainsKey("Amount") ? Convert.ToDouble(data["Amount"]) : 0,
+                        PaymentType = data.ContainsKey("PaymentType") ? data["PaymentType"].ToString() : "N/A",
+                        AuditedAt = data.ContainsKey("AuditedAt") ? ((Google.Cloud.Firestore.Timestamp)data["AuditedAt"]).ToDateTime() : DateTime.MinValue,
+                        Notes = data.ContainsKey("Notes") ? data["Notes"].ToString() : "No notes"
+                    };
+
+                    selectedAuditLogs.Add(auditLog);
+                }
+            }
+
+            // Generate the PDF report for selected logs
+            var pdfBytes = GenerateAuditReportPdf(selectedAuditLogs);
+
+            // Return PDF file
+            return File(pdfBytes, "application/pdf", "SelectedAuditReport.pdf");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error generating selected audit report: {ex.Message}");
+            TempData["ErrorMessage"] = "An error occurred while generating the selected audit report.";
+            return RedirectToAction("AuditLogsView");
+        }
     }
 
     // Action to generate audit report PDF
@@ -249,34 +336,11 @@ public class AuditController : Controller
                 }
             }
 
-            //foreach (var log in auditLogs)
-            //{
-            //    try
-            //    {
-            //        gfx.DrawString(log.ProjectName, regularFont, XBrushes.Black, new XPoint(40, y));
-            //        gfx.DrawString(log.Amount.ToString("C"), regularFont, XBrushes.Black, new XPoint(200, y));
-            //        gfx.DrawString(log.PaymentType, regularFont, XBrushes.Black, new XPoint(300, y));
-            //        gfx.DrawString(log.AuditedAt.ToString("yyyy-MM-dd HH:mm:ss"), regularFont, XBrushes.Black, new XPoint(400, y));
-            //        y += 20;
-
-            //        if (y > page.Height - 50) // Add a new page if needed
-            //        {
-            //            Console.WriteLine("Adding new page...");
-            //            page = document.AddPage();
-            //            gfx = XGraphics.FromPdfPage(page);
-            //            y = 50;
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Console.WriteLine($"Error rendering log {log.AuditLogId}: {ex.Message}");
-            //    }
-            //}
 
             Console.WriteLine("Saving PDF to memory stream...");
             using (var memoryStream = new MemoryStream())
             {
-                document.Save(memoryStream, false); // Save without closing the stream
+                document.Save(memoryStream, false); 
                 return memoryStream.ToArray();
             }
         }
@@ -285,5 +349,71 @@ public class AuditController : Controller
             Console.WriteLine($"Error generating PDF: {ex.Message}");
             return Array.Empty<byte>();
         }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> SearchDonations(string searchType, string searchTerm)
+    {
+        var donations = new List<Dictionary<string, object>>();
+
+        try
+        {
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                TempData["ErrorMessage"] = "Please enter a search term.";
+                return RedirectToAction("AuditTransactionsView");
+            }
+
+            // Convert search term to lowercase
+            searchTerm = searchTerm.ToLower();
+
+            Query donationsQuery = _firestoreDb.Collection("donations");
+
+            QuerySnapshot donationsSnapshot = await donationsQuery.GetSnapshotAsync();
+
+            foreach (var document in donationsSnapshot.Documents)
+            {
+                var donation = document.ToDictionary();
+                donation["DonationId"] = document.Id; 
+
+                // Check if the field matches the search term
+                if (searchType == "ProjectName" && donation.ContainsKey("ProjectName") &&
+                    donation["ProjectName"].ToString().ToLower().Contains(searchTerm))
+                {
+                    donations.Add(donation);
+                }
+                else if (searchType == "DonorEmail" && donation.ContainsKey("UserEmail") &&
+                         donation["UserEmail"].ToString().ToLower().Contains(searchTerm))
+                {
+                    donations.Add(donation);
+                }
+            }
+
+            if (!donations.Any())
+            {
+                TempData["ErrorMessage"] = "No donations matched your search.";
+                return RedirectToAction("AuditTransactionsView");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error searching donations: {ex.Message}");
+            TempData["ErrorMessage"] = "An error occurred while searching donations.";
+            return RedirectToAction("AuditTransactionsView");
+        }
+
+        return View("AuditTransactions", donations); // Reuse the same view
+    }
+}
+
+public static class StringExtensions
+{
+    public static string ToTitleCase(this string str)
+    {
+        if (string.IsNullOrEmpty(str)) return str;
+
+        var cultureInfo = System.Globalization.CultureInfo.CurrentCulture;
+        var textInfo = cultureInfo.TextInfo;
+        return textInfo.ToTitleCase(str.ToLower());
     }
 }

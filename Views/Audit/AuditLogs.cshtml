@@ -1,0 +1,49 @@
+﻿@model List<BumbleBeeWebApp.Models.AuditLog>
+<link rel="stylesheet" type="text/css" href="~/css/dashboard.css" />
+
+<div class="dashboard-header">
+    <h1>Audit Logs</h1>
+    <p>Select logs to generate a report, or generate a report for all logs.</p>
+</div>
+
+<div class="audit-logs-container">
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <p>No audit logs available.</p>
+    }
+    else
+    {
+        <form asp-controller="Audit" asp-action="GenerateSelectedReports" method="post">
+            @foreach (var log in Model)
+            {
+                <div class="donation-card">
+                    <h5>Project Name: @log.ProjectName</h5>
+                    <p><strong>Amount:</strong> @log.Amount</p>
+                    <p><strong>Payment Type:</strong> @log.PaymentType</p>
+                    <p><strong>Date:</strong> @log.AuditedAt.ToString("yyyy-MM-dd")</p>
+                    <p><strong>Notes:</strong> @log.Notes</p>
+
+                    <div class="form-check">
+                        <input type="checkbox" name="selectedAuditLogIds" value="@log.AuditLogId" class="form-check-input" id="@log.AuditLogId" />
+                        <label class="form-check-label" for="@log.AuditLogId">Select this log</label>
+                    </div>
+                </div>
+            }
+
+            <button type="submit" class="btn btn-info">Generate Selected Report</button>
+        </form>
+
+        <form asp-controller="Audit" asp-action="GenerateAuditReports" method="post" style="margin-top: 20px;">
+            <button type="submit" class="btn btn-warning">Generate Report for All Logs</button>
+        </form>
+    }
+</div>

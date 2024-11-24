@@ -3,7 +3,18 @@
 
 <div class="dashboard-header">
     <h1>Audit Transactions</h1>
-    <p>Select a donation to audit.</p>
+    <p>Select a donation to audit or search for a specific donation.</p>
+</div>
+
+<div class="search-container mb-4">
+    <form asp-controller="Audit" asp-action="SearchDonations" method="get" class="d-flex align-items-center">
+        <select name="searchType" class="form-select me-2" style="width: 150px;">
+            <option value="ProjectName">Project Name</option>
+            <option value="DonorEmail">Donor Email</option>
+        </select>
+        <input type="text" name="searchTerm" class="form-control me-2" placeholder="Enter search term" />
+        <button type="submit" class="btn btn-info">Search</button>
+    </form>
 </div>
 
 <div class="donations-container">
@@ -25,7 +36,7 @@
         @foreach (var donation in Model)
         {
             <div class="donation-card">
-                <h5>Project Name: @donation["ProjectName"]</h5>
+                <h5>Project Name: @donation["ProjectName"].ToString()</h5>
                 <p><strong>Amount:</strong> @((double)donation["Amount"])</p>
                 <p><strong>Payment Type:</strong> @donation["PaymentType"]</p>
                 <p><strong>Date:</strong> @(((Google.Cloud.Firestore.Timestamp)donation["Timestamp"]).ToDateTime().ToString("yyyy-MM-dd"))</p>

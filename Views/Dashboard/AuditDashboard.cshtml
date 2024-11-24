@@ -1,10 +1,17 @@
-﻿<div class="auditor-controls">
+﻿@* <div class="auditor-controls">
     <form asp-controller="Audit" asp-action="AuditTransactionsView" method="get">
-        <button class="btn btn-info" type="submit">Audit Transactions</button>
+        <button class="btn btn-warning" type="submit">Audit Transactions</button>
     </form>
-    <form asp-controller="Audit" asp-action="GenerateAuditReports" method="post">
+    <form asp-controller="Audit" asp-action="AuditLogsView" method="get">
         <button class="btn btn-warning" type="submit">Generate Audit Reports</button>
     </form>
+</div> *@
+
+<div class="row mt-3">
+    <div class="company-controls d-flex justify-content-center">
+        <a class="btn mx-2" href="@Url.Action("AuditTransactionsView", "Audit")">Audit Transactions</a>
+        <a class="btn mx-2" href="@Url.Action("AuditLogsView", "Audit")">Generate Audit Reports</a>
+    </div>
 </div>
 
 
