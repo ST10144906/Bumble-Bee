@@ -286,6 +286,8 @@ public class AuditController : Controller
         }
     }
 
+   
+
     private byte[] GenerateAuditReportPdf(List<AuditLog> auditLogs)
     {
         try
@@ -297,25 +299,46 @@ public class AuditController : Controller
             PdfPage page = document.AddPage();
             XGraphics gfx = XGraphics.FromPdfPage(page);
 
+            // Load the logo image
+            string logoPath = "wwwroot/images/logo.png"; 
+            
+                XImage logo = XImage.FromFile(logoPath);
+
+                // Center the logo horizontally at the top of the page
+                double logoWidth = 100; 
+                double logoHeight = logo.PixelHeight * logoWidth / logo.PixelWidth; 
+                double logoX = (page.Width - logoWidth) / 2; 
+                double logoY = 20; 
+
+                // Draw the logo
+                gfx.DrawImage(logo, logoX, logoY, logoWidth, logoHeight);
+
+            double tableStartX = 40;
+            double tableStartY = 140; 
+            double tableWidth = page.Width - 80;
+            double tableRowHeight = 25;
+            double currentY = tableStartY;
+
+            
+
+
+            // Fonts
             XFont titleFont = new XFont("Times New Roman", 18, XFontStyleEx.Bold);
             XFont boldFont = new XFont("Times New Roman", 12, XFontStyleEx.Bold);
             XFont regularFont = new XFont("Times New Roman", 12);
             XFont footerFont = new XFont("Times New Roman", 10, XFontStyleEx.Italic);
-
-            gfx.DrawString("Audit Report", titleFont, XBrushes.Black,
-                new XRect(0, 20, page.Width, 40), XStringFormats.TopCenter);
+            
+            // Draw Title
+            gfx.DrawString("BumbleBee Audit Report", titleFont, XBrushes.Black,
+                new XRect(0, 100, page.Width, 40), XStringFormats.TopCenter); 
 
             // Table Setup
-            double tableStartX = 40;
-            double tableStartY = 80;
-            double tableWidth = page.Width - 80;
-            double tableRowHeight = 25;
-
+            
 
             gfx.DrawRectangle(XPens.Black, tableStartX, tableStartY, tableWidth, tableRowHeight * (auditLogs.Count + 1));
 
             // Table Header Row
-            double currentY = tableStartY;
+            
             gfx.DrawString("Project Name", boldFont, XBrushes.Black, new XPoint(tableStartX + 5, currentY + 15));
             gfx.DrawString("Amount", boldFont, XBrushes.Black, new XPoint(tableStartX + 200, currentY + 15));
             gfx.DrawString("Payment Type", boldFont, XBrushes.Black, new XPoint(tableStartX + 300, currentY + 15));
@@ -343,7 +366,7 @@ public class AuditController : Controller
                     {
                         page = document.AddPage();
                         gfx = XGraphics.FromPdfPage(page);
-                        currentY = 40;  
+                        currentY = 40;
                     }
                 }
                 catch (Exception ex)
@@ -352,39 +375,25 @@ public class AuditController : Controller
                 }
             }
 
-            string userFullName = HttpContext.Session.GetString("UserFullName");
- 
+            // Footer Section with Auditor's name and date
             currentY += 40;
+            string userFullName = HttpContext.Session.GetString("UserFullName");
 
-            // Add confirmation text
-            gfx.DrawString("I confirm that the above transactions were audited for BumbleBee Foudation.",
+            gfx.DrawString("I confirm that the above transactions were audited for the BumbleBee Foundation.",
                 regularFont, XBrushes.Black,
                 new XRect(40, currentY, page.Width - 80, 20), XStringFormats.Center);
 
-            
             currentY += 55;
-
-            double nameWidth = 200; 
-            double lineLength = nameWidth + 30; 
-
-
-            double lineStartX = (page.Width - lineLength) / 2; 
-            gfx.DrawLine(XPens.Black, lineStartX, currentY, lineStartX + lineLength, currentY); 
-            
-            // Auditor's name on the line, placed just above the line
+            double nameWidth = 200;
+            double lineLength = nameWidth + 30;
+            double lineStartX = (page.Width - lineLength) / 2;
+            gfx.DrawLine(XPens.Black, lineStartX, currentY, lineStartX + lineLength, currentY);
             gfx.DrawString(userFullName, boldFont, XBrushes.Black, new XRect(lineStartX, currentY - 20, lineLength, 20), XStringFormats.Center);
-            
-
-            // Auditor text centered below the line
             gfx.DrawString("Auditor", footerFont, XBrushes.Black, new XRect(lineStartX, currentY + 10, lineLength, 20), XStringFormats.Center);
 
-            
             currentY += 50;
-
-            // Add centred Date of Issue section
             gfx.DrawString("Date of Issue: " + DateTime.UtcNow.ToString("yyyy-MM-dd"),
                 footerFont, XBrushes.Black, new XRect((page.Width - 200) / 2, currentY, 200, 20), XStringFormats.TopCenter);
-
 
             Console.WriteLine("Saving PDF to MemoryStream...");
             using (var memoryStream = new MemoryStream())
@@ -400,7 +409,7 @@ public class AuditController : Controller
         }
     }
 
-    
+
 
     [HttpGet]
     public async Task<IActionResult> SearchDonations(string searchType, string searchTerm)
