@@ -41,16 +41,17 @@
                 </div>
             }
         }
-        
-    </div>
-    <button type="submit" class="btn btn">Generate Selected Report</button>
+
+        <div class="button-container">
+            <button type="submit" class="btn btn">Generate Selected Report</button>
+        </div>
 </form>
 
-
-    
-    <form asp-controller="Audit" asp-action="GenerateAuditReports" method="post">
+<form asp-controller="Audit" asp-action="GenerateAuditReports" method="post">
+    <div class="button-container">
         <button type="submit" class="btn btn">Generate Report for All Audits</button>
-    </form>
+    </div>
+</form>
 
 
 
