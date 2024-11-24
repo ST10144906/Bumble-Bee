@@ -52,6 +52,13 @@ namespace BumbleBeeWebApp.Controllers.Company
                         return View("~/Views/CompanyServices/CreateProject.cshtml", project);
                     }
 
+                    if (!await IsCompanyApproved(companyId))
+                    {
+                        _logger.LogWarning("Company with ID {CompanyId} is not approved.", companyId);
+                        ModelState.AddModelError(string.Empty, "Your company is not approved to create projects. Please contact support for further assistance.");
+                        return RedirectToAction("Dashboard", "Dashboard");
+                    }
+
                     // Check if the project name already exists
                     if (await IsProjectNameValid(companyId, project.ProjectName))
                     {
@@ -120,6 +127,22 @@ namespace BumbleBeeWebApp.Controllers.Company
             }
 
             return View("~/Views/CompanyServices/CreateProject.cshtml", project);
+        }
+
+        private async Task<bool> IsCompanyApproved(string companyId)
+        {
+            _logger.LogInformation("Checking approval status for company ID: {CompanyId}", companyId);
+
+            var companyRef = _firestoreDb.Collection("companies").Document(companyId);
+            var snapshot = await companyRef.GetSnapshotAsync();
+
+            if (snapshot.Exists && snapshot.TryGetValue("ApprovalStatus", out string approvalStatus))
+            {
+                return approvalStatus.Equals("Approved", StringComparison.OrdinalIgnoreCase);
+            }
+
+            _logger.LogWarning("ApprovalStatus not found or invalid for company ID: {CompanyId}", companyId);
+            return false;
         }
 
         private async Task<bool> IsProjectNameValid(string companyId, string projectName)
