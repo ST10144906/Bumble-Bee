@@ -443,9 +443,9 @@ namespace BumbleBeeWebApp.Controllers
                     {
                         // Update the project status
                         var updates = new Dictionary<string, object>
-                {
-                    { "Status", "Approved Funding" }
-                };
+                        {
+                            { "Status", "Approved Funding" }
+                        };
 
                         await projectDocRef.UpdateAsync(updates);
                         _logger.LogInformation("Project status updated to Approved Funding for Project ID: {ProjectId}", projectId);

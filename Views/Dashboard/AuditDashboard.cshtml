@@ -1,4 +1,10 @@
 ﻿<div class="auditor-controls">
-    <button class="btn btn-info">Audit Transactions</button>
-    <button class="btn btn-warning">Generate Audit Reports</button>
+    <form asp-controller="Audit" asp-action="AuditTransactionsView" method="post">
+        <button class="btn btn-info" type="submit">Audit Transactions</button>
+    </form>
+    <form asp-controller="Audit" asp-action="GenerateAuditReports" method="post">
+        <button class="btn btn-warning" type="submit">Generate Audit Reports</button>
+    </form>
 </div>
+
+

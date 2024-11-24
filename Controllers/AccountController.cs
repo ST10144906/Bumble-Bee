@@ -60,6 +60,7 @@ namespace BumbleBeeWebApp.Controllers
             {
                 Console.WriteLine($"Login failed: {ex.Message}");
                 ViewBag.ErrorMessage = "Login failed. Please check your email and password.";
+                TempData["Message"] = "Login failed. Please check your email and password.";
                 return View();
             }
         }
@@ -136,13 +137,13 @@ namespace BumbleBeeWebApp.Controllers
                 return View();
             }
 
-            if (!IsNumeric(southAfricaId) && IsValidIdNumber(southAfricaId))
+            if (!IsNumeric(southAfricaId) && !IsValidIdNumber(southAfricaId))
             {
                 ViewBag.ErrorMessage = "South Africa ID must be numeric.";
                 return View();
             }
 
-            if (!IsNumeric(taxNumber) && IsValidTaxNumber(taxNumber))
+            if (!IsNumeric(taxNumber) && !IsValidTaxNumber(taxNumber))
             {
                 ViewBag.ErrorMessage = "Tax number must be numeric.";
                 return View();
