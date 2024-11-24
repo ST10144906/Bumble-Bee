@@ -79,6 +79,6 @@ public class DonorProjectController : Controller
             ViewBag.NoProjectsMessage = "An error occurred while retrieving the projects.";
         }
 
-        return View(allProjects);
+        return View("ViewAllProjects",allProjects);
     }
 }

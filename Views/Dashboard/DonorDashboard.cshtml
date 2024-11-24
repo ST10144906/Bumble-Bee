@@ -1,5 +1,33 @@
-﻿<div class="user-controls">
-    <a class="btn" href="@Url.Action("Index", "DonorHistory")">View Donations History</a>
+﻿<!-- Dropdown Menu -->
+<div class="row mt-3">
+    <div class="user-controls d-flex justify-content-center">
+        <select id="donorFeaturesDropdown"
+                class="form-select dropdown-enhanced text-center"
+                style="max-width: 350px;">
+            <option value="" disabled selected class="centered-option">Donor Features</option>
+            <option value="ViewDonationsHistory">View Donations History</option>
+            <option value="ViewAllProjects">View All Projects</option>
+        </select>
+    </div>
 </div>
+
+<!-- Hidden Forms -->
+<div style="display: none;">
+    <form id="form-ViewDonationsHistory" asp-action="Index" asp-controller="DonorHistory" method="get"></form>
+    <form id="form-ViewAllProjects" asp-action="ViewAllProjects" asp-controller="DonorProject" method="get"></form>
+</div>
+
+<!-- JavaScript -->
+<script>
+    document.getElementById('donorFeaturesDropdown').addEventListener('change', function () {
+        const selectedValue = this.value;
+        if (selectedValue) {
+            const form = document.getElementById(`form-${selectedValue}`);
+            if (form) {
+                form.submit();
+            }
+        }
+    });
+</script>
 
 
