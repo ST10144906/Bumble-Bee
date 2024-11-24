@@ -150,7 +150,15 @@ body {
     background: var(--color-very-light-green);
     border-radius: 10px;
 }
-
+.project-container3 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    justify-content: center;
+    margin: auto;
+    max-width: 80%;
+    padding: 10px;
+}
 .company-card {
     min-width: 300px;
     flex: 0 0 auto;
