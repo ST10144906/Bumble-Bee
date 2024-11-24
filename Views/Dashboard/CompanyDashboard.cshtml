@@ -1,8 +1,27 @@
-﻿    <!-- Row of Buttons -->
+﻿<!-- Dropdown Menu -->
 <div class="row mt-3">
-    <div class="company-controls d-flex justify-content-between">
-        <a class="btn" href="@Url.Action("Create", "Company")">Provide Organization Details</a>
-        <a class="btn" href="@Url.Action("Create", "Project")">Submit New Project</a>
-        <a class="btn" href="@Url.Action("Create", "Funding", new { area = "Company" })">Request Project Funding</a>
+    <div class="company-controls d-flex justify-content-center">
+        <select id="companyFeaturesDropdown" class="form-select dropdown-enhanced text-center" style="max-width: 350px;">
+            <option value="" disabled selected class="centered-option">Company Features</option>
+            <option value="ProvideOrganizationDetails">Provide Organization Details</option>
+            <option value="SubmitNewProject">Submit New Project</option>
+        </select>
     </div>
 </div>
+
+<!-- Hidden Forms -->
+<div style="display: none;">
+    <form id="form-ProvideOrganizationDetails" asp-action="Create" asp-controller="Company" method="get"></form>
+    <form id="form-SubmitNewProject" asp-action="Create" asp-controller="Project" method="get"></form>
+</div>
+
+<script>
+    document.getElementById("companyFeaturesDropdown").addEventListener("change", function() {
+        var selectedAction = this.value;
+        if (selectedAction === "ProvideOrganizationDetails") {
+            document.getElementById("form-ProvideOrganizationDetails").submit();
+        } else if (selectedAction === "SubmitNewProject") {
+            document.getElementById("form-SubmitNewProject").submit();
+        }
+    });
+</script>
