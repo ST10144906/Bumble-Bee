@@ -215,8 +215,8 @@ body {
     }
 
 .project-card {
-    flex: 0 1 45%; 
-    max-width: 400px; 
+    flex: 1 1 100%; 
+    max-width: 100%; 
     background-color: var(--color-pastel-green);
     padding: 10px;
     border-radius: 5px;
