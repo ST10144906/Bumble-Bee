@@ -81,4 +81,25 @@ public class DonorProjectController : Controller
 
         return View("ViewAllProjects",allProjects);
     }
+
+    // POST: DonorProject/DeleteProject
+    [HttpPost]
+    public async Task<IActionResult> DeleteProject(string companyId, string projectId)
+    {
+        try
+        {
+            var projectRef = _firestoreDb.Collection("companies").Document(companyId).Collection("projects").Document(projectId);
+            await projectRef.DeleteAsync();
+
+            _logger.LogInformation("Project with ID {ProjectId} successfully deleted.", projectId);
+            TempData["SuccessMessage"] = "Project deleted successfully.";
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting project with ID {ProjectId}.", projectId);
+            TempData["ErrorMessage"] = "An error occurred while deleting the project.";
+        }
+
+        return RedirectToAction("Dashboard", "Dashboard");
+    }
 }
