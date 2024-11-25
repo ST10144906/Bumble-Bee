@@ -202,3 +202,105 @@ h2 {
     max-width: 100px; /* Adjust to the desired size */
     height: auto; /* Maintains aspect ratio */
 }
+
+.faq-section {
+    margin: 30px auto;
+    max-width: 800px;
+}
+
+    .faq-section h2 {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 20px;
+    }
+
+.faq-container {
+    display: flex;
+    flex-direction: column; /* Align items in a vertical column */
+    gap: 20px; /* Adds space between each FAQ item */
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: var(--background);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.faq-item {
+    display: flex; /* Use Flexbox for FAQ item layout */
+    align-items: center; /* Center align question and dropdown */
+    justify-content: space-between; /* Space out the content */
+    border: 1px solid var(--color-light-green);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.faq-question {
+    flex: 1; /* Take up available space for the question */
+    text-align: left;
+    background-color: var(--primary);
+    color: white;
+    font-size: 1rem;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+    .faq-question:hover {
+        background-color: var(--accent);
+        color: black;
+    }
+
+.dropdown-menu {
+    margin-top: 10px;
+    background-color: var(--color-very-light-green);
+    border: 1px solid var(--color-medium-green);
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item {
+    color: var(--text);
+    font-size: 0.9rem;
+    padding: 10px;
+    text-align: left;
+    border-radius: 3px;
+}
+
+    .dropdown-item:hover {
+        background-color: var(--accent);
+        color: white;
+    }
+/*New Code*/
+
+#faqAnswer {
+    background-color: #f8f9fa; /* Light background for contrast */
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    text-align: left;
+}
+
+.accordion-button {
+    font-size: 1.25rem;
+    background-color: #e0edc5; /* Light pastel green */
+    color: #000;
+    border: none;
+}
+
+    .accordion-button:focus {
+        box-shadow: none;
+    }
+
+.accordion-body {
+    background-color: #f8f9fa; /* Light gray */
+    padding: 15px;
+    font-size: 1.1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+
