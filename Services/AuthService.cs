@@ -199,5 +199,27 @@ public class AuthService
         return await FirebaseAuth.DefaultInstance.GetUserAsync(uid);
     }
 
-    //--- Additional methods for authentication to be added later.
+    public async Task<string> GeneratePasswordResetLinkAsync(string email)
+    {
+        try
+        {
+            // Generate the password reset link
+            string resetLink = await FirebaseAuth.DefaultInstance.GeneratePasswordResetLinkAsync(email);
+            Console.WriteLine($"Generated password reset link: {resetLink}");
+            return resetLink;
+        }
+        catch (FirebaseAuthException ex)
+        {
+            // Handle Firebase-specific exceptions
+            Console.WriteLine($"FirebaseAuthException: {ex.Message}");
+            throw new Exception($"Failed to generate password reset link: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            // Handle general exceptions
+            Console.WriteLine($"Exception: {ex.Message}");
+            throw new Exception($"An unexpected error occurred: {ex.Message}");
+        }
+    }
+
 }
