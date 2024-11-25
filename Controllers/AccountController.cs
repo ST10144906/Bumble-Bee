@@ -117,6 +117,35 @@ namespace BumbleBeeWebApp.Controllers
         {
             return View();
         }
+
+        // POST: Forgot Password
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                ViewBag.ErrorMessage = "Please enter a valid email address.";
+                return View();
+            }
+
+            try
+            {
+                string resetLink = await _authService.GeneratePasswordResetLinkAsync(email);
+                Console.WriteLine($"Password reset link: {resetLink}");
+
+                // Send the link manually via your email service if necessary
+                // Example: await emailService.SendResetEmailAsync(email, resetLink);
+
+                ViewBag.SuccessMessage = "Password reset link generated. Please check your email.";
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error generating password reset link: {ex.Message}");
+                ViewBag.ErrorMessage = "Failed to generate password reset link. Please try again later.";
+                return View();
+            }
+        }
         // POST: Register Donor
         [HttpPost]
         public async Task<IActionResult> RegisterDonor(
