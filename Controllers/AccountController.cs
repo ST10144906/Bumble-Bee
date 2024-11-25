@@ -113,6 +113,10 @@ namespace BumbleBeeWebApp.Controllers
             return View();
         }
 
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
         // POST: Register Donor
         [HttpPost]
         public async Task<IActionResult> RegisterDonor(
